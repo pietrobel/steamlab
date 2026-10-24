@@ -12,7 +12,7 @@ import { LinkItem, Subject, GradeLevel } from './types';
 import { INITIAL_LINKS } from './data/defaultLinks';
 import { Sparkles, Layers, Search, RefreshCw, ExternalLink, Heart, PlusCircle } from 'lucide-react';
 
-const STORAGE_KEY = 'steam_lab_resources_list_v2';
+const STORAGE_KEY = 'steam_lab_resources_list_v3_clean';
 
 export default function App() {
   // Main links state with LocalStorage persistence
