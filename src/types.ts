@@ -1,6 +1,6 @@
 export type Subject = 'matematica' | 'scienze' | 'informatica';
 
-export type GradeLevel = 'Tutte' | 'Classe 1ª' | 'Classe 2ª' | 'Classe 3ª' | 'Laboratorio STEAM';
+export type GradeLevel = 'Tutte' | 'Classe 1ª' | 'Classe 2ª' | 'Classe 3ª' | 'Laboratorio ScienzaLab';
 
 export interface LinkItem {
   id: string;

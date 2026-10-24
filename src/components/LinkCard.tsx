@@ -3,10 +3,6 @@ import {
   ExternalLink,
   Eye,
   Heart,
-  Edit2,
-  Trash2,
-  Sparkles,
-  Layers,
 } from 'lucide-react';
 import { LinkItem } from '../types';
 import { SUBJECT_METAS } from '../data/defaultLinks';
@@ -17,8 +13,6 @@ interface LinkCardProps {
   viewMode: 'grid' | 'list';
   onPreview: (item: LinkItem) => void;
   onToggleFavorite: (id: string) => void;
-  onEdit: (item: LinkItem) => void;
-  onDelete: (id: string) => void;
 }
 
 export const LinkCard: React.FC<LinkCardProps> = ({
@@ -26,8 +20,6 @@ export const LinkCard: React.FC<LinkCardProps> = ({
   viewMode,
   onPreview,
   onToggleFavorite,
-  onEdit,
-  onDelete,
 }) => {
   const meta = SUBJECT_METAS[item.subject] || SUBJECT_METAS.matematica;
   const isVercelHost = item.isVercel || item.url.includes('vercel.app');
@@ -105,22 +97,6 @@ export const LinkCard: React.FC<LinkCardProps> = ({
             <span>Apri</span>
             <ExternalLink className="w-3 h-3" />
           </a>
-
-          <button
-            onClick={() => onEdit(item)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-700 transition-all"
-            title="Modifica"
-          >
-            <Edit2 className="w-3.5 h-3.5" />
-          </button>
-
-          <button
-            onClick={() => onDelete(item.id)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-700 transition-all"
-            title="Elimina"
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-          </button>
         </div>
       </div>
     );
@@ -203,43 +179,24 @@ export const LinkCard: React.FC<LinkCardProps> = ({
 
       {/* Footer Actions */}
       <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1.5">
-          <button
-            onClick={() => onPreview(item)}
-            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 transition-all shadow-sm"
-            title="Anteprima applicazione"
-          >
-            <Eye className="w-3.5 h-3.5 text-cyan-400" />
-            <span>Anteprima</span>
-          </button>
+        <button
+          onClick={() => onPreview(item)}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 transition-all shadow-sm"
+          title="Anteprima applicazione"
+        >
+          <Eye className="w-3.5 h-3.5 text-cyan-400" />
+          <span>Anteprima</span>
+        </button>
 
-          <a
-            href={item.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white shadow-md shadow-indigo-900/20 transition-all"
-          >
-            <span>Apri</span>
-            <ExternalLink className="w-3 h-3" />
-          </a>
-        </div>
-
-        <div className="flex items-center gap-1">
-          <button
-            onClick={() => onEdit(item)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all"
-            title="Modifica scheda"
-          >
-            <Edit2 className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={() => onDelete(item.id)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-all"
-            title="Elimina risorsa"
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-          </button>
-        </div>
+        <a
+          href={item.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white shadow-md shadow-indigo-900/20 transition-all"
+        >
+          <span>Apri Applicazione</span>
+          <ExternalLink className="w-3 h-3" />
+        </a>
       </div>
     </div>
   );

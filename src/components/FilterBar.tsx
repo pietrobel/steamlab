@@ -22,7 +22,7 @@ const GRADE_OPTIONS: Array<GradeLevel | 'Tutte'> = [
   'Classe 1ª',
   'Classe 2ª',
   'Classe 3ª',
-  'Laboratorio STEAM',
+  'Laboratorio ScienzaLab',
 ];
 
 export const FilterBar: React.FC<FilterBarProps> = ({

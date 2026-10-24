@@ -1,20 +1,9 @@
 import React from 'react';
-import {
-  Sparkles,
-  PlusCircle,
-  Upload,
-  Download,
-  ExternalLink,
-  Layers,
-  Heart,
-} from 'lucide-react';
+import { Sparkles, ExternalLink, Heart, Layers } from 'lucide-react';
 
 interface NavbarProps {
   totalCount: number;
   favCount: number;
-  onOpenAddModal: () => void;
-  onOpenBulkModal: () => void;
-  onOpenBackupModal: () => void;
   showFavoritesOnly: boolean;
   onToggleFavorites: () => void;
 }
@@ -22,9 +11,6 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({
   totalCount,
   favCount,
-  onOpenAddModal,
-  onOpenBulkModal,
-  onOpenBackupModal,
   showFavoritesOnly,
   onToggleFavorites,
 }) => {
@@ -41,13 +27,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-xl md:text-2xl font-black tracking-tight text-white flex items-center gap-1.5">
-                  <span>STEAM</span>
-                  <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-indigo-400 bg-clip-text text-transparent">
+                <h1 className="text-xl md:text-2xl font-black tracking-tight text-white flex items-center gap-1">
+                  <span>Scienza</span>
+                  <span className="bg-gradient-to-r from-emerald-400 via-cyan-300 to-indigo-400 bg-clip-text text-transparent">
                     Lab
                   </span>
                 </h1>
-                <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                   Officina Digitale
                 </span>
               </div>
@@ -57,27 +43,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </div>
 
-          {/* Quick Stats & Actions */}
+          {/* Actions */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            {/* Vercel Dashboard External Link */}
-            <a
-              href="https://vercel.com/icbdpp"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 md:py-2 text-xs md:text-sm font-medium rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700/80 hover:border-slate-600 transition-all shadow-sm"
-              title="Apri la console progetti su Vercel"
-            >
-              <svg className="w-3.5 h-3.5 fill-current text-white" viewBox="0 0 1155 1000">
-                <path d="m577.3 0 577.4 1000H0z" />
-              </svg>
-              <span className="hidden lg:inline">Progetti Vercel</span>
-              <ExternalLink className="w-3 h-3 text-slate-400" />
-            </a>
+            {/* Total resources badge */}
+            <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800/60 border border-slate-700/60 text-xs font-medium text-slate-300">
+              <Layers className="w-3.5 h-3.5 text-cyan-400" />
+              <span>{totalCount} risorse attive</span>
+            </div>
 
             {/* Favorite Filter Toggle Button */}
             <button
               onClick={onToggleFavorites}
-              className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 md:py-2 rounded-xl text-xs md:text-sm font-medium transition-all ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 md:py-2 rounded-xl text-xs md:text-sm font-medium transition-all ${
                 showFavoritesOnly
                   ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-rose-900/20'
                   : 'bg-slate-800/60 text-slate-300 hover:bg-slate-800 border border-slate-700/60'
@@ -91,33 +68,20 @@ export const Navbar: React.FC<NavbarProps> = ({
               </span>
             </button>
 
-            {/* Bulk Import */}
-            <button
-              onClick={onOpenBulkModal}
-              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 md:py-2 rounded-xl text-xs md:text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all shadow-sm"
-              title="Incolla o importa link multipli"
+            {/* Vercel Dashboard External Link */}
+            <a
+              href="https://vercel.com/icbdpp"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 md:py-2 text-xs md:text-sm font-medium rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700/80 hover:border-slate-600 transition-all shadow-sm"
+              title="Apri la console progetti su Vercel"
             >
-              <Upload className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="hidden md:inline">Importa</span>
-            </button>
-
-            {/* Backup / Export */}
-            <button
-              onClick={onOpenBackupModal}
-              className="p-1.5 md:p-2 rounded-xl text-slate-400 hover:text-white bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition-all"
-              title="Gestione Backup & Ripristino"
-            >
-              <Download className="w-4 h-4" />
-            </button>
-
-            {/* Add Link Primary Button */}
-            <button
-              onClick={onOpenAddModal}
-              className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 md:py-2 rounded-xl text-xs md:text-sm font-semibold bg-gradient-to-r from-cyan-500 via-indigo-600 to-violet-600 hover:from-cyan-400 hover:via-indigo-500 hover:to-violet-500 text-white shadow-lg shadow-indigo-600/25 hover:shadow-indigo-600/40 transition-all"
-            >
-              <PlusCircle className="w-4 h-4 text-white" />
-              <span>Nuovo Link</span>
-            </button>
+              <svg className="w-3.5 h-3.5 fill-current text-white" viewBox="0 0 1155 1000">
+                <path d="m577.3 0 577.4 1000H0z" />
+              </svg>
+              <span className="hidden sm:inline">Progetti Vercel</span>
+              <ExternalLink className="w-3 h-3 text-slate-400" />
+            </a>
           </div>
         </div>
       </div>

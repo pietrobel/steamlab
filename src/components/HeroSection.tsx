@@ -21,32 +21,32 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* STEAM Badge */}
+        {/* ScienzaLab Badge */}
         <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-800/80 border border-slate-700/80 text-xs md:text-sm font-medium text-slate-300 shadow-inner">
-            <span className="flex h-2 w-2 rounded-full bg-cyan-400 animate-ping" />
-            <span className="text-cyan-300 font-semibold">STEAM Hub</span>
+            <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
+            <span className="text-emerald-300 font-bold">ScienzaLab</span>
             <span className="text-slate-500">•</span>
-            <span>Science, Technology, Engineering, Arts & Mathematics</span>
+            <span>Matematica, Scienze e Informatica</span>
           </div>
 
           <div className="flex items-center gap-2 text-xs text-slate-400">
-            <span className="inline-block w-2 h-2 rounded-full bg-emerald-400" />
-            <span>Raccolta aggiornata & interattiva</span>
+            <span className="inline-block w-2 h-2 rounded-full bg-cyan-400" />
+            <span>scienzalab.vercel.app</span>
           </div>
         </div>
 
         {/* Main Heading & Subtitle */}
         <div className="max-w-3xl mb-8">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight mb-4">
-            Officina <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-indigo-300 to-emerald-300">STEAM</span>:{' '}
+            Officina <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-cyan-300 to-indigo-300">ScienzaLab</span>:{' '}
             <span className="text-slate-100 font-extrabold block sm:inline">
               Matematica, Scienze e Informatica
             </span>
           </h2>
           <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
             Una piattaforma didattica per esplorare, sperimentare e imparare attraverso simulatori interattivi,
-            modelli 3D, laboratori di coding e applicazioni web pronte all'uso per la scuola e il laboratorio.
+            modelli scientifici, laboratori di logica e applicazioni web pronte all'uso per la scuola e il laboratorio.
           </p>
         </div>
 

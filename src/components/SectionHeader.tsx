@@ -1,5 +1,4 @@
 import React from 'react';
-import { PlusCircle, ExternalLink } from 'lucide-react';
 import { Subject } from '../types';
 import { SUBJECT_METAS } from '../data/defaultLinks';
 import { DynamicIcon } from './DynamicIcon';
@@ -7,13 +6,11 @@ import { DynamicIcon } from './DynamicIcon';
 interface SectionHeaderProps {
   subject: Subject;
   count: number;
-  onAddInSubject: (subject: Subject) => void;
 }
 
 export const SectionHeader: React.FC<SectionHeaderProps> = ({
   subject,
   count,
-  onAddInSubject,
 }) => {
   const meta = SUBJECT_METAS[subject];
 
@@ -44,14 +41,6 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
           </p>
         </div>
       </div>
-
-      <button
-        onClick={() => onAddInSubject(subject)}
-        className="inline-flex items-center gap-1.5 self-start sm:self-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 transition-all shrink-0"
-      >
-        <PlusCircle className="w-3.5 h-3.5 text-cyan-400" />
-        <span>Aggiungi a {meta.name}</span>
-      </button>
     </div>
   );
 };

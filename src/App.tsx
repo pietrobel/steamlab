@@ -4,41 +4,43 @@ import { HeroSection } from './components/HeroSection';
 import { FilterBar } from './components/FilterBar';
 import { SectionHeader } from './components/SectionHeader';
 import { LinkCard } from './components/LinkCard';
-import { AddEditLinkModal } from './components/AddEditLinkModal';
-import { BulkImportModal } from './components/BulkImportModal';
 import { PreviewModal } from './components/PreviewModal';
-import { BackupModal } from './components/BackupModal';
 import { LinkItem, Subject, GradeLevel } from './types';
 import { INITIAL_LINKS } from './data/defaultLinks';
-import { Sparkles, Layers, Search, RefreshCw, ExternalLink, Heart, PlusCircle } from 'lucide-react';
+import { Sparkles, Search, ExternalLink, Heart } from 'lucide-react';
 
-const STORAGE_KEY = 'steam_lab_resources_list_v4_user_apps';
+const FAVORITES_STORAGE_KEY = 'scienzalab_favorites_v1';
 
 export default function App() {
-  // Main links state with LocalStorage persistence
-  const [links, setLinks] = useState<LinkItem[]>(() => {
+  // Favorites persistence in LocalStorage
+  const [favoriteIds, setFavoriteIds] = useState<string[]>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
+      const saved = localStorage.getItem(FAVORITES_STORAGE_KEY);
       if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
-        }
+        return JSON.parse(saved);
       }
     } catch (e) {
-      console.error('Error loading links from localStorage', e);
+      console.error('Error loading favorites from localStorage', e);
     }
-    return INITIAL_LINKS;
+    // Default favorites from initial links
+    return INITIAL_LINKS.filter((l) => l.isFavorite).map((l) => l.id);
   });
 
-  // Save changes to localStorage
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(links));
+      localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favoriteIds));
     } catch (e) {
-      console.error('Error saving links to localStorage', e);
+      console.error('Error saving favorites to localStorage', e);
     }
-  }, [links]);
+  }, [favoriteIds]);
+
+  // Combine static curated links with favorite state
+  const links: LinkItem[] = useMemo(() => {
+    return INITIAL_LINKS.map((item) => ({
+      ...item,
+      isFavorite: favoriteIds.includes(item.id),
+    }));
+  }, [favoriteIds]);
 
   // Filtering states
   const [searchQuery, setSearchQuery] = useState('');
@@ -48,14 +50,8 @@ export default function App() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
-  // Modal states
-  const [isAddEditOpen, setIsAddEditOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<LinkItem | null>(null);
-  const [modalDefaultSubject, setModalDefaultSubject] = useState<Subject>('matematica');
-
-  const [isBulkOpen, setIsBulkOpen] = useState(false);
+  // Preview modal state
   const [previewItem, setPreviewItem] = useState<LinkItem | null>(null);
-  const [isBackupOpen, setIsBackupOpen] = useState(false);
 
   // Computed counts
   const counts = useMemo(() => {
@@ -67,8 +63,8 @@ export default function App() {
   }, [links]);
 
   const favoritesCount = useMemo(() => {
-    return links.filter((l) => l.isFavorite).length;
-  }, [links]);
+    return favoriteIds.length;
+  }, [favoriteIds]);
 
   // Available tags across all links
   const availableTags = useMemo(() => {
@@ -125,67 +121,11 @@ export default function App() {
     };
   }, [filteredLinks]);
 
-  // Handlers
+  // Favorite toggle handler
   const handleToggleFavorite = (id: string) => {
-    setLinks((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, isFavorite: !item.isFavorite } : item
-      )
+    setFavoriteIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
-  };
-
-  const handleDelete = (id: string) => {
-    const item = links.find((l) => l.id === id);
-    if (!item) return;
-    if (confirm(`Sei sicuro di voler rimuovere "${item.title}"?`)) {
-      setLinks((prev) => prev.filter((l) => l.id !== id));
-      if (previewItem?.id === id) {
-        setPreviewItem(null);
-      }
-    }
-  };
-
-  const handleSaveLink = (
-    linkData: Omit<LinkItem, 'id' | 'addedAt'>,
-    editId?: string
-  ) => {
-    if (editId) {
-      setLinks((prev) =>
-        prev.map((item) =>
-          item.id === editId
-            ? { ...item, ...linkData }
-            : item
-        )
-      );
-    } else {
-      const newItem: LinkItem = {
-        ...linkData,
-        id: 'link-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6),
-        addedAt: new Date().toISOString().split('T')[0],
-      };
-      setLinks((prev) => [newItem, ...prev]);
-    }
-  };
-
-  const handleBulkAdd = (newLinks: Omit<LinkItem, 'id' | 'addedAt'>[]) => {
-    const createdItems: LinkItem[] = newLinks.map((l, index) => ({
-      ...l,
-      id: `bulk-${Date.now()}-${index}`,
-      addedAt: new Date().toISOString().split('T')[0],
-    }));
-    setLinks((prev) => [...createdItems, ...prev]);
-  };
-
-  const handleOpenAddForSubject = (subject: Subject) => {
-    setModalDefaultSubject(subject);
-    setEditingItem(null);
-    setIsAddEditOpen(true);
-  };
-
-  const handleEditItem = (item: LinkItem) => {
-    setEditingItem(item);
-    setModalDefaultSubject(item.subject);
-    setIsAddEditOpen(true);
   };
 
   const handleResetFilters = () => {
@@ -194,14 +134,6 @@ export default function App() {
     setSelectedGrade('Tutte');
     setSelectedTag(null);
     setShowFavoritesOnly(false);
-  };
-
-  const handleRestoreDefault = () => {
-    setLinks(INITIAL_LINKS);
-  };
-
-  const handleImportBackup = (imported: LinkItem[]) => {
-    setLinks(imported);
   };
 
   // Render sections to display
@@ -216,17 +148,11 @@ export default function App() {
       <Navbar
         totalCount={links.length}
         favCount={favoritesCount}
-        onOpenAddModal={() => {
-          setEditingItem(null);
-          setIsAddEditOpen(true);
-        }}
-        onOpenBulkModal={() => setIsBulkOpen(true)}
-        onOpenBackupModal={() => setIsBackupOpen(true)}
         showFavoritesOnly={showFavoritesOnly}
         onToggleFavorites={() => setShowFavoritesOnly((prev) => !prev)}
       />
 
-      {/* Hero Banner with STEAM focus */}
+      {/* Hero Banner with ScienzaLab focus */}
       <HeroSection
         counts={counts}
         activeSubject={selectedSubject}
@@ -279,24 +205,12 @@ export default function App() {
             <p className="text-sm text-slate-400 max-w-md mx-auto mb-6">
               Nessun link corrisponde ai criteri di ricerca o ai filtri applicati.
             </p>
-            <div className="flex items-center justify-center gap-3">
-              <button
-                onClick={handleResetFilters}
-                className="px-4 py-2 rounded-xl text-sm font-semibold bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 transition-all"
-              >
-                Azzera tutti i filtri
-              </button>
-              <button
-                onClick={() => {
-                  setEditingItem(null);
-                  setIsAddEditOpen(true);
-                }}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold bg-cyan-600 hover:bg-cyan-500 text-white transition-all shadow-md"
-              >
-                <PlusCircle className="w-4 h-4" />
-                <span>Aggiungi questa risorsa</span>
-              </button>
-            </div>
+            <button
+              onClick={handleResetFilters}
+              className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 transition-all shadow-md"
+            >
+              Azzera tutti i filtri
+            </button>
           </div>
         ) : (
           <div className="space-y-12">
@@ -312,7 +226,6 @@ export default function App() {
                   <SectionHeader
                     subject={subj}
                     count={items.length}
-                    onAddInSubject={handleOpenAddForSubject}
                   />
 
                   {/* Cards Grid or List */}
@@ -335,8 +248,6 @@ export default function App() {
                           viewMode={viewMode}
                           onPreview={(it) => setPreviewItem(it)}
                           onToggleFavorite={handleToggleFavorite}
-                          onEdit={handleEditItem}
-                          onDelete={handleDelete}
                         />
                       ))}
                     </div>
@@ -357,62 +268,43 @@ export default function App() {
                 <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
               </div>
             </div>
-            <span className="font-bold text-white text-sm">STEAM Lab</span>
+            <span className="font-bold text-white text-sm">ScienzaLab</span>
             <span className="text-slate-600">|</span>
             <span>Matematica • Scienze • Informatica</span>
           </div>
 
           <div className="flex items-center gap-4 flex-wrap justify-center">
             <a
+              href="https://scienzalab.vercel.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors flex items-center gap-1"
+            >
+              <span>scienzalab.vercel.app</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+            <span className="text-slate-600">•</span>
+            <a
               href="https://vercel.com/icbdpp"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-cyan-300 transition-colors flex items-center gap-1"
             >
-              <span>Repository Progetti Vercel</span>
+              <span>Console Vercel</span>
               <ExternalLink className="w-3 h-3" />
             </a>
             <span className="text-slate-600">•</span>
-            <button
-              onClick={() => setIsBackupOpen(true)}
-              className="hover:text-cyan-300 transition-colors"
-            >
-              Backup & Ripristino
-            </button>
-            <span className="text-slate-600">•</span>
-            <span>Didattica Digitale & Percorsi STEAM</span>
+            <span>Didattica Digitale & Risorse Interattive</span>
           </div>
         </div>
       </footer>
 
-      {/* Modals */}
-      <AddEditLinkModal
-        isOpen={isAddEditOpen}
-        onClose={() => setIsAddEditOpen(false)}
-        onSave={handleSaveLink}
-        editingItem={editingItem}
-        defaultSubject={modalDefaultSubject}
-      />
-
-      <BulkImportModal
-        isOpen={isBulkOpen}
-        onClose={() => setIsBulkOpen(false)}
-        onBulkAdd={handleBulkAdd}
-      />
-
+      {/* Preview Modal */}
       <PreviewModal
         item={previewItem}
         isOpen={!!previewItem}
         onClose={() => setPreviewItem(null)}
         onToggleFavorite={handleToggleFavorite}
-      />
-
-      <BackupModal
-        isOpen={isBackupOpen}
-        onClose={() => setIsBackupOpen(false)}
-        links={links}
-        onRestoreDefault={handleRestoreDefault}
-        onImportBackup={handleImportBackup}
       />
     </div>
   );
