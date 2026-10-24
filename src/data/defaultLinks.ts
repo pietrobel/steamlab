@@ -12,7 +12,7 @@ export const SUBJECT_METAS: Record<string, SubjectMeta> = {
     badgeText: 'text-indigo-700 dark:text-indigo-300',
     gradient: 'from-indigo-500 to-violet-600',
     icon: 'Calculator',
-    description: 'Geometria dinamica, calcolatori, algebra, frazioni e strumenti matematici interattivi.',
+    description: 'Geometria dinamica, proprietà delle operazioni, calcolatori, algebra e frazioni.',
   },
   scienze: {
     id: 'scienze',
@@ -25,7 +25,7 @@ export const SUBJECT_METAS: Record<string, SubjectMeta> = {
     badgeText: 'text-emerald-700 dark:text-emerald-300',
     gradient: 'from-emerald-500 to-teal-600',
     icon: 'Atom',
-    description: 'Tavola periodica dinamica, simulazioni scientifiche PhET, astronomia, fisica e biologia.',
+    description: 'Cinematica e moto, Food Quest nutrizione, tavola periodica interattiva e fisica PhET.',
   },
   informatica: {
     id: 'informatica',
@@ -38,13 +38,26 @@ export const SUBJECT_METAS: Record<string, SubjectMeta> = {
     badgeText: 'text-cyan-700 dark:text-cyan-300',
     gradient: 'from-cyan-500 to-blue-600',
     icon: 'Code2',
-    description: 'Coding a blocchi, algoritmi, editor web, calcolo binario e logica computazionale.',
+    description: 'Coding con Scratch, giochi di logica algoritmica, editor web e codifica binaria.',
   },
 };
 
-// Solo link reali, funzionanti e verificati al 100%
 export const INITIAL_LINKS: LinkItem[] = [
   // --- MATEMATICA ---
+  {
+    id: 'mat-proprieta-operazioni',
+    title: 'Proprietà delle Operazioni',
+    url: 'https://vercel.com/icbdpp/proprieta_operazioni/4tpzKdSrrRgzLc3d9hwWaexrfd2G',
+    description: 'Applicazione interattiva per esercitarsi sulle proprietà aritmetiche: commutativa, associativa, distributiva e invariantiva.',
+    subject: 'matematica',
+    tags: ['Aritmetica', 'Proprietà Operazioni', 'Vercel App', 'Calcolo'],
+    gradeLevel: 'Classe 1ª',
+    iconName: 'Calculator',
+    isVercel: true,
+    isFavorite: true,
+    addedAt: '2026-10-24',
+    featured: true,
+  },
   {
     id: 'mat-geogebra-calc',
     title: 'GeoGebra Calcolatrice Grafica',
@@ -100,6 +113,34 @@ export const INITIAL_LINKS: LinkItem[] = [
 
   // --- SCIENZE ---
   {
+    id: 'sci-cinematica',
+    title: 'Cinematica: Studio del Moto e della Velocità',
+    url: 'https://cinematica.vercel.app/',
+    description: 'Applicazione interattiva su Vercel per la cinematica: velocità, accelerazione, tempo e moto rettilineo uniforme.',
+    subject: 'scienze',
+    tags: ['Fisica', 'Cinematica', 'Moto', 'Vercel App'],
+    gradeLevel: 'Classe 2ª',
+    iconName: 'Zap',
+    isVercel: true,
+    isFavorite: true,
+    addedAt: '2026-10-24',
+    featured: true,
+  },
+  {
+    id: 'sci-food-quest',
+    title: 'Food Quest: Alimentazione & Nutrizione',
+    url: 'https://food-quest.vercel.app/',
+    description: 'Applicazione educativa Vercel (Food Quest) sui principi nutritivi, alimentazione equilibrata e piramide alimentare.',
+    subject: 'scienze',
+    tags: ['Scienze', 'Nutrizione', 'Alimentazione', 'Food Quest', 'Vercel App'],
+    gradeLevel: 'Classe 2ª',
+    iconName: 'HeartPulse',
+    isVercel: true,
+    isFavorite: true,
+    addedAt: '2026-10-24',
+    featured: true,
+  },
+  {
     id: 'sci-ptable',
     title: 'Tavola Periodica Dinamica (Ptable)',
     url: 'https://ptable.com/?lang=it',
@@ -123,21 +164,7 @@ export const INITIAL_LINKS: LinkItem[] = [
     gradeLevel: 'Classe 2ª',
     iconName: 'Zap',
     isVercel: false,
-    isFavorite: true,
     addedAt: '2026-01-14',
-    featured: true,
-  },
-  {
-    id: 'sci-phet-atomo',
-    title: 'PhET Costruisci un Atomo',
-    url: 'https://phet.colorado.edu/sims/html/build-an-atom/latest/build-an-atom_it.html',
-    description: 'Aggiungi protoni, neutroni ed elettroni per formare elementi, ioni e isotopi stabili o instabili.',
-    subject: 'scienze',
-    tags: ['Chimica', 'Atomi', 'Elettroni'],
-    gradeLevel: 'Classe 3ª',
-    iconName: 'Orbit',
-    isVercel: false,
-    addedAt: '2026-01-18',
   },
   {
     id: 'sci-nasa-eyes',
