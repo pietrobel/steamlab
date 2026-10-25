@@ -1,6 +1,6 @@
 {
-  "name": "STEAM Lab - Portale Matematica, Scienze e Informatica",
-  "description": "Officina digitale e portale interattivo di risorse educative, simulatori e applicazioni web per Matematica, Scienze e Informatica.",
+  "name": "ScienzaLab - Portale Matematica, Scienze e Informatica",
+  "description": "Laboratorio digitale e portale interattivo di risorse educative, simulatori e applicazioni web per Matematica, Scienze e Informatica.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

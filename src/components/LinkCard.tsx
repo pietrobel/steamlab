@@ -3,6 +3,8 @@ import {
   ExternalLink,
   Eye,
   Heart,
+  Sparkles,
+  Play,
 } from 'lucide-react';
 import { LinkItem } from '../types';
 import { SUBJECT_METAS } from '../data/defaultLinks';
@@ -12,6 +14,7 @@ interface LinkCardProps {
   item: LinkItem;
   viewMode: 'grid' | 'list';
   onPreview: (item: LinkItem) => void;
+  onLaunchInternal: (item: LinkItem) => void;
   onToggleFavorite: (id: string) => void;
 }
 
@@ -19,10 +22,12 @@ export const LinkCard: React.FC<LinkCardProps> = ({
   item,
   viewMode,
   onPreview,
+  onLaunchInternal,
   onToggleFavorite,
 }) => {
   const meta = SUBJECT_METAS[item.subject] || SUBJECT_METAS.matematica;
   const isVercelHost = item.isVercel || item.url.includes('vercel.app');
+  const isInternal = Boolean(item.internalAppId);
 
   if (viewMode === 'list') {
     return (
@@ -43,11 +48,14 @@ export const LinkCard: React.FC<LinkCardProps> = ({
               >
                 {meta.name}
               </span>
-              {isVercelHost && (
+              {isInternal && (
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                  <Sparkles className="w-3 h-3 text-emerald-400" />
+                  App Integrata
+                </span>
+              )}
+              {isVercelHost && !isInternal && (
                 <span className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
-                  <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 1155 1000">
-                    <path d="m577.3 0 577.4 1000H0z" />
-                  </svg>
                   Vercel App
                 </span>
               )}
@@ -79,23 +87,33 @@ export const LinkCard: React.FC<LinkCardProps> = ({
             <Heart className={`w-4 h-4 ${item.isFavorite ? 'fill-rose-400' : ''}`} />
           </button>
 
-          <button
-            onClick={() => onPreview(item)}
-            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-all"
-            title="Anteprima rapida nell'app"
-          >
-            <Eye className="w-3.5 h-3.5 text-cyan-400" />
-            <span>Anteprima</span>
-          </button>
+          {isInternal ? (
+            <button
+              onClick={() => onLaunchInternal(item)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white shadow-md shadow-emerald-900/30 transition-all"
+            >
+              <Play className="w-3.5 h-3.5 fill-current" />
+              <span>Avvia App</span>
+            </button>
+          ) : (
+            <button
+              onClick={() => onPreview(item)}
+              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-all"
+              title="Anteprima rapida nell'app"
+            >
+              <Eye className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Anteprima</span>
+            </button>
+          )}
 
           <a
             href={item.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-cyan-600 hover:bg-cyan-500 text-white shadow-sm transition-all"
+            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white border border-slate-700 transition-all"
+            title="Apri link esterno"
           >
-            <span>Apri</span>
-            <ExternalLink className="w-3 h-3" />
+            <ExternalLink className="w-3.5 h-3.5" />
           </a>
         </div>
       </div>
@@ -114,11 +132,14 @@ export const LinkCard: React.FC<LinkCardProps> = ({
             >
               {meta.name}
             </span>
-            {isVercelHost && (
+            {isInternal && (
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse">
+                <Sparkles className="w-3 h-3 text-emerald-400" />
+                App Integrata
+              </span>
+            )}
+            {isVercelHost && !isInternal && (
               <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
-                <svg className="w-2.5 h-2.5 fill-current text-white" viewBox="0 0 1155 1000">
-                  <path d="m577.3 0 577.4 1000H0z" />
-                </svg>
                 Vercel
               </span>
             )}
@@ -179,24 +200,47 @@ export const LinkCard: React.FC<LinkCardProps> = ({
 
       {/* Footer Actions */}
       <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
-        <button
-          onClick={() => onPreview(item)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 transition-all shadow-sm"
-          title="Anteprima applicazione"
-        >
-          <Eye className="w-3.5 h-3.5 text-cyan-400" />
-          <span>Anteprima</span>
-        </button>
+        {isInternal ? (
+          <>
+            <button
+              onClick={() => onLaunchInternal(item)}
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white shadow-lg shadow-emerald-900/30 hover:shadow-emerald-900/50 transition-all"
+            >
+              <Play className="w-3.5 h-3.5 fill-current" />
+              <span>Avvia App Integrata</span>
+            </button>
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 rounded-xl text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-750 border border-slate-700 transition-all shrink-0"
+              title="Apri link esterno"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          </>
+        ) : (
+          <>
+            <button
+              onClick={() => onPreview(item)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 transition-all shadow-sm"
+              title="Anteprima applicazione"
+            >
+              <Eye className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Anteprima</span>
+            </button>
 
-        <a
-          href={item.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white shadow-md shadow-indigo-900/20 transition-all"
-        >
-          <span>Apri Applicazione</span>
-          <ExternalLink className="w-3 h-3" />
-        </a>
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white shadow-md shadow-indigo-900/20 transition-all"
+            >
+              <span>Apri Applicazione</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </>
+        )}
       </div>
     </div>
   );

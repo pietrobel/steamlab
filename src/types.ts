@@ -15,6 +15,7 @@ export interface LinkItem {
   isFavorite?: boolean;
   addedAt: string;
   featured?: boolean;
+  internalAppId?: 'proprieta-operazioni' | 'cinematica' | 'food-quest' | 'maestro-problemi';
 }
 
 export interface SubjectMeta {

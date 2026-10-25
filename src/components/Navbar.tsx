@@ -1,5 +1,6 @@
 import React from 'react';
-import { Sparkles, ExternalLink, Heart, Layers } from 'lucide-react';
+import { Heart, Layers } from 'lucide-react';
+import { profSauroImg } from '../data/mascots';
 
 interface NavbarProps {
   totalCount: number;
@@ -18,12 +19,15 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="sticky top-0 z-40 w-full bg-slate-900/95 backdrop-blur-md border-b border-slate-800 text-white shadow-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20 gap-3">
-          {/* Logo & Brand Title */}
+          {/* Logo & Brand Title with Prof. Sauro Avatar */}
           <div className="flex items-center gap-3 min-w-0">
-            <div className="relative flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 via-cyan-400 to-emerald-400 p-[2px] shadow-lg shadow-cyan-500/20 shrink-0">
-              <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
-                <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-cyan-300 animate-pulse" />
-              </div>
+            <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-2xl overflow-hidden ring-2 ring-emerald-500/80 shadow-lg shadow-emerald-500/20 shrink-0 bg-slate-900">
+              <img
+                src={profSauroImg}
+                alt="Prof. Sauro"
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
@@ -34,7 +38,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
                 </h1>
                 <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                  Officina Digitale
+                  con Prof. Sauro
                 </span>
               </div>
               <p className="text-xs text-slate-400 truncate hidden md:block">
@@ -67,21 +71,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 {favCount}
               </span>
             </button>
-
-            {/* Vercel Dashboard External Link */}
-            <a
-              href="https://vercel.com/icbdpp"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 md:py-2 text-xs md:text-sm font-medium rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700/80 hover:border-slate-600 transition-all shadow-sm"
-              title="Apri la console progetti su Vercel"
-            >
-              <svg className="w-3.5 h-3.5 fill-current text-white" viewBox="0 0 1155 1000">
-                <path d="m577.3 0 577.4 1000H0z" />
-              </svg>
-              <span className="hidden sm:inline">Progetti Vercel</span>
-              <ExternalLink className="w-3 h-3 text-slate-400" />
-            </a>
           </div>
         </div>
       </div>

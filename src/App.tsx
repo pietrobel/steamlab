@@ -5,11 +5,14 @@ import { FilterBar } from './components/FilterBar';
 import { SectionHeader } from './components/SectionHeader';
 import { LinkCard } from './components/LinkCard';
 import { PreviewModal } from './components/PreviewModal';
+import { IntegratedAppModal } from './components/integrated/IntegratedAppModal';
+import { MascotSpotlight } from './components/MascotSpotlight';
+import { profSauroImg, leoImg, miaImg } from './data/mascots';
 import { LinkItem, Subject, GradeLevel } from './types';
 import { INITIAL_LINKS } from './data/defaultLinks';
 import { Sparkles, Search, ExternalLink, Heart } from 'lucide-react';
 
-const FAVORITES_STORAGE_KEY = 'scienzalab_favorites_v1';
+const FAVORITES_STORAGE_KEY = 'scienzalab_favorites_v2';
 
 export default function App() {
   // Favorites persistence in LocalStorage
@@ -52,6 +55,7 @@ export default function App() {
 
   // Preview modal state
   const [previewItem, setPreviewItem] = useState<LinkItem | null>(null);
+  const [internalAppItem, setInternalAppItem] = useState<LinkItem | null>(null);
 
   // Computed counts
   const counts = useMemo(() => {
@@ -177,6 +181,12 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+        {/* Interactive Mascot Spotlight & Advice */}
+        <MascotSpotlight
+          onSelectSubject={setSelectedSubject}
+          activeSubject={selectedSubject}
+        />
+
         {/* Active Filter Pill / Favorites Notice */}
         {showFavoritesOnly && (
           <div className="mb-6 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-between gap-3 text-rose-300 text-sm">
@@ -247,6 +257,7 @@ export default function App() {
                           item={item}
                           viewMode={viewMode}
                           onPreview={(it) => setPreviewItem(it)}
+                          onLaunchInternal={(it) => setInternalAppItem(it)}
                           onToggleFavorite={handleToggleFavorite}
                         />
                       ))}
@@ -261,16 +272,36 @@ export default function App() {
 
       {/* Footer */}
       <footer className="mt-auto border-t border-slate-800 bg-slate-950 py-8 px-4 text-xs text-slate-400">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-cyan-400 to-indigo-500 p-[1px]">
-              <div className="w-full h-full bg-slate-950 rounded-[7px] flex items-center justify-center">
-                <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
-              </div>
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-3">
+            <div className="flex -space-x-2">
+              <img
+                src={profSauroImg}
+                alt="Prof. Sauro"
+                className="w-8 h-8 rounded-full object-cover ring-2 ring-emerald-500 bg-slate-800"
+                referrerPolicy="no-referrer"
+              />
+              <img
+                src={leoImg}
+                alt="Leo"
+                className="w-8 h-8 rounded-full object-cover ring-2 ring-amber-500 bg-slate-800"
+                referrerPolicy="no-referrer"
+              />
+              <img
+                src={miaImg}
+                alt="Mia"
+                className="w-8 h-8 rounded-full object-cover ring-2 ring-rose-500 bg-slate-800"
+                referrerPolicy="no-referrer"
+              />
             </div>
-            <span className="font-bold text-white text-sm">ScienzaLab</span>
-            <span className="text-slate-600">|</span>
-            <span>Matematica • Scienze • Informatica</span>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-white text-sm">ScienzaLab</span>
+                <span className="text-slate-600">|</span>
+                <span className="text-emerald-400 font-semibold">Prof. Sauro, Leo & Mia</span>
+              </div>
+              <p className="text-[11px] text-slate-400">Matematica • Scienze • Informatica per la Scuola Media</p>
+            </div>
           </div>
 
           <div className="flex items-center gap-4 flex-wrap justify-center">
@@ -284,27 +315,24 @@ export default function App() {
               <ExternalLink className="w-3 h-3" />
             </a>
             <span className="text-slate-600">•</span>
-            <a
-              href="https://vercel.com/icbdpp"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-cyan-300 transition-colors flex items-center gap-1"
-            >
-              <span>Console Vercel</span>
-              <ExternalLink className="w-3 h-3" />
-            </a>
-            <span className="text-slate-600">•</span>
             <span>Didattica Digitale & Risorse Interattive</span>
           </div>
         </div>
       </footer>
 
-      {/* Preview Modal */}
+      {/* Preview Modal for external sites */}
       <PreviewModal
         item={previewItem}
         isOpen={!!previewItem}
         onClose={() => setPreviewItem(null)}
         onToggleFavorite={handleToggleFavorite}
+      />
+
+      {/* Native Integrated Application Modal */}
+      <IntegratedAppModal
+        item={internalAppItem}
+        isOpen={!!internalAppItem}
+        onClose={() => setInternalAppItem(null)}
       />
     </div>
   );
