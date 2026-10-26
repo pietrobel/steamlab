@@ -1,7 +1,7 @@
 import React from 'react';
 import { Calculator, Atom, Code2, ArrowUpRight, GraduationCap } from 'lucide-react';
 import { Subject } from '../types';
-import { heroTeamImg, profSauroImg, leoImg, miaImg } from '../data/mascots';
+import { heroTeamImg, profSauroImg, profIpaziaImg, profAdaImg, leoImg, miaImg } from '../data/mascots';
 
 interface HeroSectionProps {
   counts: Record<Subject, number>;
@@ -33,12 +33,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             />
             <span className="text-emerald-300 font-bold">ScienzaLab</span>
             <span className="text-slate-500">•</span>
-            <span>Il Laboratorio con Prof. Sauro, Leo & Mia</span>
+            <span>Il Team Docenti & Studenti STEAM</span>
           </div>
 
           <div className="flex items-center gap-2 text-xs text-slate-400">
             <span className="inline-block w-2 h-2 rounded-full bg-emerald-400" />
-            <span>Portale Didattico STEAM</span>
+            <span>Portale Didattico Interattivo</span>
           </div>
         </div>
 
@@ -52,34 +52,51 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </span>
             </h2>
             <p className="text-base sm:text-lg text-slate-300 leading-relaxed mb-6">
-              Benvenuti nel laboratorio digitale! Insieme al <strong className="text-emerald-300">Prof. Sauro</strong> (il nostro dinosauro scienziato) e ai giovani studenti <strong className="text-amber-300">Leo</strong> e <strong className="text-rose-300">Mia</strong>, esplora simulatori interattivi, modelli 3D, problemi con il metodo a barre e sfide di logica per la scuola media.
+              Benvenuti nel laboratorio digitale della scuola media! Esplora simulatori e laboratori guidati da tre docenti appassionati: la <strong className="text-indigo-300">Prof.ssa Ipazia</strong> per la Matematica, il <strong className="text-emerald-300">Prof. Sauro</strong> per le Scienze e la <strong className="text-cyan-300">Prof.ssa Ada</strong> per l'Informatica, insieme agli studenti <strong className="text-amber-300">Leo</strong> e <strong className="text-rose-300">Mia</strong>.
             </p>
 
-            {/* Quick Trio Avatars Pill */}
+            {/* Quick 5 Avatars Pill */}
             <div className="flex flex-wrap items-center gap-3 p-2.5 rounded-2xl bg-slate-950/60 border border-slate-800/80 max-w-fit">
               <div className="flex -space-x-2">
                 <img
+                  src={profIpaziaImg}
+                  alt="Prof.ssa Ipazia (Matematica)"
+                  title="Prof.ssa Ipazia - Matematica"
+                  className="w-8 h-8 rounded-full object-cover ring-2 ring-indigo-500"
+                  referrerPolicy="no-referrer"
+                />
+                <img
                   src={profSauroImg}
-                  alt="Prof. Sauro"
+                  alt="Prof. Sauro (Scienze)"
+                  title="Prof. Sauro - Scienze"
                   className="w-8 h-8 rounded-full object-cover ring-2 ring-emerald-500"
                   referrerPolicy="no-referrer"
                 />
                 <img
+                  src={profAdaImg}
+                  alt="Prof.ssa Ada (Informatica)"
+                  title="Prof.ssa Ada - Informatica"
+                  className="w-8 h-8 rounded-full object-cover ring-2 ring-cyan-500"
+                  referrerPolicy="no-referrer"
+                />
+                <img
                   src={leoImg}
-                  alt="Leo la Volpe"
+                  alt="Leo (Studente)"
+                  title="Leo - Studente"
                   className="w-8 h-8 rounded-full object-cover ring-2 ring-amber-500"
                   referrerPolicy="no-referrer"
                 />
                 <img
                   src={miaImg}
-                  alt="Mia il Panda Rosso"
+                  alt="Mia (Studentessa)"
+                  title="Mia - Studentessa"
                   className="w-8 h-8 rounded-full object-cover ring-2 ring-rose-500"
                   referrerPolicy="no-referrer"
                 />
               </div>
               <div className="text-xs">
-                <span className="font-bold text-white block">Docente & Studenti STEAM</span>
-                <span className="text-slate-400 text-[11px]">Consigli, trucchi e laboratori guidati</span>
+                <span className="font-bold text-white block">Docenti & Studenti ScienzaLab</span>
+                <span className="text-slate-400 text-[11px]">Consigli didattici personalizzati per ogni materia</span>
               </div>
             </div>
           </div>
@@ -89,21 +106,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <div className="relative rounded-3xl overflow-hidden border-2 border-slate-700/80 shadow-2xl group bg-slate-900">
               <img
                 src={heroTeamImg}
-                alt="Prof. Sauro, Leo e Mia nel laboratorio ScienzaLab"
+                alt="La squadra didattica nel laboratorio ScienzaLab"
                 className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
                 referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent flex items-end p-4">
                 <div className="flex items-center gap-2 text-xs font-semibold text-white bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-700">
                   <GraduationCap className="w-4 h-4 text-cyan-400" />
-                  <span>Prof. Sauro & la classe in laboratorio</span>
+                  <span>Team didattico ScienzaLab</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* 3 Pillar Subject Quick Cards with Mascot Recommendations */}
+        {/* 3 Pillar Subject Quick Cards with Dedicated Teacher Badges */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6">
           {/* Card Matematica */}
           <button
@@ -127,16 +144,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-indigo-400" />
             </h3>
             <p className="text-xs sm:text-sm text-slate-400 mt-1 line-clamp-2">
-              Il Maestro dei Problemi a barre, proprietà delle operazioni, GeoGebra Classico, frazioni e algebra.
+              Il Maestro dei Problemi a barre, proprietà delle operazioni, GeoGebra Classico, frazioni e geometria.
             </p>
-            <div className="mt-3 pt-3 border-t border-slate-800 flex items-center gap-2 text-[11px] text-rose-300">
+            <div className="mt-3 pt-3 border-t border-slate-800 flex items-center gap-2 text-[11px] text-indigo-300">
               <img
-                src={miaImg}
-                alt="Mia"
-                className="w-4 h-4 rounded-full object-cover"
+                src={profIpaziaImg}
+                alt="Prof.ssa Ipazia"
+                className="w-5 h-5 rounded-full object-cover ring-1 ring-indigo-400"
                 referrerPolicy="no-referrer"
               />
-              <span className="font-medium">Consigliata da Mia</span>
+              <span className="font-semibold">Cattedra: Prof.ssa Ipazia</span>
             </div>
           </button>
 
@@ -162,16 +179,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-emerald-400" />
             </h3>
             <p className="text-xs sm:text-sm text-slate-400 mt-1 line-clamp-2">
-              Cinematica e moto, Food Quest alimentazione, PhET gioco delle leve, stati della materia e tavola periodica.
+              Simulazione dei moti, Food Quest alimentazione corretta, PhET leve e bilance, chimica e biologia.
             </p>
             <div className="mt-3 pt-3 border-t border-slate-800 flex items-center gap-2 text-[11px] text-emerald-300">
               <img
                 src={profSauroImg}
                 alt="Prof. Sauro"
-                className="w-4 h-4 rounded-full object-cover"
+                className="w-5 h-5 rounded-full object-cover ring-1 ring-emerald-400"
                 referrerPolicy="no-referrer"
               />
-              <span className="font-medium">Laboratorio del Prof. Sauro</span>
+              <span className="font-semibold">Cattedra: Prof. Sauro</span>
             </div>
           </button>
 
@@ -197,16 +214,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-cyan-400" />
             </h3>
             <p className="text-xs sm:text-sm text-slate-400 mt-1 line-clamp-2">
-              Tinkercad circuiti e 3D, sfide Bebras di pensiero computazionale, Scratch Studio e coding web.
+              Coding Adventure, Tinkercad circuiti e 3D, sfide Bebras, pensiero computazionale e Scratch.
             </p>
-            <div className="mt-3 pt-3 border-t border-slate-800 flex items-center gap-2 text-[11px] text-amber-300">
+            <div className="mt-3 pt-3 border-t border-slate-800 flex items-center gap-2 text-[11px] text-cyan-300">
               <img
-                src={leoImg}
-                alt="Leo"
-                className="w-4 h-4 rounded-full object-cover"
+                src={profAdaImg}
+                alt="Prof.ssa Ada"
+                className="w-5 h-5 rounded-full object-cover ring-1 ring-cyan-400"
                 referrerPolicy="no-referrer"
               />
-              <span className="font-medium">Sfide preferite di Leo</span>
+              <span className="font-semibold">Cattedra: Prof.ssa Ada</span>
             </div>
           </button>
         </div>
@@ -214,3 +231,4 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     </section>
   );
 };
+

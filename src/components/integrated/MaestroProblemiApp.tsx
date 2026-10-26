@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import {
   BrainCircuit,
   Home,
+  ExternalLink,
   CheckCircle2,
   HelpCircle,
   Lightbulb,
@@ -212,7 +213,7 @@ export const MaestroProblemiApp: React.FC<MaestroProblemiAppProps> = ({ onBackTo
           </div>
         </div>
 
-        {/* Action: Return to ScienzaLab Home */}
+        {/* Action: Return to ScienzaLab Home & Live Vercel Link */}
         <div className="flex items-center gap-2 flex-wrap">
           {onBackToHome && (
             <button
@@ -225,6 +226,17 @@ export const MaestroProblemiApp: React.FC<MaestroProblemiAppProps> = ({ onBackTo
               <span>Torna alla Home</span>
             </button>
           )}
+
+          <a
+            href="https://ilmaestrodeiproblemi.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 hover:text-white border border-emerald-500/40 hover:border-emerald-400 transition-all shadow-sm"
+            title="Apri l'app originale su Vercel (https://ilmaestrodeiproblemi.vercel.app/)"
+          >
+            <span>App Originale su Vercel</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
 
           {/* Navigation Tabs */}
           <div className="flex items-center gap-1 p-1 bg-slate-800/80 rounded-xl border border-slate-700/80">

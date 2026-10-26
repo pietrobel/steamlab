@@ -7,7 +7,7 @@ import { LinkCard } from './components/LinkCard';
 import { PreviewModal } from './components/PreviewModal';
 import { IntegratedAppModal } from './components/integrated/IntegratedAppModal';
 import { MascotSpotlight } from './components/MascotSpotlight';
-import { profSauroImg, leoImg, miaImg } from './data/mascots';
+import { profSauroImg, profIpaziaImg, profAdaImg, leoImg, miaImg } from './data/mascots';
 import { LinkItem, Subject, GradeLevel } from './types';
 import { INITIAL_LINKS } from './data/defaultLinks';
 import { Sparkles, Search, ExternalLink, Heart } from 'lucide-react';
@@ -276,20 +276,37 @@ export default function App() {
           <div className="flex items-center gap-3">
             <div className="flex -space-x-2">
               <img
+                src={profIpaziaImg}
+                alt="Prof.ssa Ipazia"
+                title="Prof.ssa Ipazia (Matematica)"
+                className="w-8 h-8 rounded-full object-cover ring-2 ring-indigo-500 bg-slate-800"
+                referrerPolicy="no-referrer"
+              />
+              <img
                 src={profSauroImg}
                 alt="Prof. Sauro"
+                title="Prof. Sauro (Scienze)"
                 className="w-8 h-8 rounded-full object-cover ring-2 ring-emerald-500 bg-slate-800"
+                referrerPolicy="no-referrer"
+              />
+              <img
+                src={profAdaImg}
+                alt="Prof.ssa Ada"
+                title="Prof.ssa Ada (Informatica)"
+                className="w-8 h-8 rounded-full object-cover ring-2 ring-cyan-500 bg-slate-800"
                 referrerPolicy="no-referrer"
               />
               <img
                 src={leoImg}
                 alt="Leo"
+                title="Leo (Studente)"
                 className="w-8 h-8 rounded-full object-cover ring-2 ring-amber-500 bg-slate-800"
                 referrerPolicy="no-referrer"
               />
               <img
                 src={miaImg}
                 alt="Mia"
+                title="Mia (Studentessa)"
                 className="w-8 h-8 rounded-full object-cover ring-2 ring-rose-500 bg-slate-800"
                 referrerPolicy="no-referrer"
               />
@@ -298,9 +315,9 @@ export default function App() {
               <div className="flex items-center gap-2">
                 <span className="font-bold text-white text-sm">ScienzaLab</span>
                 <span className="text-slate-600">|</span>
-                <span className="text-emerald-400 font-semibold">Prof. Sauro, Leo & Mia</span>
+                <span className="text-emerald-400 font-semibold">Team Docenti & Studenti</span>
               </div>
-              <p className="text-[11px] text-slate-400">Matematica • Scienze • Informatica per la Scuola Media</p>
+              <p className="text-[11px] text-slate-400">Prof.ssa Ipazia • Prof. Sauro • Prof.ssa Ada • Leo & Mia</p>
             </div>
           </div>
 

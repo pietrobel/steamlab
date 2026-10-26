@@ -1,14 +1,19 @@
 import profSauroImg from '../assets/images/prof_sauro_mascot_1792934227759.jpg';
+import profIpaziaImg from '../assets/images/prof_ipazia_math_1793040720170.jpg';
+import profAdaImg from '../assets/images/prof_ada_coding_1793040737533.jpg';
 import leoImg from '../assets/images/student_male_mascot_1792934228385.jpg';
 import miaImg from '../assets/images/student_female_mascot_1792934231526.jpg';
 import heroTeamImg from '../assets/images/scienzalab_hero_team_1792934230733.jpg';
 import { Subject } from '../types';
 
+export type MascotId = 'sauro' | 'ipazia' | 'ada' | 'leo' | 'mia';
+
 export interface Mascot {
-  id: 'sauro' | 'leo' | 'mia';
+  id: MascotId;
   name: string;
   role: string;
   species: string;
+  isTeacher: boolean;
   tagline: string;
   avatar: string;
   preferredSubject: Subject | 'tutti';
@@ -26,24 +31,25 @@ export const MASCOTS_DATA: Mascot[] = [
   {
     id: 'sauro',
     name: 'Prof. Sauro',
-    role: 'Docente & Scienziato Guida',
+    role: 'Docente di Scienze & Fisica',
     species: 'Dinosauro Paleoscienziato',
+    isTeacher: true,
     tagline: '«La scienza non è memorizzare formule, ma scoprire come funziona l\'Universo!»',
     avatar: profSauroImg,
-    preferredSubject: 'tutti',
-    favApps: ['sci-cinematica', 'mat-maestro-problemi', 'sci-phet-leve'],
+    preferredSubject: 'scienze',
+    favApps: ['sci-cinematica', 'sci-phet-leve', 'sci-food-quest'],
     quotes: [
-      {
-        text: 'Niente paura per i problemi complessi: scomponeteli in segmenti semplici, proprio come facciamo con i fossili!',
-        context: 'Consiglio di Matematica',
-      },
       {
         text: 'Nel laboratorio di fisica PhET "Balancing Act" il fulcro è fisso al centro: per equilibrare l\'asta spostiamo gli oggetti a distanze diverse dal fulcro!',
         context: 'Fisica & Leve PhET',
       },
       {
-        text: 'Anche i dinosauri usavano la logica: il coding è l\'evoluzione moderna del problem solving!',
-        context: 'Pensiero Computazionale',
+        text: 'Niente paura per i problemi complessi: scomponeteli in segmenti semplici, proprio come facciamo con i fossili!',
+        context: 'Consiglio Scientifico',
+      },
+      {
+        text: 'Anche i dinosauri usavano la logica: il metodo sperimentale è l\'evoluzione moderna della curiosità umana!',
+        context: 'Metodo Sperimentale',
       },
     ],
     badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
@@ -51,14 +57,71 @@ export const MASCOTS_DATA: Mascot[] = [
     bgGlow: 'from-emerald-500/10 to-teal-500/5',
   },
   {
+    id: 'ipazia',
+    name: 'Prof.ssa Ipazia',
+    role: 'Docente di Matematica & Geometria',
+    species: 'Lince Geometra & Logica',
+    isTeacher: true,
+    tagline: '«La matematica non è un labirinto di formule, ma la lente più limpida per cogliere l\'armonia delle forme!»',
+    avatar: profIpaziaImg,
+    preferredSubject: 'matematica',
+    favApps: ['mat-maestro-problemi', 'mat-proprieta-operazioni', 'mat-geogebra-classico'],
+    quotes: [
+      {
+        text: 'Davanti a un problema difficile non tentare calcoli a caso: disegna il modello a barre o una figura geometrica chiara!',
+        context: 'Metodo delle Barre',
+      },
+      {
+        text: 'La proprietà invariantiva e la proprietà distributiva sono due superpoteri che semplificano qualsiasi calcolo a mente.',
+        context: 'Aritmetica Intelligente',
+      },
+      {
+        text: 'Il Teorema di Pitagora non è solo un\'equazione: è la magia che lega le aree dei quadrati costruiti sui lati di ogni triangolo rettangolo.',
+        context: 'Geometria Visiva',
+      },
+    ],
+    badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+    accentBorder: 'border-indigo-500/40 hover:border-indigo-400',
+    bgGlow: 'from-indigo-500/10 to-purple-500/5',
+  },
+  {
+    id: 'ada',
+    name: 'Prof.ssa Ada',
+    role: 'Docente di Informatica & Coding',
+    species: 'Volpe Cybernetica',
+    isTeacher: true,
+    tagline: '«Non limitarti a usare le app: impara a crearle! Con il coding trasformi la logica in superpoteri digitali.»',
+    avatar: profAdaImg,
+    preferredSubject: 'informatica',
+    favApps: ['inf-coding-adventure', 'inf-scratch', 'inf-bebras', 'inf-tinkercad'],
+    quotes: [
+      {
+        text: 'Un bug non è un fallimento: è un prezioso indizio che ti mostra esattamente dove il computer ha interpretato diversamente la tua istruzione!',
+        context: 'L\'Arte del Debugging',
+      },
+      {
+        text: 'Prima di scrivere blocchi o codice, ragiona sul flusso logico: quali sono gli input, le condizioni e le ripetizioni necessarie?',
+        context: 'Pensiero Computazionale',
+      },
+      {
+        text: 'Nei circuiti di Tinkercad o nelle sfide di Coding Adventure, procedi a piccoli passi verificando il risultato ad ogni comando!',
+        context: 'Coding & Robotica',
+      },
+    ],
+    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    accentBorder: 'border-cyan-500/40 hover:border-cyan-400',
+    bgGlow: 'from-cyan-500/10 to-blue-500/5',
+  },
+  {
     id: 'leo',
     name: 'Leo',
     role: 'Studente Esploratore (2ª Media)',
     species: 'Volpe Curiosa',
+    isTeacher: false,
     tagline: '«Amo capire come si muovono le cose, i pianeti e l\'equilibrio delle forze!»',
     avatar: leoImg,
     preferredSubject: 'scienze',
-    favApps: ['sci-cinematica', 'sci-phet-leve', 'sci-phet-stati-materia'],
+    favApps: ['sci-cinematica', 'sci-phet-leve', 'sci-alimentazione'],
     quotes: [
       {
         text: 'Ho usato il simulatore di cinematica e finalmente ho capito la differenza tra velocità costante e accelerazione!',
@@ -82,6 +145,7 @@ export const MASCOTS_DATA: Mascot[] = [
     name: 'Mia',
     role: 'Studentessa Tech & Problem Solver',
     species: 'Panda Rosso Ingegnere',
+    isTeacher: false,
     tagline: '«Dai problemi con i segmenti al coding: se puoi immaginarlo, puoi risolverlo!»',
     avatar: miaImg,
     preferredSubject: 'informatica',
@@ -440,4 +504,258 @@ export const PROF_SAURO_50_TIPS: SauroTip[] = [
   },
 ];
 
-export { profSauroImg, leoImg, miaImg, heroTeamImg };
+export interface TeacherTip {
+  id: number;
+  title: string;
+  category: string;
+  text: string;
+}
+
+export const PROF_IPAZIA_TIPS: TeacherTip[] = [
+  {
+    id: 1,
+    title: 'Modello a Barre: Somma e Differenza',
+    category: 'Metodo & Problemi',
+    text: 'Quando conosci la somma e la differenza di due quantità, disegna due barre: togliendo la differenza dalla somma ottieni due segmenti identici. Dividi per 2 e trovi il minore!',
+  },
+  {
+    id: 2,
+    title: 'Proprietà Invariantiva',
+    category: 'Aritmetica',
+    text: 'Aggiungendo o sottraendo lo stesso numero a entrambi i termini di una sottrazione, la differenza resta identica (es. 73 - 28 = 75 - 30 = 45): è la scorciatoia per i calcoli mentali rapidi!',
+  },
+  {
+    id: 3,
+    title: 'Proprietà Distributiva nel Calcolo Veloce',
+    category: 'Aritmetica',
+    text: 'Per calcolare 17 × 8 a mente, scompone 17 in (10 + 7): calcola (10 × 8) + (7 × 8) = 80 + 56 = 136. La moltiplicazione si distribuisce sull\'addizione!',
+  },
+  {
+    id: 4,
+    title: 'Frazioni Complementari',
+    category: 'Frazioni',
+    text: 'Due frazioni sono complementari se la loro somma forma l\'intero (1). Se hai letto i 3/7 di un libro, ti restano da leggere esattamente i 4/7 delle pagine!',
+  },
+  {
+    id: 5,
+    title: 'Le Terne Pitagoriche Famose',
+    category: 'Geometria',
+    text: 'Ricorda a memoria le terne pitagoriche fondamentali: (3, 4, 5), (5, 12, 13) e (8, 15, 17) con tutti i loro multipli. Risolvi i problemi sui triangoli rettangoli in 3 secondi!',
+  },
+  {
+    id: 6,
+    title: 'Perché l\'Area del Cerchio è π × r²',
+    category: 'Geometria',
+    text: 'Immagina di tagliare una pizza in tantissimi spicchi sottili e incastrarli alternati: formano un parallelogramma con altezza pari al raggio (r) e base pari a metà circonferenza (π × r)!',
+  },
+  {
+    id: 7,
+    title: 'Regola del Trasporto nelle Equazioni',
+    category: 'Algebra',
+    text: 'In un\'equazione puoi spostare un termine da un membro all\'altro purché cambi il suo segno: è una diretta conseguenza del primo principio di equivalenza (togliere o aggiungere la stessa quantità)!',
+  },
+  {
+    id: 8,
+    title: 'Criterio di Divisibilità per 9',
+    category: 'Aritmetica',
+    text: 'Come per il 3, un numero è divisibile per 9 se la somma delle sue cifre è un multiplo di 9. Esempio per 765: 7 + 6 + 5 = 18, e 18 è 9 × 2, quindi 765 è divisibile per 9!',
+  },
+  {
+    id: 9,
+    title: 'La Regola del Tre Semplice',
+    category: 'Proporzioni',
+    text: 'Nelle proporzioni dirette (più compri, più spendi), imposta la proporzione a frecce concordi. Nelle proporzioni inverse (più operai lavorano, meno tempo impiegano), il prodotto resta costante!',
+  },
+  {
+    id: 10,
+    title: 'Media, Mediana e Moda',
+    category: 'Statistica',
+    text: 'La media è la somma divisa per il numero dei dati; la moda è il valore che compare più spesso; la mediana è il valore che si trova esattamente al centro dopo aver ordinato i dati in ordine crescente!',
+  },
+  {
+    id: 11,
+    title: 'Apotema e Poligoni Regolari',
+    category: 'Geometria',
+    text: 'L\'apotema è il raggio della circonferenza inscritta nel poligono: l\'area di qualsiasi poligono regolare si ottiene facendo (Perimetro × Apotema) : 2!',
+  },
+  {
+    id: 12,
+    title: 'Frazioni Proprie, Improprie e Apparenti',
+    category: 'Frazioni',
+    text: 'Una frazione è propria se il numeratore è minore del denominatore (< 1), impropria se è maggiore (> 1), apparente se il numeratore è un multiplo esatto del denominatore (vale un numero intero)!',
+  },
+  {
+    id: 13,
+    title: 'I Segni nei Numeri Relativi',
+    category: 'Algebra',
+    text: 'Nella moltiplicazione e divisione tra numeri interi relativi: segni concordi danno sempre Più (+), segni discordi danno sempre Meno (-). "Il nemico del mio nemico è mio amico"!',
+  },
+  {
+    id: 14,
+    title: 'Numeri Primi Gemelli',
+    category: 'Aritmetica',
+    text: 'Due numeri primi si dicono gemelli se differiscono solo di 2 unità, come (3, 5), (11, 13), (17, 19) o (41, 43): affascinano i matematici da oltre duemila anni!',
+  },
+  {
+    id: 15,
+    title: 'Diagonali di un Poligono',
+    category: 'Geometria',
+    text: 'Quante diagonali ha un poligono di n lati? La formula esatta è [n × (n - 3)] : 2. Un pentagono ne ha 5, un esagono ne ha 9, un ottagono ne ha ben 20!',
+  },
+  {
+    id: 16,
+    title: 'Percentuale di Sconto Reale',
+    category: 'Matematica Quotidiana',
+    text: 'Se un capo costa 60€ con il 30% di sconto, non serve calcolare lo sconto e poi sottrarlo: calcola direttamente il 70% di 60€ (60 × 0,7 = 42€) in un solo passaggio!',
+  },
+  {
+    id: 17,
+    title: 'Il Secondo Teorema di Euclide',
+    category: 'Geometria',
+    text: 'In un triangolo rettangolo, il quadrato costruito sull\'altezza relativa all\'ipotenusa è equivalente al rettangolo che ha per dimensioni le proiezioni dei due cateti sull\'ipotenusa!',
+  },
+  {
+    id: 18,
+    title: 'La Notazione Scientifica',
+    category: 'Aritmetica',
+    text: 'Per gestire numeri giganteschi come le distanze astronomiche usiamo la forma a × 10ⁿ, con "a" compreso tra 1 e 10. La distanza Terra-Sole di 150 milioni di km si scrive 1,5 × 10⁸ km!',
+  },
+  {
+    id: 19,
+    title: 'Calcolo Letterale: Monomi Simili',
+    category: 'Algebra',
+    text: 'Puoi sommare o sottrarre tra loro solo monomi che hanno la stessa identica parte letterale: 3a²b + 5a²b = 8a²b, ma 3a²b + 2ab² non si possono sommare!',
+  },
+  {
+    id: 20,
+    title: 'I Cinque Poliedri Platonici',
+    category: 'Geometria Solida',
+    text: 'Nello spazio esistono solo 5 solidi regolari perfetti: Tetraedro (4 facce), Cubo (6 facce), Ottaedro (8 facce), Dodecaedro (12 facce) e Icosaedro (20 facce)!',
+  },
+];
+
+export const PROF_ADA_TIPS: TeacherTip[] = [
+  {
+    id: 1,
+    title: 'Cos\'è un Algoritmo',
+    category: 'Algoritmi',
+    text: 'Un algoritmo è una sequenza finita, ordinata e non ambigua di istruzioni che, eseguite passo dopo passo, portano alla risoluzione di un problema o al compimento di un compito.',
+  },
+  {
+    id: 2,
+    title: 'Il Potere delle Variabili',
+    category: 'Coding Base',
+    text: 'Pensa a una variabile come a una scatola etichettata con un nome (es. "punteggio", "vite", "risposta"). Puoi leggere cosa contiene, cambiare il valore o aumentarlo durante il gioco!',
+  },
+  {
+    id: 3,
+    title: 'Cicli: Ripetere Senza Fatica',
+    category: 'Strutture di Controllo',
+    text: 'Invece di scrivere 100 volte "fai un passo", usa un blocco "Ripeti 100 volte". Il computer è velocissimo ed instancabile nelle operazioni ripetitive: questo è il superpotere del loop!',
+  },
+  {
+    id: 4,
+    title: 'Decisioni Logiche (If - Else)',
+    category: 'Logica Booleana',
+    text: 'Con i blocchi condizionali "Se... allora... altrimenti" il programma prende decisioni: "Se vite = 0 allora Game Over, altrimenti continua il livello"!',
+  },
+  {
+    id: 5,
+    title: 'L\'Origine del termine "Bug"',
+    category: 'Storia dell\'Informatica',
+    text: 'Nel 1947 la pioniera Grace Hopper trovò una vera falena (bug) incastrata tra i relè del computer Mark II a Harvard, bloccando i circuiti. Da allora cerchiamo ed eliminiamo i bug!',
+  },
+  {
+    id: 6,
+    title: 'Pixel e Risoluzione',
+    category: 'Grafica Digitale',
+    text: 'Ogni immagine sullo schermo è composta da una griglia di minuscoli quadratini luminosi detti pixel: una risoluzione Full HD 1920×1080 significa oltre 2 milioni di pixel controllati istante per istante!',
+  },
+  {
+    id: 7,
+    title: 'Il Linguaggio Segreto dei Computer: Il Binario',
+    category: 'Architettura',
+    text: 'I microchip riconoscono solo due stati elettrici: passaggio di corrente (1) o assenza di corrente (0). Con combinazioni di soli 0 e 1 (bit) possiamo codificare numeri, lettere, foto e musica!',
+  },
+  {
+    id: 8,
+    title: 'Messaggi Broadcast in Scratch',
+    category: 'Coding con Blocchi',
+    text: 'Usa "invia a tutti messaggio" per coordinare diversi personaggi: quando il pulsante Start viene premuto, trasmette il messaggio e tutti i personaggi si attivano insieme!',
+  },
+  {
+    id: 9,
+    title: 'Coordinate Cartesiane nei Videogiochi',
+    category: 'Game Design',
+    text: 'Sul palco di Scratch il centro ha coordinate (x: 0, y: 0). Se il personaggio si sposta a destra aumenta la X, se va a sinistra diminuisce; se salta in alto aumenta la Y, se scende diminuisce!',
+  },
+  {
+    id: 10,
+    title: 'Gravità Simulata',
+    category: 'Fisica nel Coding',
+    text: 'Per far saltare un personaggio in modo realistico, crea una variabile "velocità Y": quando salta impostala a +15, poi in un ciclo continuo riducila di 1 ogni frazione di secondo (accelerazione di gravità)!',
+  },
+  {
+    id: 11,
+    title: 'Password Forti e Cibersicurezza',
+    category: 'Sicurezza Digitale',
+    text: 'Una password sicura deve contenere almeno 12 caratteri con lettere maiuscole, minuscole, numeri e simboli speciali: evita date di nascita o nomi propri che i bot scoprono in frazioni di secondo!',
+  },
+  {
+    id: 12,
+    title: 'Sensori e Attuatori nella Robotica',
+    category: 'Robotica & IoT',
+    text: 'I sensori sono i "sensi" del robot (sensore di distanza a ultrasuoni, sensore di luce, termometro); gli attuatori sono i suoi "muscoli" (motori, servomotori, buzzer, luci LED)!',
+  },
+  {
+    id: 13,
+    title: 'Funzioni e Principio DRY',
+    category: 'Ingegneria del Software',
+    text: 'DRY sta per "Don\'t Repeat Yourself": se devi fare la stessa operazione in più punti del programma, racchiudila in un blocco personalizzato (funzione) e richiamalo al momento opportuno!',
+  },
+  {
+    id: 14,
+    title: 'Operatori Logici AND, OR, NOT',
+    category: 'Logica Booleana',
+    text: 'AND richiede che entrambe le condizioni siano vere per attivarsi; OR si attiva se almeno una è vera; NOT inverte il risultato (vero diventa falso e viceversa)!',
+  },
+  {
+    id: 15,
+    title: 'Il Pensiero Computazionale Quotidiano',
+    category: 'Metodo',
+    text: 'Il pensiero computazionale non serve solo per programmare: ti allena a trovare pattern comuni, ignorare i dettagli irrilevanti (astrazione) e pianificare strategie efficaci per qualsiasi studio!',
+  },
+  {
+    id: 16,
+    title: 'Come Funziona il Web: Client e Server',
+    category: 'Reti & Internet',
+    text: 'Quando scrivi un indirizzo nel browser, il tuo computer (Client) invia una richiesta attraverso la rete a un computer remoto (Server) che custodisce la pagina web e te la restituisce in millisecondi!',
+  },
+  {
+    id: 17,
+    title: 'Circuiti Virtuali su Tinkercad',
+    category: 'Makers & Elettronica',
+    text: 'Ricorda sempre di inserire una resistenza (es. da 220 Ohm o 330 Ohm) in serie con il LED prima di collegarlo alla batteria: senza resistenza troppa corrente attraverserebbe il diodo rischiando di bruciarlo!',
+  },
+  {
+    id: 18,
+    title: 'Liste e Array: Lo Scaffale dei Dati',
+    category: 'Strutture Dati',
+    text: 'Una lista è una collezione ordinata di elementi. Puoi memorizzare la classifica dei punteggi, l\'inventario degli oggetti raccolti in un gioco o l\'elenco delle parole di un quiz!',
+  },
+  {
+    id: 19,
+    title: 'Intelligenza Artificiale: Dati ed Esempi',
+    category: 'AI & Machine Learning',
+    text: 'I modelli di machine learning imparano riconoscendo regolarità statistiche in milioni di esempi: la qualità e l\'accuratezza dell\'AI dipendono direttamente dalla qualità dei dati su cui è stata allenata!',
+  },
+  {
+    id: 20,
+    title: 'La Visione di Ada Lovelace',
+    category: 'Ispirazione STEM',
+    text: 'Nel 1843 Ada Lovelace intuì che la Macchina Analitica di Babbage non avrebbe manipolato solo numeri, ma qualsiasi entità trasformabile in simboli (persino la musica e l\'arte): è la madre di tutti i computer!',
+  },
+];
+
+export { profSauroImg, profIpaziaImg, profAdaImg, leoImg, miaImg, heroTeamImg };
+

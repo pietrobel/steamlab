@@ -53,6 +53,12 @@ export const LinkCard: React.FC<LinkCardProps> = ({
                   App Integrata
                 </span>
               )}
+              {item.isVercel && (
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-cyan-300 border border-slate-700">
+                  <span className="text-white text-[9px]">▲</span>
+                  Vercel
+                </span>
+              )}
               <span className="text-[11px] font-medium text-slate-400">
                 {item.gradeLevel}
               </span>
@@ -134,6 +140,12 @@ export const LinkCard: React.FC<LinkCardProps> = ({
                 App Integrata
               </span>
             )}
+            {item.isVercel && (
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-cyan-300 border border-slate-700">
+                <span className="text-white text-[9px]">▲</span>
+                Vercel
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-1">
@@ -205,10 +217,11 @@ export const LinkCard: React.FC<LinkCardProps> = ({
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-xl text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-750 border border-slate-700 transition-all shrink-0"
-                title="Apri link esterno"
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-750 border border-slate-700 transition-all shrink-0"
+                title={`Apri ${item.title} (${item.url})`}
               >
-                <ExternalLink className="w-3.5 h-3.5" />
+                <ExternalLink className="w-3.5 h-3.5 text-cyan-400" />
+                <span className="text-[11px] font-medium hidden sm:inline">Web App</span>
               </a>
             )}
           </>
