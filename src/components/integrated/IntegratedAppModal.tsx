@@ -2,7 +2,6 @@ import React from 'react';
 import { X, Sparkles, ExternalLink, Home, ArrowLeft } from 'lucide-react';
 import { ProprietaOperazioniApp } from './ProprietaOperazioniApp';
 import { ExternalAppConnector } from './ExternalAppConnector';
-import { MaestroProblemiApp } from './MaestroProblemiApp';
 import { LinkItem } from '../../types';
 
 interface IntegratedAppModalProps {
@@ -128,7 +127,13 @@ export const IntegratedAppModal: React.FC<IntegratedAppModalProps> = ({
               />
             )}
             {item.internalAppId === 'maestro-problemi' && (
-              <MaestroProblemiApp onBackToHome={onClose} />
+              <ExternalAppConnector
+                appId="maestro-problemi"
+                title={item.title}
+                description={item.description}
+                defaultUrl={item.url || 'https://ilmaestrodeiproblemi.vercel.app/'}
+                onBackToHome={onClose}
+              />
             )}
           </div>
         </div>

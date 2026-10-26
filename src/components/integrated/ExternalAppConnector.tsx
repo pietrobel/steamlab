@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { ExternalLink, Link2, ArrowLeft, Home, RefreshCw, CheckCircle2, AlertCircle, Laptop } from 'lucide-react';
-import { profSauroImg, leoImg } from '../../data/mascots';
+import { profSauroImg, profIpaziaImg, profAdaImg, leoImg, miaImg } from '../../data/mascots';
 
 interface ExternalAppConnectorProps {
-  appId: 'cinematica' | 'food-quest' | 'proprieta-operazioni' | string;
+  appId: 'cinematica' | 'food-quest' | 'proprieta-operazioni' | 'maestro-problemi' | 'coding-adventure' | string;
   title: string;
   description: string;
   defaultUrl?: string;
@@ -18,11 +18,13 @@ export const ExternalAppConnector: React.FC<ExternalAppConnectorProps> = ({
   onBackToHome,
 }) => {
   const storageKey = `scienzalab_custom_app_url_${appId}`;
+  const [iframeKey, setIframeKey] = useState(0);
   const [appUrl, setAppUrl] = useState<string>(() => {
     const saved = localStorage.getItem(storageKey);
     // Sanitize any previous nonexistent / placeholder URLs
     if (
       !saved ||
+      !saved.startsWith('http') ||
       saved.includes('scienzalab.vercel.app') ||
       saved.includes('cinematica.vercel.app') ||
       saved.includes('food-quest.vercel.app')
@@ -90,23 +92,30 @@ export const ExternalAppConnector: React.FC<ExternalAppConnectorProps> = ({
     }
   };
 
+  const isMath = appId === 'maestro-problemi' || appId === 'proprieta-operazioni';
+  const isCoding = appId === 'coding-adventure';
+  const teacherImg = isMath ? profIpaziaImg : isCoding ? profAdaImg : profSauroImg;
+  const teacherName = isMath ? 'Prof.ssa Ipazia' : isCoding ? 'Prof.ssa Ada' : 'Prof. Sauro';
+  const studentImg = isMath ? miaImg : leoImg;
+  const studentName = isMath ? 'Mia' : 'Leo';
+
   return (
     <div className="space-y-6 text-slate-100">
       {/* Top Bar with Home Button */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0">
-            <Laptop className="w-6 h-6 text-emerald-400" />
+          <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center shrink-0">
+            <Laptop className="w-6 h-6 text-cyan-400" />
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                Applicazione Originale del Docente
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                Web App Originale Integrata
               </span>
               <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-[11px] text-slate-300">
-                <img src={profSauroImg} alt="Prof. Sauro" className="w-4 h-4 rounded-full object-cover" />
-                <img src={leoImg} alt="Leo" className="w-4 h-4 rounded-full object-cover" />
-                <span>ScienzaLab Hub</span>
+                <img src={teacherImg} alt={teacherName} className="w-4 h-4 rounded-full object-cover ring-1 ring-cyan-400" />
+                <img src={studentImg} alt={studentName} className="w-4 h-4 rounded-full object-cover ring-1 ring-amber-400" />
+                <span>{teacherName} & {studentName}</span>
               </div>
             </div>
             <h2 className="text-xl sm:text-2xl font-black text-white mt-1">
@@ -131,10 +140,10 @@ export const ExternalAppConnector: React.FC<ExternalAppConnectorProps> = ({
       {/* Main Content Area */}
       {appUrl && !isEditing ? (
         <div className="space-y-4">
-          <div className="flex items-center justify-between p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs">
+          <div className="flex items-center justify-between p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs gap-3">
             <div className="flex items-center gap-2 min-w-0">
               <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
-              <span className="text-slate-400 shrink-0">App collegata:</span>
+              <span className="text-slate-400 shrink-0 hidden sm:inline">App collegata:</span>
               <a
                 href={appUrl}
                 target="_blank"
@@ -146,13 +155,21 @@ export const ExternalAppConnector: React.FC<ExternalAppConnectorProps> = ({
             </div>
 
             <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={() => setIframeKey((k) => k + 1)}
+                className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white border border-slate-700 transition-all flex items-center gap-1 text-xs"
+                title="Ricarica applicazione"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span className="hidden md:inline">Ricarica</span>
+              </button>
               <a
                 href={appUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition-all shadow-sm"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-semibold transition-all shadow-sm"
               >
-                <span>Apri in Scheda Dedicata</span>
+                <span>Apri a Schermo Intero</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
               <button
@@ -165,12 +182,13 @@ export const ExternalAppConnector: React.FC<ExternalAppConnectorProps> = ({
           </div>
 
           {/* Embedded iFrame */}
-          <div className="relative w-full h-[70vh] bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl flex flex-col">
+          <div className="relative w-full h-[74vh] bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl flex flex-col">
             <iframe
+              key={iframeKey}
               src={appUrl}
               title={title}
-              className="w-full h-full border-0"
-              sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+              className="w-full h-full border-0 bg-white"
+              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-downloads"
               onError={() => setIframeError(true)}
             />
             {iframeError && (

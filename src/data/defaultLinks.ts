@@ -48,7 +48,7 @@ export const INITIAL_LINKS: LinkItem[] = [
     id: 'mat-maestro-problemi',
     title: 'Il Maestro dei Problemi',
     url: 'https://ilmaestrodeiproblemi.vercel.app/',
-    description: 'Applicazione didattica originale per la risoluzione guidata di problemi matematici (modello a barre e segmenti, metodo a 4 fasi). Include oltre 1.000 problemi suddivisi su 5 classi (dalla 4ª primaria alla 3ª media) secondo le Indicazioni Nazionali e collegamento diretto alla Web App ufficiale.',
+    description: 'Applicazione didattica originale integrata per la risoluzione guidata di problemi matematici (modello a barre, segmenti e metodo a 4 fasi). Include il visualizzatore incorporato della Web App ufficiale con navigazione rapida per tornare a ScienzaLab.',
     subject: 'matematica',
     tags: ['Problemi', 'Metodo Segmenti', 'Modello a Barre', 'App Originale', 'App Integrata', '5 Classi', 'Indicazioni Nazionali'],
     gradeLevel: 'Tutte',
