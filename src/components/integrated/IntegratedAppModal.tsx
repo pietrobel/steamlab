@@ -1,8 +1,7 @@
 import React from 'react';
 import { X, Sparkles, ExternalLink, Home, ArrowLeft } from 'lucide-react';
 import { ProprietaOperazioniApp } from './ProprietaOperazioniApp';
-import { CinematicaApp } from './CinematicaApp';
-import { FoodQuestApp } from './FoodQuestApp';
+import { ExternalAppConnector } from './ExternalAppConnector';
 import { MaestroProblemiApp } from './MaestroProblemiApp';
 import { LinkItem } from '../../types';
 
@@ -80,13 +79,53 @@ export const IntegratedAppModal: React.FC<IntegratedAppModalProps> = ({
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-950">
           <div className="max-w-5xl mx-auto">
             {item.internalAppId === 'proprieta-operazioni' && (
-              <ProprietaOperazioniApp onBackToHome={onClose} />
+              <div className="space-y-10">
+                <ExternalAppConnector
+                  appId="proprieta-operazioni"
+                  title={item.title}
+                  description={item.description}
+                  defaultUrl={item.url || 'https://proprietaoperazioni.vercel.app/'}
+                  onBackToHome={onClose}
+                />
+                <div className="pt-8 border-t border-slate-800">
+                  <div className="mb-4">
+                    <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                      Attività Complementare Integrata
+                    </span>
+                    <h3 className="text-lg font-bold text-white mt-1">
+                      Calcolatore Visuale & Quiz Didattico sulle Proprietà
+                    </h3>
+                  </div>
+                  <ProprietaOperazioniApp onBackToHome={onClose} />
+                </div>
+              </div>
             )}
             {item.internalAppId === 'cinematica' && (
-              <CinematicaApp onBackToHome={onClose} />
+              <ExternalAppConnector
+                appId="cinematica"
+                title={item.title}
+                description={item.description}
+                defaultUrl={item.url || 'https://simulazionedeimoti.vercel.app/'}
+                onBackToHome={onClose}
+              />
             )}
             {item.internalAppId === 'food-quest' && (
-              <FoodQuestApp onBackToHome={onClose} />
+              <ExternalAppConnector
+                appId="food-quest"
+                title={item.title}
+                description={item.description}
+                defaultUrl={item.url || 'https://food-quest-alimentazionecorretta.vercel.app/'}
+                onBackToHome={onClose}
+              />
+            )}
+            {item.internalAppId === 'coding-adventure' && (
+              <ExternalAppConnector
+                appId="coding-adventure"
+                title={item.title}
+                description={item.description}
+                defaultUrl={item.url || 'https://codingadventure.vercel.app/'}
+                onBackToHome={onClose}
+              />
             )}
             {item.internalAppId === 'maestro-problemi' && (
               <MaestroProblemiApp onBackToHome={onClose} />

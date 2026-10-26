@@ -15,7 +15,12 @@ export interface LinkItem {
   isFavorite?: boolean;
   addedAt: string;
   featured?: boolean;
-  internalAppId?: 'proprieta-operazioni' | 'cinematica' | 'food-quest' | 'maestro-problemi';
+  internalAppId?:
+    | 'proprieta-operazioni'
+    | 'cinematica'
+    | 'food-quest'
+    | 'maestro-problemi'
+    | 'coding-adventure';
 }
 
 export interface SubjectMeta {

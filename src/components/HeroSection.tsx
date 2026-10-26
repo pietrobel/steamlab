@@ -37,8 +37,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           </div>
 
           <div className="flex items-center gap-2 text-xs text-slate-400">
-            <span className="inline-block w-2 h-2 rounded-full bg-cyan-400" />
-            <span>scienzalab.vercel.app</span>
+            <span className="inline-block w-2 h-2 rounded-full bg-emerald-400" />
+            <span>Portale Didattico STEAM</span>
           </div>
         </div>
 

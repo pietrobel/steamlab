@@ -26,7 +26,6 @@ export const LinkCard: React.FC<LinkCardProps> = ({
   onToggleFavorite,
 }) => {
   const meta = SUBJECT_METAS[item.subject] || SUBJECT_METAS.matematica;
-  const isVercelHost = item.isVercel || item.url.includes('vercel.app');
   const isInternal = Boolean(item.internalAppId);
 
   if (viewMode === 'list') {
@@ -52,11 +51,6 @@ export const LinkCard: React.FC<LinkCardProps> = ({
                 <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
                   <Sparkles className="w-3 h-3 text-emerald-400" />
                   App Integrata
-                </span>
-              )}
-              {isVercelHost && !isInternal && (
-                <span className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
-                  Vercel App
                 </span>
               )}
               <span className="text-[11px] font-medium text-slate-400">
@@ -106,15 +100,17 @@ export const LinkCard: React.FC<LinkCardProps> = ({
             </button>
           )}
 
-          <a
-            href={item.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white border border-slate-700 transition-all"
-            title="Apri link esterno"
-          >
-            <ExternalLink className="w-3.5 h-3.5" />
-          </a>
+          {item.url && (
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white border border-slate-700 transition-all"
+              title="Apri link esterno"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          )}
         </div>
       </div>
     );
@@ -133,14 +129,9 @@ export const LinkCard: React.FC<LinkCardProps> = ({
               {meta.name}
             </span>
             {isInternal && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse">
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
                 <Sparkles className="w-3 h-3 text-emerald-400" />
                 App Integrata
-              </span>
-            )}
-            {isVercelHost && !isInternal && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
-                Vercel
               </span>
             )}
           </div>
@@ -209,15 +200,17 @@ export const LinkCard: React.FC<LinkCardProps> = ({
               <Play className="w-3.5 h-3.5 fill-current" />
               <span>Avvia App Integrata</span>
             </button>
-            <a
-              href={item.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 rounded-xl text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-750 border border-slate-700 transition-all shrink-0"
-              title="Apri link esterno"
-            >
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
+            {item.url && (
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-xl text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-750 border border-slate-700 transition-all shrink-0"
+                title="Apri link esterno"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            )}
           </>
         ) : (
           <>

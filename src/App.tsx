@@ -304,16 +304,8 @@ export default function App() {
             </div>
           </div>
 
-          <div className="flex items-center gap-4 flex-wrap justify-center">
-            <a
-              href="https://scienzalab.vercel.app"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors flex items-center gap-1"
-            >
-              <span>scienzalab.vercel.app</span>
-              <ExternalLink className="w-3 h-3" />
-            </a>
+          <div className="flex items-center gap-4 flex-wrap justify-center text-xs text-slate-400">
+            <span className="text-emerald-400 font-bold">ScienzaLab</span>
             <span className="text-slate-600">•</span>
             <span>Didattica Digitale & Risorse Interattive</span>
           </div>

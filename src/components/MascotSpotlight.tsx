@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { MASCOTS_DATA, Mascot } from '../data/mascots';
+import { MASCOTS_DATA, Mascot, PROF_SAURO_50_TIPS } from '../data/mascots';
 import { Subject } from '../types';
-import { Sparkles, MessageSquare, Compass, ArrowRight, Lightbulb, GraduationCap } from 'lucide-react';
+import { Sparkles, MessageSquare, Compass, ArrowRight, Lightbulb, GraduationCap, Dices } from 'lucide-react';
 
 interface MascotSpotlightProps {
   onSelectSubject?: (subject: Subject | 'tutti') => void;
@@ -13,18 +13,44 @@ export const MascotSpotlight: React.FC<MascotSpotlightProps> = ({
   activeSubject,
 }) => {
   const [selectedMascotId, setSelectedMascotId] = useState<'sauro' | 'leo' | 'mia'>('sauro');
-  const [quoteIndex, setQuoteIndex] = useState(0);
+  // For Sauro, initialize with a random index among 54 tips
+  const [sauroTipIndex, setSauroTipIndex] = useState(() => Math.floor(Math.random() * PROF_SAURO_50_TIPS.length));
+  const [studentQuoteIndex, setStudentQuoteIndex] = useState(0);
 
   const currentMascot = MASCOTS_DATA.find((m) => m.id === selectedMascotId) || MASCOTS_DATA[0];
 
   const handleMascotSelect = (mascot: Mascot) => {
     setSelectedMascotId(mascot.id);
-    setQuoteIndex(0);
+    if (mascot.id === 'sauro') {
+      setSauroTipIndex((prev) => (prev + 1) % PROF_SAURO_50_TIPS.length);
+    } else {
+      setStudentQuoteIndex(0);
+    }
   };
 
-  const handleNextQuote = () => {
-    setQuoteIndex((prev) => (prev + 1) % currentMascot.quotes.length);
+  const handleNextTip = () => {
+    if (selectedMascotId === 'sauro') {
+      setSauroTipIndex((prev) => (prev + 1) % PROF_SAURO_50_TIPS.length);
+    } else {
+      setStudentQuoteIndex((prev) => (prev + 1) % currentMascot.quotes.length);
+    }
   };
+
+  const handleRandomSauroTip = () => {
+    const nextRand = Math.floor(Math.random() * PROF_SAURO_50_TIPS.length);
+    setSauroTipIndex(nextRand);
+  };
+
+  // Determine current display quote and category
+  const activeSauroTip = PROF_SAURO_50_TIPS[sauroTipIndex];
+  const activeText =
+    selectedMascotId === 'sauro'
+      ? activeSauroTip.text
+      : currentMascot.quotes[studentQuoteIndex % currentMascot.quotes.length].text;
+  const activeContext =
+    selectedMascotId === 'sauro'
+      ? `${activeSauroTip.category} • ${activeSauroTip.title}`
+      : currentMascot.quotes[studentQuoteIndex % currentMascot.quotes.length].context;
 
   return (
     <section className="mb-10 p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900/90 to-slate-950 border border-slate-800 shadow-xl relative overflow-hidden">
@@ -111,30 +137,51 @@ export const MascotSpotlight: React.FC<MascotSpotlightProps> = ({
         <div className="md:col-span-8 flex flex-col justify-between space-y-4">
           {/* Speech Bubble */}
           <div className="relative p-5 sm:p-6 rounded-2xl bg-slate-950/90 border border-slate-800/90 shadow-inner">
-            <div className="flex items-center justify-between gap-2 mb-2">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
               <div className="flex items-center gap-2 text-xs font-bold text-cyan-300">
-                <Lightbulb className="w-4 h-4 text-amber-400" />
-                <span>{currentMascot.quotes[quoteIndex].context}</span>
+                <Lightbulb className="w-4 h-4 text-amber-400 shrink-0" />
+                <span className="truncate">{activeContext}</span>
               </div>
-              <button
-                onClick={handleNextQuote}
-                className="text-[11px] font-semibold text-slate-400 hover:text-white px-2 py-0.5 rounded-lg bg-slate-850 hover:bg-slate-800 border border-slate-750 transition-colors inline-flex items-center gap-1"
-                title="Leggi un altro consiglio"
-              >
-                <span>Altro suggerimento</span>
-                <ArrowRight className="w-3 h-3" />
-              </button>
+              <div className="flex items-center gap-1.5">
+                {selectedMascotId === 'sauro' && (
+                  <button
+                    onClick={handleRandomSauroTip}
+                    className="text-[11px] font-semibold text-emerald-400 hover:text-emerald-300 px-2 py-0.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 transition-colors inline-flex items-center gap-1"
+                    title="Estrai un consiglio casuale tra i 54 del Professore"
+                  >
+                    <Dices className="w-3.5 h-3.5" />
+                    <span>Casuale</span>
+                  </button>
+                )}
+                <button
+                  onClick={handleNextTip}
+                  className="text-[11px] font-semibold text-slate-400 hover:text-white px-2 py-0.5 rounded-lg bg-slate-850 hover:bg-slate-800 border border-slate-750 transition-colors inline-flex items-center gap-1"
+                  title="Leggi il suggerimento successivo"
+                >
+                  <span>Successivo</span>
+                  <ArrowRight className="w-3 h-3" />
+                </button>
+              </div>
             </div>
 
             <blockquote className="text-sm sm:text-base text-slate-200 leading-relaxed font-medium">
-              "{currentMascot.quotes[quoteIndex].text}"
+              "{activeText}"
             </blockquote>
 
-            <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-slate-800/60 text-[11px] text-slate-400">
-              <MessageSquare className="w-3.5 h-3.5 text-slate-500" />
-              <span>
-                Suggerimento {quoteIndex + 1} di {currentMascot.quotes.length} per studenti e appassionati di STEAM
-              </span>
+            <div className="flex items-center justify-between gap-2 mt-3 pt-3 border-t border-slate-800/60 text-[11px] text-slate-400">
+              <div className="flex items-center gap-1.5">
+                <MessageSquare className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                <span>
+                  {selectedMascotId === 'sauro'
+                    ? `Consiglio #${activeSauroTip.id} di ${PROF_SAURO_50_TIPS.length} del Prof. Sauro`
+                    : `Suggerimento ${(studentQuoteIndex % currentMascot.quotes.length) + 1} di ${currentMascot.quotes.length} di ${currentMascot.name}`}
+                </span>
+              </div>
+              {selectedMascotId === 'sauro' && (
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  {activeSauroTip.category}
+                </span>
+              )}
             </div>
           </div>
 
