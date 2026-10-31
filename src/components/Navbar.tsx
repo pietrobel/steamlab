@@ -42,7 +42,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </span>
               </div>
               <p className="text-xs text-slate-400 truncate hidden md:block">
-                Matematica • Scienze • Informatica • Simulazioni & Web App
+                Matematica • Scienze • Tecnologia • Informatica • Simulazioni & Web App
               </p>
             </div>
           </div>

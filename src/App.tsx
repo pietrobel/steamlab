@@ -49,7 +49,6 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSubject, setSelectedSubject] = useState<Subject | 'tutti'>('tutti');
   const [selectedGrade, setSelectedGrade] = useState<GradeLevel | 'Tutte'>('Tutte');
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
@@ -62,6 +61,7 @@ export default function App() {
     return {
       matematica: links.filter((l) => l.subject === 'matematica').length,
       scienze: links.filter((l) => l.subject === 'scienze').length,
+      tecnologia: links.filter((l) => l.subject === 'tecnologia').length,
       informatica: links.filter((l) => l.subject === 'informatica').length,
     };
   }, [links]);
@@ -69,13 +69,6 @@ export default function App() {
   const favoritesCount = useMemo(() => {
     return favoriteIds.length;
   }, [favoriteIds]);
-
-  // Available tags across all links
-  const availableTags = useMemo(() => {
-    const set = new Set<string>();
-    links.forEach((l) => l.tags.forEach((t) => set.add(t)));
-    return Array.from(set).sort();
-  }, [links]);
 
   // Filtered links
   const filteredLinks = useMemo(() => {
@@ -90,37 +83,54 @@ export default function App() {
         return false;
       }
 
-      // Grade level filter
-      if (selectedGrade !== 'Tutte' && item.gradeLevel !== selectedGrade && item.gradeLevel !== 'Tutte') {
-        return false;
+      // Grade level filter (allows items specifically for the class or foundational tools for all classes)
+      if (selectedGrade !== 'Tutte') {
+        const matchesExactGrade = item.gradeLevel === selectedGrade;
+        const matchesAllGrades = item.gradeLevel === 'Tutte';
+        if (!matchesExactGrade && !matchesAllGrades) {
+          return false;
+        }
       }
 
-      // Tag filter
-      if (selectedTag && !item.tags.includes(selectedTag)) {
-        return false;
-      }
-
-      // Search query
+      // Search query - supports subjects, topics, and grade queries (e.g. "classe 1", "prima", "moti", "leve", "3D")
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
+
+        // Check if query targets a grade
+        const isGrade1Query = ['1', '1a', '1ª', 'prima', 'classe 1', 'classe 1a', 'classe 1ª', '1 media', '1ª media'].includes(q);
+        const isGrade2Query = ['2', '2a', '2ª', 'seconda', 'classe 2', 'classe 2a', 'classe 2ª', '2 media', '2ª media'].includes(q);
+        const isGrade3Query = ['3', '3a', '3ª', 'terza', 'classe 3', 'classe 3a', 'classe 3ª', '3 media', '3ª media'].includes(q);
+
+        let matchesGradeQuery = false;
+        if (isGrade1Query) {
+          matchesGradeQuery = item.gradeLevel === 'Classe 1ª' || item.gradeLevel === 'Tutte';
+        } else if (isGrade2Query) {
+          matchesGradeQuery = item.gradeLevel === 'Classe 2ª' || item.gradeLevel === 'Tutte';
+        } else if (isGrade3Query) {
+          matchesGradeQuery = item.gradeLevel === 'Classe 3ª' || item.gradeLevel === 'Tutte';
+        }
+
         const inTitle = item.title.toLowerCase().includes(q);
         const inDesc = item.description.toLowerCase().includes(q);
-        const inUrl = item.url.toLowerCase().includes(q);
+        const inSubject = item.subject.toLowerCase().includes(q);
+        const inGrade = item.gradeLevel.toLowerCase().includes(q);
         const inTags = item.tags.some((t) => t.toLowerCase().includes(q));
-        if (!inTitle && !inDesc && !inUrl && !inTags) {
+
+        if (!inTitle && !inDesc && !inSubject && !inGrade && !inTags && !matchesGradeQuery) {
           return false;
         }
       }
 
       return true;
     });
-  }, [links, showFavoritesOnly, selectedSubject, selectedGrade, selectedTag, searchQuery]);
+  }, [links, showFavoritesOnly, selectedSubject, selectedGrade, searchQuery]);
 
   // Group filtered links by subject
   const groupedLinks = useMemo(() => {
     return {
       matematica: filteredLinks.filter((l) => l.subject === 'matematica'),
       scienze: filteredLinks.filter((l) => l.subject === 'scienze'),
+      tecnologia: filteredLinks.filter((l) => l.subject === 'tecnologia'),
       informatica: filteredLinks.filter((l) => l.subject === 'informatica'),
     };
   }, [filteredLinks]);
@@ -136,14 +146,13 @@ export default function App() {
     setSearchQuery('');
     setSelectedSubject('tutti');
     setSelectedGrade('Tutte');
-    setSelectedTag(null);
     setShowFavoritesOnly(false);
   };
 
   // Render sections to display
   const sectionsToRender: Subject[] =
     selectedSubject === 'tutti'
-      ? ['matematica', 'scienze', 'informatica']
+      ? ['matematica', 'scienze', 'tecnologia', 'informatica']
       : [selectedSubject];
 
   return (
@@ -173,9 +182,6 @@ export default function App() {
         onGradeChange={setSelectedGrade}
         viewMode={viewMode}
         onViewModeChange={setViewMode}
-        availableTags={availableTags}
-        selectedTag={selectedTag}
-        onSelectTag={setSelectedTag}
         totalFilteredCount={filteredLinks.length}
       />
 

@@ -187,18 +187,6 @@ export const LinkCard: React.FC<LinkCardProps> = ({
         <p className="text-xs sm:text-sm text-slate-400 leading-relaxed mb-4 line-clamp-3">
           {item.description}
         </p>
-
-        {/* Tags */}
-        <div className="flex flex-wrap gap-1.5 mb-5">
-          {item.tags.map((tag) => (
-            <span
-              key={tag}
-              className="text-[11px] font-medium px-2 py-0.5 rounded-md bg-slate-800/70 text-slate-300 border border-slate-700/40"
-            >
-              #{tag}
-            </span>
-          ))}
-        </div>
       </div>
 
       {/* Footer Actions */}

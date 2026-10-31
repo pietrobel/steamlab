@@ -32,6 +32,12 @@ import {
   BrainCircuit,
   Gamepad2,
   HelpCircle,
+  Cog,
+  Wrench,
+  DraftingCompass,
+  Sun,
+  Layers,
+  Lightbulb,
   LucideProps,
 } from 'lucide-react';
 
@@ -71,6 +77,12 @@ const ICON_MAP: Record<string, React.FC<LucideProps>> = {
   BookOpen,
   BrainCircuit,
   Gamepad2,
+  Cog,
+  Wrench,
+  DraftingCompass,
+  Sun,
+  Layers,
+  Lightbulb,
 };
 
 export const DynamicIcon: React.FC<DynamicIconProps> = ({ name, ...props }) => {
