@@ -1,12 +1,13 @@
 import profSauroImg from '../assets/images/prof_sauro_mascot_1792934227759.jpg';
 import profIpaziaImg from '../assets/images/prof_ipazia_math_1793040720170.jpg';
+import profRitaImg from '../assets/images/prof_rita_tech_1793448204886.jpg';
 import profAdaImg from '../assets/images/prof_ada_coding_1793040737533.jpg';
 import leoImg from '../assets/images/student_male_mascot_1792934228385.jpg';
 import miaImg from '../assets/images/student_female_mascot_1792934231526.jpg';
 import heroTeamImg from '../assets/images/scienzalab_hero_team_1792934230733.jpg';
 import { Subject } from '../types';
 
-export type MascotId = 'sauro' | 'ipazia' | 'ada' | 'leo' | 'mia';
+export type MascotId = 'sauro' | 'ipazia' | 'rita' | 'ada' | 'leo' | 'mia';
 
 export interface Mascot {
   id: MascotId;
@@ -83,6 +84,34 @@ export const MASCOTS_DATA: Mascot[] = [
     badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
     accentBorder: 'border-indigo-500/40 hover:border-indigo-400',
     bgGlow: 'from-indigo-500/10 to-purple-500/5',
+  },
+  {
+    id: 'rita',
+    name: 'Prof.ssa Rita',
+    role: 'Docente di Tecnologia, Disegno & Energie',
+    species: 'Civetta Ingegnere & Progettista',
+    isTeacher: true,
+    tagline: '«La tecnologia trasforma le leggi della scienza in soluzioni concrete per l\'umanità: dal disegno tecnico alle energie rinnovabili!»',
+    avatar: profRitaImg,
+    preferredSubject: 'tecnologia',
+    favApps: ['tec-disegno-3d', 'tec-solidi-3d', 'tec-energia-rinnovabile', 'tec-circuiti-cc', 'tec-ponti-strutture'],
+    quotes: [
+      {
+        text: 'Nelle proiezioni ortogonali guarda l\'oggetto con metodo: il Piano Orizzontale mostra la vista dall\'alto, il Piano Verticale il fronte e il Piano Laterale il profilo!',
+        context: 'Disegno Tecnico & PO',
+      },
+      {
+        text: 'Nelle strutture il triangolo è l\'unica figura geometrica indeformabile: ecco perché capriate, gru e ponti sono composti da reticoli triangolari!',
+        context: 'Statica & Strutture',
+      },
+      {
+        text: 'L\'energia solare fotovoltaica converte direttamente la radiazione luminosa in corrente elettrica continua: è la base della transizione ecologica.',
+        context: 'Energie Rinnovabili',
+      },
+    ],
+    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+    accentBorder: 'border-amber-500/40 hover:border-amber-400',
+    bgGlow: 'from-amber-500/10 to-yellow-500/5',
   },
   {
     id: 'ada',
@@ -757,5 +786,137 @@ export const PROF_ADA_TIPS: TeacherTip[] = [
   },
 ];
 
-export { profSauroImg, profIpaziaImg, profAdaImg, leoImg, miaImg, heroTeamImg };
+export const PROF_RITA_TIPS: TeacherTip[] = [
+  {
+    id: 1,
+    title: 'I Tre Piani delle Proiezioni Ortogonali',
+    category: 'Disegno Tecnico',
+    text: 'Nelle proiezioni ortogonali (PO, PV, PL) immaginiamo l\'oggetto racchiuso in un triedro: dall\'alto proietti sul Piano Orizzontale, di fronte sul Piano Verticale e di lato sul Piano Laterale. La linea di terra (LT) separa il sopra dal sotto!',
+  },
+  {
+    id: 2,
+    title: 'Assonometria Isometrica vs Cavaliera',
+    category: 'Disegno Tecnico',
+    text: 'Nell\'assonometria isometrica gli assi x e y formano entrambi un angolo di 30° con l\'orizzontale (misure reali sui 3 assi); nella cavaliera l\'asse z è a 45° e la profondità si dimezza (rapporto 1:2) per non deformare la vista!',
+  },
+  {
+    id: 3,
+    title: 'Scale di Riduzione e Ingrandimento',
+    category: 'Disegno Tecnico',
+    text: 'Una scala 1:50 significa che 1 centimetro disegnato sul foglio corrisponde a 50 cm nella realtà. Per oggetti microscopici usiamo scale di ingrandimento come 5:1 (5 cm sul foglio per 1 cm reale)!',
+  },
+  {
+    id: 4,
+    title: 'La Capriata e l\'Indeformabilità del Triangolo',
+    category: 'Strutture ed Edilizia',
+    text: 'Se spingi sui vertici di un quadrilatero, questo si deforma in un romboide. Se invece colleghi tre aste a triangolo, la figura è geometricamente rigida e indeformabile: ecco il segreto delle capriate dei tetti e delle gru da cantiere!',
+  },
+  {
+    id: 5,
+    title: 'Forze Strutturali: Trazione e Compressione',
+    category: 'Ingegneria & Ponti',
+    text: 'Nei ponti sospesi i cavi d\'acciaio lavorano a trazione (vengono tirati e allungati), mentre i massicci piloni verticali lavorano a compressione (vengono schiacciati verso le fondamenta)!',
+  },
+  {
+    id: 6,
+    title: 'Energia Solare: Fotovoltaico vs Termico',
+    category: 'Energie Rinnovabili',
+    text: 'Non confonderli mai! I pannelli fotovoltaici contengono celle di silicio che trasformano la luce direttamente in elettroni (elettricità); i pannelli solari termici scaldano un fluido per produrre acqua calda sanitaria!',
+  },
+  {
+    id: 7,
+    title: 'La Portanza delle Pale Eoliche',
+    category: 'Energie Rinnovabili',
+    text: 'Le pale delle turbine eoliche moderne non funzionano a "spinta" come i vecchi mulini, ma per "portanza" aerodinamica, proprio come l\'ala di un aereo. Questo garantisce un rendimento energetico altissimo anche con brezze leggere!',
+  },
+  {
+    id: 8,
+    title: 'Il Ciclo di Vita (LCA) e l\'Alluminio Infinito',
+    category: 'Materiali & Riciclo',
+    text: 'L\'alluminio è un materiale magico: può essere riciclato all\'infinito senza perdere le sue proprietà meccaniche, e riciclarlo richiede il 95% in meno di energia rispetto all\'estrazione dalla bauxite!',
+  },
+  {
+    id: 9,
+    title: 'La Legge di Ohm (V = R × I)',
+    category: 'Elettrotecnica',
+    text: 'La tensione (Volt) è la "forza" che spinge gli elettroni, la corrente (Ampere) è la quantità di elettroni che scorre, e la resistenza (Ohm) è l\'ostacolo che incontrano. Aumentando la resistenza, la corrente diminuisce!',
+  },
+  {
+    id: 10,
+    title: 'Il Calibro Ventesimale',
+    category: 'Misure e Strumenti',
+    text: 'Il calibro a corsoio permette di misurare diametri esterni (becchi principali), diametri interni (becchi superiori) e profondità di fori (astina posteriore) con una precisione millimetrica fino a 0,05 mm grazie al nonio!',
+  },
+  {
+    id: 11,
+    title: 'Le Matite Tecniche: Guida alla Durezza',
+    category: 'Disegno Tecnico',
+    text: 'La matita 2H o 3H (dura) serve per le linee di costruzione sottili e le proiezioni; la matita HB per le quotature e i testi; la matita 2B o B (morbida) per ripassare i contorni definitivi dell\'oggetto in vista!',
+  },
+  {
+    id: 12,
+    title: 'Rapporto di Trasmissione negli Ingranaggi',
+    category: 'Meccanica',
+    text: 'Se una ruota motrice con 10 denti ingrana una ruota condotta con 30 denti, il rapporto è 1:3: la ruota grande gira 3 volte più lenta, ma fornisce una forza (coppia motrice) 3 volte superiore per superare le salite!',
+  },
+  {
+    id: 13,
+    title: 'Le Centrali Idroelettriche di Pompaggio',
+    category: 'Energie Rinnovabili',
+    text: 'Di notte, quando c\'è surplus di energia sulla rete, l\'acqua viene pompata dal bacino inferiore a quello superiore. Di giorno, quando la richiesta di picco sale, l\'acqua scende azionando le turbine: una gigantesca batteria naturale!',
+  },
+  {
+    id: 14,
+    title: 'Plastiche Termoplastiche vs Termoindurenti',
+    category: 'Materiali & Sostenibilità',
+    text: 'I polimeri termoplastici (come PET, PE, PP delle bottiglie e contenitori) rammolliscono con il calore e possono essere rimodellati molte volte; i termoindurenti con il calore carbonizzano e non possono essere rifusi!',
+  },
+  {
+    id: 15,
+    title: 'Il Segreto del Calcestruzzo Armato',
+    category: 'Strutture ed Edilizia',
+    text: 'Il calcestruzzo (cemento, sabbia, ghiaia e acqua) è imbattibile a compressione ma debolissimo a trazione. Inserendo barre di acciaio nervato all\'interno, otteniamo un materiale composito resistente a qualsiasi sollecitazione sismica!',
+  },
+  {
+    id: 16,
+    title: 'Manifattura Sottrattiva vs Additiva',
+    category: 'Makers & Fabbricazione',
+    text: 'La fresatrice o il tornio lavorano in modo "sottrattivo", asportando trucioli da un blocco grezzo. La stampante 3D lavora in modo "additivo", depositando materiale strato su strato solo dove serve: zero sprechi!',
+  },
+  {
+    id: 17,
+    title: 'Pulegge e Cinghie di Trasmissione',
+    category: 'Meccanica',
+    text: 'Due pulegge collegate da una cinghia aperta ruotano nello stesso verso. Se incrociamo la cinghia a figura a 8, la puleggia secondaria ruota nel verso opposto, invertendo la direzione del movimento!',
+  },
+  {
+    id: 18,
+    title: 'Il Cappotto Termico negli Edifici',
+    category: 'Efficienza Energetica',
+    text: 'Applicare pannelli isolanti (sughero, lana di roccia, EPS) sulle pareti esterne elimina i ponti termici: la casa trattiene il calore d\'inverno e il fresco d\'estate, tagliando fino al 50% le bollette e le emissioni!',
+  },
+  {
+    id: 19,
+    title: 'Il Salvavita (Interruttore Differenziale)',
+    category: 'Sicurezza Elettrica',
+    text: 'Il salvavita confronta istante per istante la corrente che entra nella fase con quella che esce dal neutro. Se c\'è una differenza anche di soli 30 milliampere (dispersione verso terra o contatto umano), apre il circuito in millisecondi!',
+  },
+  {
+    id: 20,
+    title: 'Progettare per il Futuro (Ecodesign)',
+    category: 'Innovazione & Ambiente',
+    text: 'Il buon tecnologo progetta pensando fin dal primo schizzo a come l\'oggetto verrà smontato, riparato e riciclato a fine vita. L\'ecodesign è l\'unione di intelligenza tecnica, estetica e responsabilità verso il pianeta!',
+  },
+];
+
+export {
+  profSauroImg,
+  profIpaziaImg,
+  profRitaImg,
+  profAdaImg,
+  leoImg,
+  miaImg,
+  heroTeamImg,
+};
+
 

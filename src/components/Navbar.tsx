@@ -1,12 +1,18 @@
 import React from 'react';
 import { Heart, Layers } from 'lucide-react';
 import { profSauroImg } from '../data/mascots';
+import { SeasonalThemeSelector } from './SeasonalThemeSelector';
+import { SeasonId } from '../data/seasonalThemes';
 
 interface NavbarProps {
   totalCount: number;
   favCount: number;
   showFavoritesOnly: boolean;
   onToggleFavorites: () => void;
+  currentSeason: SeasonId;
+  onSelectSeason: (season: SeasonId) => void;
+  showParticles: boolean;
+  onToggleParticles: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -14,6 +20,10 @@ export const Navbar: React.FC<NavbarProps> = ({
   favCount,
   showFavoritesOnly,
   onToggleFavorites,
+  currentSeason,
+  onSelectSeason,
+  showParticles,
+  onToggleParticles,
 }) => {
   return (
     <header className="sticky top-0 z-40 w-full bg-slate-900/95 backdrop-blur-md border-b border-slate-800 text-white shadow-xl">
@@ -49,10 +59,18 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Actions */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* Seasonal Theme Button */}
+            <SeasonalThemeSelector
+              currentSeason={currentSeason}
+              onSelectSeason={onSelectSeason}
+              showParticles={showParticles}
+              onToggleParticles={onToggleParticles}
+            />
+
             {/* Total resources badge */}
             <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800/60 border border-slate-700/60 text-xs font-medium text-slate-300">
               <Layers className="w-3.5 h-3.5 text-cyan-400" />
-              <span>{totalCount} risorse attive</span>
+              <span>{totalCount} risorse</span>
             </div>
 
             {/* Favorite Filter Toggle Button */}

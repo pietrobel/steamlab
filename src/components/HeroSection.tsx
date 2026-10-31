@@ -1,28 +1,31 @@
 import React from 'react';
-import { Calculator, Atom, Code2, Cog, ArrowUpRight, GraduationCap } from 'lucide-react';
+import { Calculator, Atom, Code2, Cog, ArrowUpRight, GraduationCap, Sparkles } from 'lucide-react';
 import { Subject } from '../types';
-import { heroTeamImg, profSauroImg, profIpaziaImg, profAdaImg, leoImg, miaImg } from '../data/mascots';
+import { heroTeamImg, profSauroImg, profIpaziaImg, profRitaImg, profAdaImg, leoImg, miaImg } from '../data/mascots';
+import { SeasonalTheme } from '../data/seasonalThemes';
 
 interface HeroSectionProps {
   counts: Record<Subject, number>;
   activeSubject: Subject | 'tutti';
   onSelectSubject: (sub: Subject | 'tutti') => void;
+  theme: SeasonalTheme;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   counts,
   activeSubject,
   onSelectSubject,
+  theme,
 }) => {
   return (
     <section className="relative overflow-hidden pt-8 pb-10 md:pt-12 md:pb-14 bg-gradient-to-b from-slate-900 via-slate-900/95 to-slate-950 border-b border-slate-800/80">
       {/* Background Glow Orbs */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-10 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none" />
+      <div className={`absolute top-0 left-1/4 w-96 h-96 ${theme.glowColors.orb1} rounded-full blur-3xl pointer-events-none transition-all duration-700`} />
+      <div className={`absolute top-10 right-1/4 w-96 h-96 ${theme.glowColors.orb2} rounded-full blur-3xl pointer-events-none transition-all duration-700`} />
+      <div className={`absolute -bottom-10 left-1/2 -translate-x-1/2 w-3/4 h-32 ${theme.glowColors.orb3} rounded-full blur-2xl pointer-events-none transition-all duration-700`} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* ScienzaLab Mascot Header Badge */}
+        {/* ScienzaLab Mascot Header Badge & Seasonal Banner */}
         <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
           <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-slate-800/90 border border-slate-700/80 text-xs md:text-sm font-medium text-slate-300 shadow-inner">
             <img
@@ -36,9 +39,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <span>Il Team Docenti & Studenti STEAM</span>
           </div>
 
-          <div className="flex items-center gap-2 text-xs text-slate-400">
-            <span className="inline-block w-2 h-2 rounded-full bg-emerald-400" />
-            <span>Portale Didattico Interattivo</span>
+          {/* Seasonal Theme Badge */}
+          <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold ${theme.badgeBg} ${theme.badgeText} transition-all`}>
+            <span>{theme.emoji}</span>
+            <span>{theme.bannerTag}</span>
           </div>
         </div>
 
@@ -46,16 +50,27 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-10">
           <div className="lg:col-span-7">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight mb-4">
-              Laboratorio <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-cyan-300 to-indigo-300">ScienzaLab</span>:{' '}
+              Laboratorio <span className={`text-transparent bg-clip-text bg-gradient-to-r ${theme.accentGradient}`}>ScienzaLab</span>:{' '}
               <span className="text-slate-100 font-extrabold block sm:inline">
                 Matematica, Scienze, Tecnologia e Informatica
               </span>
             </h2>
-            <p className="text-base sm:text-lg text-slate-300 leading-relaxed mb-6">
-              Benvenuti nel laboratorio digitale della scuola media! Esplora simulatori e laboratori guidati dal nostro team: la <strong className="text-indigo-300">Prof.ssa Ipazia</strong> per la Matematica, il <strong className="text-emerald-300">Prof. Sauro</strong> per le Scienze, la <strong className="text-cyan-300">Prof.ssa Ada</strong> per l'Informatica, il laboratorio di <strong className="text-amber-300">Tecnologia</strong>, insieme agli studenti <strong className="text-amber-300">Leo</strong> e <strong className="text-rose-300">Mia</strong>.
+            <p className="text-base sm:text-lg text-slate-300 leading-relaxed mb-4">
+              Benvenuti nel laboratorio digitale della scuola media! Esplora simulatori e laboratori guidati dal nostro team: la <strong className="text-indigo-300">Prof.ssa Ipazia</strong> per la Matematica, il <strong className="text-emerald-300">Prof. Sauro</strong> per le Scienze, la <strong className="text-amber-300">Prof.ssa Rita</strong> per la Tecnologia, la <strong className="text-cyan-300">Prof.ssa Ada</strong> per l'Informatica, insieme agli studenti <strong className="text-amber-300">Leo</strong> e <strong className="text-rose-300">Mia</strong>.
             </p>
 
-            {/* Quick 5 Avatars Pill */}
+            {/* Seasonal Mascot Greeting Callout */}
+            {theme.id !== 'standard' && (
+              <div className="mb-6 p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800 flex items-start gap-3 shadow-inner">
+                <span className="text-2xl shrink-0 select-none">{theme.emoji}</span>
+                <div className="text-xs">
+                  <div className="font-bold text-white mb-0.5">{theme.mascotAuthor}:</div>
+                  <div className="text-slate-300 italic">{theme.mascotGreeting}</div>
+                </div>
+              </div>
+            )}
+
+            {/* Quick 6 Avatars Pill */}
             <div className="flex flex-wrap items-center gap-3 p-2.5 rounded-2xl bg-slate-950/60 border border-slate-800/80 max-w-fit">
               <div className="flex -space-x-2">
                 <img
@@ -70,6 +85,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   alt="Prof. Sauro (Scienze)"
                   title="Prof. Sauro - Scienze"
                   className="w-8 h-8 rounded-full object-cover ring-2 ring-emerald-500"
+                  referrerPolicy="no-referrer"
+                />
+                <img
+                  src={profRitaImg}
+                  alt="Prof.ssa Rita (Tecnologia)"
+                  title="Prof.ssa Rita - Tecnologia"
+                  className="w-8 h-8 rounded-full object-cover ring-2 ring-amber-500"
                   referrerPolicy="no-referrer"
                 />
                 <img
@@ -218,12 +240,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </p>
             <div className="mt-3 pt-3 border-t border-slate-800 flex items-center gap-2 text-[11px] text-amber-300">
               <img
-                src={miaImg}
-                alt="Mia"
+                src={profRitaImg}
+                alt="Prof.ssa Rita"
                 className="w-5 h-5 rounded-full object-cover ring-1 ring-amber-400"
                 referrerPolicy="no-referrer"
               />
-              <span className="font-semibold">Lab: Disegno & Energia</span>
+              <span className="font-semibold">Cattedra: Prof.ssa Rita</span>
             </div>
           </button>
 

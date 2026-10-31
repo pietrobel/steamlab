@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   MASCOTS_DATA,
   Mascot,
   MascotId,
   PROF_SAURO_50_TIPS,
   PROF_IPAZIA_TIPS,
+  PROF_RITA_TIPS,
   PROF_ADA_TIPS,
 } from '../data/mascots';
 import { Subject } from '../types';
@@ -24,8 +25,22 @@ export const MascotSpotlight: React.FC<MascotSpotlightProps> = ({
   // Rotating tip indices for each professor
   const [sauroTipIndex, setSauroTipIndex] = useState(() => Math.floor(Math.random() * PROF_SAURO_50_TIPS.length));
   const [ipaziaTipIndex, setIpaziaTipIndex] = useState(() => Math.floor(Math.random() * PROF_IPAZIA_TIPS.length));
+  const [ritaTipIndex, setRitaTipIndex] = useState(() => Math.floor(Math.random() * PROF_RITA_TIPS.length));
   const [adaTipIndex, setAdaTipIndex] = useState(() => Math.floor(Math.random() * PROF_ADA_TIPS.length));
   const [studentQuoteIndex, setStudentQuoteIndex] = useState(0);
+
+  // Auto-align active spotlight professor with filtered subject if activeSubject is specific
+  useEffect(() => {
+    if (activeSubject === 'scienze') {
+      setSelectedMascotId('sauro');
+    } else if (activeSubject === 'matematica') {
+      setSelectedMascotId('ipazia');
+    } else if (activeSubject === 'tecnologia') {
+      setSelectedMascotId('rita');
+    } else if (activeSubject === 'informatica') {
+      setSelectedMascotId('ada');
+    }
+  }, [activeSubject]);
 
   const currentMascot = MASCOTS_DATA.find((m) => m.id === selectedMascotId) || MASCOTS_DATA[0];
 
@@ -35,6 +50,8 @@ export const MascotSpotlight: React.FC<MascotSpotlightProps> = ({
       setSauroTipIndex((prev) => (prev + 1) % PROF_SAURO_50_TIPS.length);
     } else if (mascot.id === 'ipazia') {
       setIpaziaTipIndex((prev) => (prev + 1) % PROF_IPAZIA_TIPS.length);
+    } else if (mascot.id === 'rita') {
+      setRitaTipIndex((prev) => (prev + 1) % PROF_RITA_TIPS.length);
     } else if (mascot.id === 'ada') {
       setAdaTipIndex((prev) => (prev + 1) % PROF_ADA_TIPS.length);
     } else {
@@ -47,6 +64,8 @@ export const MascotSpotlight: React.FC<MascotSpotlightProps> = ({
       setSauroTipIndex((prev) => (prev + 1) % PROF_SAURO_50_TIPS.length);
     } else if (selectedMascotId === 'ipazia') {
       setIpaziaTipIndex((prev) => (prev + 1) % PROF_IPAZIA_TIPS.length);
+    } else if (selectedMascotId === 'rita') {
+      setRitaTipIndex((prev) => (prev + 1) % PROF_RITA_TIPS.length);
     } else if (selectedMascotId === 'ada') {
       setAdaTipIndex((prev) => (prev + 1) % PROF_ADA_TIPS.length);
     } else {
@@ -59,6 +78,8 @@ export const MascotSpotlight: React.FC<MascotSpotlightProps> = ({
       setSauroTipIndex(Math.floor(Math.random() * PROF_SAURO_50_TIPS.length));
     } else if (selectedMascotId === 'ipazia') {
       setIpaziaTipIndex(Math.floor(Math.random() * PROF_IPAZIA_TIPS.length));
+    } else if (selectedMascotId === 'rita') {
+      setRitaTipIndex(Math.floor(Math.random() * PROF_RITA_TIPS.length));
     } else if (selectedMascotId === 'ada') {
       setAdaTipIndex(Math.floor(Math.random() * PROF_ADA_TIPS.length));
     } else {
@@ -83,6 +104,12 @@ export const MascotSpotlight: React.FC<MascotSpotlightProps> = ({
     activeText = tip.text;
     activeContext = `${tip.category} • ${tip.title}`;
     activeTipNumber = `Consiglio #${tip.id} di ${PROF_IPAZIA_TIPS.length} della Prof.ssa Ipazia`;
+    activeCategoryBadge = tip.category;
+  } else if (selectedMascotId === 'rita') {
+    const tip = PROF_RITA_TIPS[ritaTipIndex];
+    activeText = tip.text;
+    activeContext = `${tip.category} • ${tip.title}`;
+    activeTipNumber = `Guida #${tip.id} di ${PROF_RITA_TIPS.length} della Prof.ssa Rita`;
     activeCategoryBadge = tip.category;
   } else if (selectedMascotId === 'ada') {
     const tip = PROF_ADA_TIPS[adaTipIndex];
@@ -119,11 +146,11 @@ export const MascotSpotlight: React.FC<MascotSpotlightProps> = ({
                 La Squadra di ScienzaLab
               </h3>
               <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                3 Docenti & 2 Studenti
+                4 Docenti & 2 Studenti
               </span>
             </div>
             <p className="text-xs text-slate-400">
-              Esplora i consigli didattici di Prof. Sauro (Scienze), Prof.ssa Ipazia (Matematica), Prof.ssa Ada (Informatica) e degli studenti Leo e Mia!
+              Esplora i consigli didattici di Prof. Sauro (Scienze), Prof.ssa Ipazia (Matematica), Prof.ssa Rita (Tecnologia), Prof.ssa Ada (Informatica) e degli studenti Leo e Mia!
             </p>
           </div>
         </div>

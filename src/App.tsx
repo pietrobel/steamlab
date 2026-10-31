@@ -7,12 +7,16 @@ import { LinkCard } from './components/LinkCard';
 import { PreviewModal } from './components/PreviewModal';
 import { IntegratedAppModal } from './components/integrated/IntegratedAppModal';
 import { MascotSpotlight } from './components/MascotSpotlight';
-import { profSauroImg, profIpaziaImg, profAdaImg, leoImg, miaImg } from './data/mascots';
 import { LinkItem, Subject, GradeLevel } from './types';
 import { INITIAL_LINKS } from './data/defaultLinks';
-import { Sparkles, Search, ExternalLink, Heart } from 'lucide-react';
+import { profSauroImg, profIpaziaImg, profRitaImg, profAdaImg, leoImg, miaImg } from './data/mascots';
+import { Search, Heart } from 'lucide-react';
+import { SeasonId, ConcreteSeasonId, SEASONAL_THEMES, getAutoSeasonalTheme } from './data/seasonalThemes';
+import { SeasonalParticles } from './components/SeasonalParticles';
 
 const FAVORITES_STORAGE_KEY = 'scienzalab_favorites_v2';
+const SEASON_STORAGE_KEY = 'scienzalab_seasonal_theme_v1';
+const PARTICLES_STORAGE_KEY = 'scienzalab_seasonal_particles_v1';
 
 export default function App() {
   // Favorites persistence in LocalStorage
@@ -44,6 +48,54 @@ export default function App() {
       isFavorite: favoriteIds.includes(item.id),
     }));
   }, [favoriteIds]);
+
+  // Seasonal Theme state (auto by default, or manual override)
+  const [season, setSeason] = useState<SeasonId>(() => {
+    try {
+      const saved = localStorage.getItem(SEASON_STORAGE_KEY);
+      if (saved && (saved === 'auto' || saved in SEASONAL_THEMES)) {
+        return saved as SeasonId;
+      }
+    } catch {
+      // ignore
+    }
+    return 'auto';
+  });
+
+  const [showSeasonalParticles, setShowSeasonalParticles] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(PARTICLES_STORAGE_KEY);
+      if (saved !== null) return JSON.parse(saved);
+    } catch {
+      // ignore
+    }
+    return true;
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(SEASON_STORAGE_KEY, season);
+    } catch (e) {
+      console.error('Error saving seasonal theme', e);
+    }
+  }, [season]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(PARTICLES_STORAGE_KEY, JSON.stringify(showSeasonalParticles));
+    } catch (e) {
+      console.error('Error saving particle setting', e);
+    }
+  }, [showSeasonalParticles]);
+
+  const effectiveSeason: ConcreteSeasonId = useMemo(() => {
+    if (season === 'auto') {
+      return getAutoSeasonalTheme();
+    }
+    return season;
+  }, [season]);
+
+  const seasonalMeta = SEASONAL_THEMES[effectiveSeason] || SEASONAL_THEMES.standard;
 
   // Filtering states
   const [searchQuery, setSearchQuery] = useState('');
@@ -156,20 +208,31 @@ export default function App() {
       : [selectedSubject];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-slate-950">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-slate-950 relative">
+      {/* Floating Seasonal Decorative Particles (Pumpkins, Snow, Confetti, Flowers, Leaves, Sun) */}
+      <SeasonalParticles
+        season={effectiveSeason}
+        enabled={showSeasonalParticles}
+      />
+
       {/* Top Sticky Navigation */}
       <Navbar
         totalCount={links.length}
         favCount={favoritesCount}
         showFavoritesOnly={showFavoritesOnly}
         onToggleFavorites={() => setShowFavoritesOnly((prev) => !prev)}
+        currentSeason={season}
+        onSelectSeason={setSeason}
+        showParticles={showSeasonalParticles}
+        onToggleParticles={() => setShowSeasonalParticles((prev) => !prev)}
       />
 
-      {/* Hero Banner with ScienzaLab focus */}
+      {/* Hero Banner with ScienzaLab focus and Seasonal Theme */}
       <HeroSection
         counts={counts}
         activeSubject={selectedSubject}
         onSelectSubject={setSelectedSubject}
+        theme={seasonalMeta}
       />
 
       {/* Filter and Search Bar */}
@@ -296,6 +359,13 @@ export default function App() {
                 referrerPolicy="no-referrer"
               />
               <img
+                src={profRitaImg}
+                alt="Prof.ssa Rita"
+                title="Prof.ssa Rita (Tecnologia)"
+                className="w-8 h-8 rounded-full object-cover ring-2 ring-amber-500 bg-slate-800"
+                referrerPolicy="no-referrer"
+              />
+              <img
                 src={profAdaImg}
                 alt="Prof.ssa Ada"
                 title="Prof.ssa Ada (Informatica)"
@@ -323,7 +393,7 @@ export default function App() {
                 <span className="text-slate-600">|</span>
                 <span className="text-emerald-400 font-semibold">Team Docenti & Studenti</span>
               </div>
-              <p className="text-[11px] text-slate-400">Prof.ssa Ipazia • Prof. Sauro • Prof.ssa Ada • Leo & Mia</p>
+              <p className="text-[11px] text-slate-400">Prof.ssa Ipazia • Prof. Sauro • Prof.ssa Rita • Prof.ssa Ada • Leo & Mia</p>
             </div>
           </div>
 
