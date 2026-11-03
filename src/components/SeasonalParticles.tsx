@@ -10,22 +10,37 @@ export const SeasonalParticles: React.FC<SeasonalParticlesProps> = ({ season, en
   if (!enabled || season === 'standard') return null;
 
   const particles = useMemo(() => {
-    let char = '✨';
-    if (season === 'halloween') char = '🎃';
-    else if (season === 'natale' || season === 'inverno') char = '❄️';
-    else if (season === 'carnevale') char = '🎉';
-    else if (season === 'primavera') char = '🌸';
-    else if (season === 'estate') char = '☀️';
-    else if (season === 'autunno') char = '🍂';
+    let charList = ['✨'];
 
-    return Array.from({ length: 12 }, (_, i) => ({
+    if (season === 'halloween') {
+      charList = ['🎃', '👻', '🦇', '✨'];
+    } else if (season === 'natale') {
+      // Tema natalizio: regali, alberi, stelle dorate, fiocchi e campanelle
+      charList = ['🎄', '⭐', '🎁', '❄️', '🔔', '✨'];
+    } else if (season === 'inverno') {
+      // Tema invernale / polare: cristalli di ghiaccio esagonali, cubetti di ghiaccio, brina e neve fredda
+      charList = ['❄️', '🧊', '🌨️', '💠', '✨'];
+    } else if (season === 'carnevale') {
+      charList = ['🎭', '🎉', '🎊', '🎈', '✨'];
+    } else if (season === 'primavera') {
+      charList = ['🌸', '🌺', '🌱', '🦋', '🌷'];
+    } else if (season === 'earthday') {
+      // Tema Earth Day: pianeta Terra, germogli, foglie, riciclo, gocce d'acqua e sole pulito
+      charList = ['🌍', '🌱', '🌿', '♻️', '💧', '☀️', '✨'];
+    } else if (season === 'estate') {
+      charList = ['☀️', '🏖️', '🌊', '🌻', '⭐'];
+    } else if (season === 'autunno') {
+      charList = ['🍂', '🍁', '🌰', '🍄'];
+    }
+
+    return Array.from({ length: 14 }, (_, i) => ({
       id: i,
-      char,
-      left: `${(i * 8.3 + 3) % 96}%`,
+      char: charList[i % charList.length],
+      left: `${(i * 7.1 + 2) % 96}%`,
       animationDuration: `${7 + (i % 5) * 2}s`,
-      animationDelay: `${(i % 6) * 1.2}s`,
+      animationDelay: `${(i % 7) * 1.1}s`,
       fontSize: `${14 + (i % 4) * 4}px`,
-      opacity: 0.2 + (i % 3) * 0.1,
+      opacity: 0.25 + (i % 3) * 0.1,
     }));
   }, [season]);
 

@@ -97,7 +97,7 @@ export const MascotSpotlight: React.FC<MascotSpotlightProps> = ({
     const tip = PROF_SAURO_50_TIPS[sauroTipIndex];
     activeText = tip.text;
     activeContext = `${tip.category} • ${tip.title}`;
-    activeTipNumber = `Consiglio #${tip.id} di ${PROF_SAURO_50_TIPS.length} del Prof. Sauro`;
+    activeTipNumber = `Consiglio #${tip.id} di ${PROF_SAURO_50_TIPS.length} del Prof. Dino Sauro`;
     activeCategoryBadge = tip.category;
   } else if (selectedMascotId === 'ipazia') {
     const tip = PROF_IPAZIA_TIPS[ipaziaTipIndex];
@@ -109,13 +109,13 @@ export const MascotSpotlight: React.FC<MascotSpotlightProps> = ({
     const tip = PROF_RITA_TIPS[ritaTipIndex];
     activeText = tip.text;
     activeContext = `${tip.category} • ${tip.title}`;
-    activeTipNumber = `Guida #${tip.id} di ${PROF_RITA_TIPS.length} della Prof.ssa Rita`;
+    activeTipNumber = `Guida #${tip.id} di ${PROF_RITA_TIPS.length} della Prof.ssa Rita Ingranaggi`;
     activeCategoryBadge = tip.category;
   } else if (selectedMascotId === 'ada') {
     const tip = PROF_ADA_TIPS[adaTipIndex];
     activeText = tip.text;
     activeContext = `${tip.category} • ${tip.title}`;
-    activeTipNumber = `Pillola #${tip.id} di ${PROF_ADA_TIPS.length} della Prof.ssa Ada`;
+    activeTipNumber = `Pillola #${tip.id} di ${PROF_ADA_TIPS.length} della Prof.ssa Ada Byte`;
     activeCategoryBadge = tip.category;
   } else {
     const quote = currentMascot.quotes[studentQuoteIndex % currentMascot.quotes.length];
@@ -128,7 +128,7 @@ export const MascotSpotlight: React.FC<MascotSpotlightProps> = ({
   const isTeacher = currentMascot.isTeacher;
 
   return (
-    <section className="mb-10 p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900/90 to-slate-950 border border-slate-800 shadow-xl relative overflow-hidden">
+    <section className="mb-8 sm:mb-10 p-4 sm:p-6 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900/90 to-slate-950 border border-slate-800 shadow-xl relative overflow-hidden">
       {/* Decorative background aura */}
       <div className="absolute top-0 right-1/4 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -137,7 +137,7 @@ export const MascotSpotlight: React.FC<MascotSpotlightProps> = ({
       {/* Header bar */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 relative z-10 border-b border-slate-800/80 pb-4">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+          <div className="p-2.5 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shrink-0">
             <GraduationCap className="w-6 h-6" />
           </div>
           <div>
@@ -146,38 +146,38 @@ export const MascotSpotlight: React.FC<MascotSpotlightProps> = ({
                 La Squadra di ScienzaLab
               </h3>
               <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                4 Docenti & 2 Studenti
+                4 Docenti & 4 Studenti
               </span>
             </div>
-            <p className="text-xs text-slate-400">
-              Esplora i consigli didattici di Prof. Sauro (Scienze), Prof.ssa Ipazia (Matematica), Prof.ssa Rita (Tecnologia), Prof.ssa Ada (Informatica) e degli studenti Leo e Mia!
+            <p className="text-xs text-slate-400 mt-0.5">
+              Esplora i consigli dei docenti (Prof. Dino Sauro, Prof.ssa Ipazia, Prof.ssa Rita Ingranaggi, Prof.ssa Ada Byte) e le esperienze degli studenti!
             </p>
           </div>
         </div>
 
-        {/* Mascot switcher pills */}
-        <div className="flex items-center gap-1.5 p-1.5 bg-slate-950/80 rounded-2xl border border-slate-800 flex-wrap">
+        {/* Mascot switcher pills - touch scrollable on mobile */}
+        <div className="flex items-center gap-1.5 p-1.5 bg-slate-950/80 rounded-2xl border border-slate-800 overflow-x-auto pb-2 sm:pb-1.5 scrollbar-none -mx-1 px-1 touch-pan-x shrink-0">
           {MASCOTS_DATA.map((mascot) => {
             const isSelected = mascot.id === selectedMascotId;
             return (
               <button
                 key={mascot.id}
                 onClick={() => handleMascotSelect(mascot)}
-                className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                className={`flex items-center gap-1.5 sm:gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all shrink-0 active:scale-95 touch-manipulation whitespace-nowrap min-h-[40px] ${
                   isSelected
-                    ? 'bg-slate-800 text-white shadow-md border border-slate-700'
+                    ? 'bg-slate-800 text-white shadow-md border border-slate-700 ring-1 ring-cyan-500/50'
                     : 'text-slate-400 hover:text-white hover:bg-slate-850'
                 }`}
               >
                 <img
                   src={mascot.avatar}
                   alt={mascot.name}
-                  className="w-5 h-5 rounded-full object-cover ring-1 ring-white/20"
+                  className="w-5 h-5 rounded-full object-cover ring-1 ring-white/20 shrink-0"
                   referrerPolicy="no-referrer"
                 />
                 <span className="whitespace-nowrap">{mascot.name}</span>
                 {mascot.isTeacher && (
-                  <span className="hidden xl:inline text-[9px] px-1 py-0.2 rounded bg-white/10 text-slate-300">
+                  <span className="text-[9px] px-1 py-0.2 rounded bg-white/10 text-slate-300">
                     Prof
                   </span>
                 )}

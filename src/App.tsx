@@ -9,8 +9,8 @@ import { IntegratedAppModal } from './components/integrated/IntegratedAppModal';
 import { MascotSpotlight } from './components/MascotSpotlight';
 import { LinkItem, Subject, GradeLevel } from './types';
 import { INITIAL_LINKS } from './data/defaultLinks';
-import { profSauroImg, profIpaziaImg, profRitaImg, profAdaImg, leoImg, miaImg } from './data/mascots';
-import { Search, Heart } from 'lucide-react';
+import { profSauroImg, profIpaziaImg, profRitaImg, profAdaImg, leoImg, miaImg, samuImg, chiaraImg } from './data/mascots';
+import { Search, Heart, ArrowRight } from 'lucide-react';
 import { SeasonId, ConcreteSeasonId, SEASONAL_THEMES, getAutoSeasonalTheme } from './data/seasonalThemes';
 import { SeasonalParticles } from './components/SeasonalParticles';
 
@@ -225,6 +225,8 @@ export default function App() {
         onSelectSeason={setSeason}
         showParticles={showSeasonalParticles}
         onToggleParticles={() => setShowSeasonalParticles((prev) => !prev)}
+        selectedSubject={selectedSubject}
+        onSelectSubject={setSelectedSubject}
       />
 
       {/* Hero Banner with ScienzaLab focus and Seasonal Theme */}
@@ -255,6 +257,52 @@ export default function App() {
           onSelectSubject={setSelectedSubject}
           activeSubject={selectedSubject}
         />
+
+        {/* Special Featured Banner: Storia della Matematica & Quiz con Prof.ssa Ipazia */}
+        {(selectedSubject === 'tutti' || selectedSubject === 'matematica') && !showFavoritesOnly && (
+          <div className="mb-10 p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-indigo-950/80 via-slate-900 to-purple-950/80 border border-indigo-500/40 shadow-xl flex flex-col md:flex-row items-center justify-between gap-5 relative overflow-hidden">
+            <div className="absolute top-0 right-1/4 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden ring-2 ring-indigo-400 shrink-0 bg-slate-900 shadow-md">
+                <img
+                  src={profIpaziaImg}
+                  alt="Prof.ssa Ipazia"
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                    🏛️ Sezione Speciale Interattiva
+                  </span>
+                  <span className="text-xs text-indigo-300 font-semibold hidden sm:inline">
+                    Ideale per la 1ª Media
+                  </span>
+                </div>
+                <h3 className="text-base sm:text-lg font-black text-white mt-0.5">
+                  La Storia della Matematica con la Prof.ssa Ipazia
+                </h3>
+                <p className="text-xs text-slate-300 line-clamp-2 max-w-xl mt-0.5">
+                  Viaggia ad Alessandria d'Egitto: frazioni visuali con i papiri del Nilo, animazione degli angoli e dei triangoli (180°), l'idroscopio e il Gran Quiz a misura di 1ª Media!
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                const ipaziaLink = links.find((l) => l.internalAppId === 'storia-ipazia');
+                if (ipaziaLink) {
+                  setInternalAppItem(ipaziaLink);
+                }
+              }}
+              className="min-h-[44px] w-full md:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white shadow-lg shadow-indigo-950/60 transition-all shrink-0 active:scale-95 touch-manipulation relative z-10"
+            >
+              <span>Esplora con Ipazia & Gioca al Quiz</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
 
         {/* Active Filter Pill / Favorites Notice */}
         {showFavoritesOnly && (
@@ -353,22 +401,22 @@ export default function App() {
               />
               <img
                 src={profSauroImg}
-                alt="Prof. Sauro"
-                title="Prof. Sauro (Scienze)"
+                alt="Prof. Dino Sauro"
+                title="Prof. Dino Sauro (Scienze)"
                 className="w-8 h-8 rounded-full object-cover ring-2 ring-emerald-500 bg-slate-800"
                 referrerPolicy="no-referrer"
               />
               <img
                 src={profRitaImg}
-                alt="Prof.ssa Rita"
-                title="Prof.ssa Rita (Tecnologia)"
+                alt="Prof.ssa Rita Ingranaggi"
+                title="Prof.ssa Rita Ingranaggi (Tecnologia)"
                 className="w-8 h-8 rounded-full object-cover ring-2 ring-amber-500 bg-slate-800"
                 referrerPolicy="no-referrer"
               />
               <img
                 src={profAdaImg}
-                alt="Prof.ssa Ada"
-                title="Prof.ssa Ada (Informatica)"
+                alt="Prof.ssa Ada Byte"
+                title="Prof.ssa Ada Byte (Informatica)"
                 className="w-8 h-8 rounded-full object-cover ring-2 ring-cyan-500 bg-slate-800"
                 referrerPolicy="no-referrer"
               />
@@ -386,6 +434,20 @@ export default function App() {
                 className="w-8 h-8 rounded-full object-cover ring-2 ring-rose-500 bg-slate-800"
                 referrerPolicy="no-referrer"
               />
+              <img
+                src={samuImg}
+                alt="Samu"
+                title="Samu (Studente)"
+                className="w-8 h-8 rounded-full object-cover ring-2 ring-yellow-400 bg-slate-800"
+                referrerPolicy="no-referrer"
+              />
+              <img
+                src={chiaraImg}
+                alt="Chiara"
+                title="Chiara (Studentessa)"
+                className="w-8 h-8 rounded-full object-cover ring-2 ring-emerald-400 bg-slate-800"
+                referrerPolicy="no-referrer"
+              />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -393,7 +455,7 @@ export default function App() {
                 <span className="text-slate-600">|</span>
                 <span className="text-emerald-400 font-semibold">Team Docenti & Studenti</span>
               </div>
-              <p className="text-[11px] text-slate-400">Prof.ssa Ipazia • Prof. Sauro • Prof.ssa Rita • Prof.ssa Ada • Leo & Mia</p>
+              <p className="text-[11px] text-slate-400">Prof.ssa Ipazia • Prof. Dino Sauro • Prof.ssa Rita Ingranaggi • Prof.ssa Ada Byte • Leo, Mia, Samu & Chiara</p>
             </div>
           </div>
 

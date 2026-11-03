@@ -4,10 +4,12 @@ import profRitaImg from '../assets/images/prof_rita_tech_1793448204886.jpg';
 import profAdaImg from '../assets/images/prof_ada_coding_1793040737533.jpg';
 import leoImg from '../assets/images/student_male_mascot_1792934228385.jpg';
 import miaImg from '../assets/images/student_female_mascot_1792934231526.jpg';
+import samuImg from '../assets/images/student_samu_rabbit_1793452227338.jpg';
+import chiaraImg from '../assets/images/student_chiara_squirrel_1793452241809.jpg';
 import heroTeamImg from '../assets/images/scienzalab_hero_team_1792934230733.jpg';
 import { Subject } from '../types';
 
-export type MascotId = 'sauro' | 'ipazia' | 'rita' | 'ada' | 'leo' | 'mia';
+export type MascotId = 'sauro' | 'ipazia' | 'rita' | 'ada' | 'leo' | 'mia' | 'samu' | 'chiara';
 
 export interface Mascot {
   id: MascotId;
@@ -31,7 +33,7 @@ export interface Mascot {
 export const MASCOTS_DATA: Mascot[] = [
   {
     id: 'sauro',
-    name: 'Prof. Sauro',
+    name: 'Prof. Dino Sauro',
     role: 'Docente di Scienze & Fisica',
     species: 'Dinosauro Paleoscienziato',
     isTeacher: true,
@@ -66,7 +68,7 @@ export const MASCOTS_DATA: Mascot[] = [
     tagline: '«La matematica non è un labirinto di formule, ma la lente più limpida per cogliere l\'armonia delle forme!»',
     avatar: profIpaziaImg,
     preferredSubject: 'matematica',
-    favApps: ['mat-maestro-problemi', 'mat-proprieta-operazioni', 'mat-geogebra-classico'],
+    favApps: ['mat-enigmondo', 'mat-mondo-pitagora', 'mat-maestro-problemi', 'mat-proprieta-operazioni', 'mat-geogebra-classico'],
     quotes: [
       {
         text: 'Davanti a un problema difficile non tentare calcoli a caso: disegna il modello a barre o una figura geometrica chiara!',
@@ -87,11 +89,11 @@ export const MASCOTS_DATA: Mascot[] = [
   },
   {
     id: 'rita',
-    name: 'Prof.ssa Rita',
-    role: 'Docente di Tecnologia, Disegno & Energie',
+    name: 'Prof.ssa Rita Ingranaggi',
+    role: 'Docente di Tecnologia, Disegno & Meccanica',
     species: 'Civetta Ingegnere & Progettista',
     isTeacher: true,
-    tagline: '«La tecnologia trasforma le leggi della scienza in soluzioni concrete per l\'umanità: dal disegno tecnico alle energie rinnovabili!»',
+    tagline: '«La tecnologia trasforma le leggi della scienza in soluzioni concrete: con ingranaggi, circuiti e disegno 3D costruiamo il futuro!»',
     avatar: profRitaImg,
     preferredSubject: 'tecnologia',
     favApps: ['tec-disegno-3d', 'tec-solidi-3d', 'tec-energia-rinnovabile', 'tec-circuiti-cc', 'tec-ponti-strutture'],
@@ -115,11 +117,11 @@ export const MASCOTS_DATA: Mascot[] = [
   },
   {
     id: 'ada',
-    name: 'Prof.ssa Ada',
+    name: 'Prof.ssa Ada Byte',
     role: 'Docente di Informatica & Coding',
     species: 'Volpe Cybernetica',
     isTeacher: true,
-    tagline: '«Non limitarti a usare le app: impara a crearle! Con il coding trasformi la logica in superpoteri digitali.»',
+    tagline: '«Non limitarti a usare le app: impara a crearle byte dopo byte! Con il coding trasformi la logica in superpoteri digitali.»',
     avatar: profAdaImg,
     preferredSubject: 'informatica',
     favApps: ['inf-coding-adventure', 'inf-scratch', 'inf-bebras', 'inf-tinkercad'],
@@ -196,6 +198,62 @@ export const MASCOTS_DATA: Mascot[] = [
     badgeColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
     accentBorder: 'border-rose-500/40 hover:border-rose-400',
     bgGlow: 'from-rose-500/10 to-pink-500/5',
+  },
+  {
+    id: 'samu',
+    name: 'Samu',
+    role: 'Studente di 1ª Media (Logica & Numeri)',
+    species: 'Leprotto Geometra',
+    isTeacher: false,
+    tagline: '«Amo risolvere enigmi matematici, frazioni e cubi di Rubik: con la logica trovi sempre la via d\'uscita!»',
+    avatar: samuImg,
+    preferredSubject: 'matematica',
+    favApps: ['mat-enigmondo', 'mat-mondo-pitagora', 'mat-maestro-problemi', 'mat-proprieta-operazioni', 'inf-bebras'],
+    quotes: [
+      {
+        text: 'Grazie al Maestro dei Problemi ho capito subito come usare i segmenti per trovare due numeri conoscendo la somma e la differenza!',
+        context: 'Matematica & Modello a Barre',
+      },
+      {
+        text: 'Con la proprietà commutativa e associativa calcolo le somme a mente prima che i miei compagni aprano il quaderno.',
+        context: 'Calcolo Veloce a Mente',
+      },
+      {
+        text: 'Il cubo di Rubik e le sfide di logica Bebras mi hanno insegnato che ogni mossa va pianificata in anticipo, passo dopo passo!',
+        context: 'Logica & Rompicapi',
+      },
+    ],
+    badgeColor: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
+    accentBorder: 'border-yellow-500/40 hover:border-yellow-400',
+    bgGlow: 'from-yellow-500/10 to-amber-500/5',
+  },
+  {
+    id: 'chiara',
+    name: 'Chiara',
+    role: 'Studentessa di 3ª Media (Eco-Maker & Scienze)',
+    species: 'Scoiattolo Botanica & Maker',
+    isTeacher: false,
+    tagline: '«Ogni foglia è una centrale solare naturale: unire le scienze alla tecnologia ecologica salverà il nostro pianeta!»',
+    avatar: chiaraImg,
+    preferredSubject: 'tecnologia',
+    favApps: ['tec-energia-rinnovabile', 'sci-food-quest', 'tec-disegno-3d', 'sci-phet-leve'],
+    quotes: [
+      {
+        text: 'Nel simulatore delle energie rinnovabili ho verificato quanta CO2 risparmia una pala eolica o un pannello fotovoltaico: i dati parlano chiaro!',
+        context: 'Transizione Ecologica',
+      },
+      {
+        text: 'Con Food Quest ho analizzato le calorie e i macronutrienti del mio pranzo: la biologia vegetale e l\'alimentazione sono affascinanti.',
+        context: 'Scienze della Vita',
+      },
+      {
+        text: 'Costruire solidi 3D e studiare le capriate triangolari con la Prof.ssa Rita mi fa sentire una vera progettista del futuro!',
+        context: 'Disegno Tecnico & Strutture',
+      },
+    ],
+    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    accentBorder: 'border-emerald-500/40 hover:border-emerald-400',
+    bgGlow: 'from-emerald-500/10 to-teal-500/5',
   },
 ];
 
@@ -916,6 +974,8 @@ export {
   profAdaImg,
   leoImg,
   miaImg,
+  samuImg,
+  chiaraImg,
   heroTeamImg,
 };
 

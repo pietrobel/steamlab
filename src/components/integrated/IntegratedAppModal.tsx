@@ -1,7 +1,10 @@
 import React from 'react';
 import { X, Sparkles, ExternalLink, Home, ArrowLeft } from 'lucide-react';
 import { ProprietaOperazioniApp } from './ProprietaOperazioniApp';
+import { MondoPitagoraApp } from './MondoPitagoraApp';
 import { ExternalAppConnector } from './ExternalAppConnector';
+import { StoriaIpaziaSection } from '../ipazia/StoriaIpaziaSection';
+import { EnigMondoApp } from './EnigMondoApp';
 import { LinkItem } from '../../types';
 
 interface IntegratedAppModalProps {
@@ -134,6 +137,53 @@ export const IntegratedAppModal: React.FC<IntegratedAppModalProps> = ({
                 defaultUrl={item.url || 'https://ilmaestrodeiproblemi.vercel.app/'}
                 onBackToHome={onClose}
               />
+            )}
+            {item.internalAppId === 'mondo-pitagora' && (
+              <div className="space-y-10">
+                <ExternalAppConnector
+                  appId="mondo-pitagora"
+                  title={item.title}
+                  description={item.description}
+                  defaultUrl={item.url || 'https://ilmondodipitagora.vercel.app/'}
+                  onBackToHome={onClose}
+                />
+                <div className="pt-8 border-t border-slate-800">
+                  <div className="mb-4">
+                    <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                      Laboratorio Didattico Integrato Complementare
+                    </span>
+                    <h3 className="text-lg font-bold text-white mt-1">
+                      Dimostrazione Geometrica Dinamica, Terne Pitagoriche & Problemi
+                    </h3>
+                  </div>
+                  <MondoPitagoraApp onBackToHome={onClose} />
+                </div>
+              </div>
+            )}
+            {item.internalAppId === 'storia-ipazia' && (
+              <StoriaIpaziaSection onBackToDirectory={onClose} isStandaloneModal={true} />
+            )}
+            {item.internalAppId === 'enigmondo' && (
+              <div className="space-y-10">
+                <ExternalAppConnector
+                  appId="enigmondo"
+                  title={item.title}
+                  description={item.description}
+                  defaultUrl={item.url || 'https://enigmondo.vercel.app/'}
+                  onBackToHome={onClose}
+                />
+                <div className="pt-8 border-t border-slate-800">
+                  <div className="mb-4">
+                    <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                      Palestra di Giochi Didattici Complementare
+                    </span>
+                    <h3 className="text-lg font-bold text-white mt-1">
+                      Quadrati Magici, Bilance delle Forme, Sequenze & Indovinelli di Samu
+                    </h3>
+                  </div>
+                  <EnigMondoApp onBackToHome={onClose} />
+                </div>
+              </div>
             )}
           </div>
         </div>

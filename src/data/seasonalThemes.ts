@@ -6,6 +6,7 @@ export type SeasonId =
   | 'inverno'
   | 'carnevale'
   | 'primavera'
+  | 'earthday'
   | 'estate'
   | 'autunno';
 
@@ -35,11 +36,11 @@ export interface SeasonalTheme {
 export const SEASONAL_THEMES: Record<Exclude<SeasonId, 'auto'>, SeasonalTheme> = {
   standard: {
     id: 'standard',
-    name: 'ScienzaLab Classico',
-    shortName: 'Classico',
-    emoji: '🔬',
-    subtitle: 'Il laboratorio digitale di matematica, scienze, tecnologia e informatica per la scuola media.',
-    bannerTag: 'Laboratorio Digitale Permanente',
+    name: 'ScienzaLab Quotidiano (Normale)',
+    shortName: 'Quotidiano',
+    emoji: '🏫',
+    subtitle: 'Aspetto predefinito per le lezioni ordinarie: pulito, concentrato e privo di distrazioni festive.',
+    bannerTag: 'Anno Scolastico Ordinario 🏫🔬',
     mascotGreeting: '«La scienza e la tecnologia non sono formule da memorizzare, ma gli strumenti per comprendere e migliorare il nostro pianeta!»',
     mascotAuthor: 'Prof. Sauro, Ipazia, Rita & Ada',
     glowColors: {
@@ -77,39 +78,39 @@ export const SEASONAL_THEMES: Record<Exclude<SeasonId, 'auto'>, SeasonalTheme> =
     name: 'Natale & Festività',
     shortName: 'Natale',
     emoji: '🎄',
-    subtitle: 'Cristalli di neve esagonali, termodinamica del freddo e luci scintillanti per le feste!',
-    bannerTag: 'Edizione Festività Natalizie 🎄❄️',
-    mascotGreeting: '«Ogni fiocco di neve ha una simmetria esagonale perfetta grazie ai legami molecolari dell\'acqua. Buone feste scientifiche a tutti!»',
-    mascotAuthor: 'Prof.ssa Ipazia & Prof. Sauro Natalizio',
+    subtitle: 'Luci scintillanti, abeti addobbati, regali scientifici, calore festivo e chimica delle stelle.',
+    bannerTag: 'Feste di Natale & Capodanno 🎄🎁⭐',
+    mascotGreeting: '«Buone Feste da tutta la squadra di ScienzaLab! Che questo Natale porti tanta curiosità scientifica, scoperte e doni educativi!»',
+    mascotAuthor: 'La Squadra di ScienzaLab in Festa',
     glowColors: {
-      orb1: 'bg-red-600/15',
-      orb2: 'bg-emerald-600/15',
-      orb3: 'bg-amber-400/10',
+      orb1: 'bg-red-600/25',
+      orb2: 'bg-emerald-600/25',
+      orb3: 'bg-amber-400/20',
     },
-    headerBorder: 'border-red-500/40',
-    badgeBg: 'bg-red-500/20',
-    badgeText: 'text-red-300 border-red-500/40',
-    accentGradient: 'from-red-400 via-emerald-300 to-amber-300',
+    headerBorder: 'border-red-500/50',
+    badgeBg: 'bg-red-500/25',
+    badgeText: 'text-red-200 border-red-500/50',
+    accentGradient: 'from-red-400 via-amber-300 to-emerald-400',
     particleType: 'snow',
   },
   inverno: {
     id: 'inverno',
-    name: 'Inverno & Ghiaccio',
+    name: 'Inverno Polare & Ghiaccio',
     shortName: 'Inverno',
     emoji: '❄️',
-    subtitle: 'Stati della materia, zero termico, aurore boreali e fisica delle basse temperature.',
-    bannerTag: 'Stagione Invernale dei Laboratori ❄️',
-    mascotGreeting: '«A zero gradi l\'acqua ghiaccia e aumenta di volume: un\'anomalia chimica che salva la vita nei laghi ghiacciati!»',
-    mascotAuthor: 'Prof. Sauro dei Ghiacci',
+    subtitle: 'Zero termico, fisica delle basse temperature, cristalli esagonali ed espansione anomala dell\'acqua.',
+    bannerTag: 'Inverno Polare & Fisica del Freddo ❄️🧊🌌',
+    mascotGreeting: '«Nel gelo dell\'inverno l\'acqua si comporta in modo straordinario: a 4°C ha la massima densità, perciò il ghiaccio galleggia e protegge la vita sul fondo dei laghi!»',
+    mascotAuthor: 'Prof. Sauro & Prof.ssa Ipazia dei Ghiacci',
     glowColors: {
-      orb1: 'bg-sky-500/15',
-      orb2: 'bg-cyan-500/15',
-      orb3: 'bg-indigo-500/10',
+      orb1: 'bg-cyan-500/25',
+      orb2: 'bg-sky-600/20',
+      orb3: 'bg-blue-800/25',
     },
-    headerBorder: 'border-sky-500/40',
-    badgeBg: 'bg-sky-500/20',
-    badgeText: 'text-sky-300 border-sky-500/40',
-    accentGradient: 'from-sky-300 via-cyan-300 to-indigo-300',
+    headerBorder: 'border-cyan-500/50',
+    badgeBg: 'bg-cyan-500/25',
+    badgeText: 'text-cyan-200 border-cyan-500/50',
+    accentGradient: 'from-cyan-300 via-sky-200 to-indigo-400',
     particleType: 'snow',
   },
   carnevale: {
@@ -150,6 +151,26 @@ export const SEASONAL_THEMES: Record<Exclude<SeasonId, 'auto'>, SeasonalTheme> =
     badgeBg: 'bg-emerald-500/20',
     badgeText: 'text-emerald-300 border-emerald-500/40',
     accentGradient: 'from-emerald-300 via-pink-300 to-amber-200',
+    particleType: 'flower',
+  },
+  earthday: {
+    id: 'earthday',
+    name: 'Earth Day & Settimana della Terra',
+    shortName: 'Earth Day',
+    emoji: '🌍',
+    subtitle: 'Salvaguardia del pianeta, biodiversità, energie rinnovabili, riciclo ed ecologia integrale.',
+    bannerTag: 'Settimana Mondiale della Terra 🌍🌱♻️',
+    mascotGreeting: '«La Terra non è un\'eredità dei nostri padri, ma un prestito dei nostri figli: usiamo la scienza, la chimica verde e le tecnologie pulite per proteggerla!»',
+    mascotAuthor: 'Chiara, Prof. Sauro & Prof.ssa Rita',
+    glowColors: {
+      orb1: 'bg-emerald-500/25',
+      orb2: 'bg-cyan-500/20',
+      orb3: 'bg-teal-500/15',
+    },
+    headerBorder: 'border-emerald-500/50',
+    badgeBg: 'bg-emerald-500/25',
+    badgeText: 'text-emerald-200 border-emerald-500/50',
+    accentGradient: 'from-emerald-300 via-teal-200 to-cyan-400',
     particleType: 'flower',
   },
   estate: {
@@ -195,47 +216,56 @@ export const SEASONAL_THEMES: Record<Exclude<SeasonId, 'auto'>, SeasonalTheme> =
 };
 
 /**
- * Automatically calculates the seasonal theme based on current calendar date.
+ * Calcola automaticamente il tema in base alla data corrente:
+ * I temi speciali/stagionali si attivano SOLO nei periodi iniziali della stagione o festività,
+ * mentre per tutti gli altri giorni ordinari dell'anno si attiva il tema normale predefinito "ScienzaLab Quotidiano".
  */
 export function getAutoSeasonalTheme(date: Date = new Date()): ConcreteSeasonId {
-  const month = date.getMonth(); // 0 = Jan, 11 = Dec
+  const month = date.getMonth(); // 0 = Gennaio, 11 = Dicembre
   const day = date.getDate();
 
-  // Halloween: 20 Oct - 5 Nov
-  if ((month === 9 && day >= 20) || (month === 10 && day <= 5)) {
+  // 1. Halloween: solo nel periodo della festa (24 Ottobre - 3 Novembre)
+  if ((month === 9 && day >= 24) || (month === 10 && day <= 3)) {
     return 'halloween';
   }
 
-  // Natale & Capodanno & Epifania: 1 Dec - 6 Jan
-  if (month === 11 || (month === 0 && day <= 6)) {
+  // 2. Natale & Capodanno & Epifania: solo nel periodo festivo (15 Dicembre - 6 Gennaio)
+  if ((month === 11 && day >= 15) || (month === 0 && day <= 6)) {
     return 'natale';
   }
 
-  // Carnevale: indicativamente 7 Feb - 28 Feb
-  if (month === 1 && day >= 7 && day <= 28) {
-    return 'carnevale';
-  }
-
-  // Inverno rimanente: 7 Gen - 6 Feb
-  if ((month === 0 && day > 6) || (month === 1 && day < 7)) {
+  // 3. Inizio Inverno Polare: solo nelle prime due settimane post-feste (7 Gennaio - 21 Gennaio)
+  if (month === 0 && day >= 7 && day <= 21) {
     return 'inverno';
   }
 
-  // Primavera: 21 Mar - 31 May
-  if ((month === 2 && day >= 21) || month === 3 || month === 4) {
+  // 4. Carnevale scientifico: solo nella finestra di Carnevale (8 Febbraio - 22 Febbraio)
+  if (month === 1 && day >= 8 && day <= 22) {
+    return 'carnevale';
+  }
+
+  // 5. Inizio Primavera & Pasqua: solo nelle prime due settimane dall'equinozio (21 Marzo - 7 Aprile)
+  if ((month === 2 && day >= 21) || (month === 3 && day <= 7)) {
     return 'primavera';
   }
 
-  // Estate: 1 Jun - 31 Aug
-  if (month === 5 || month === 6 || month === 7) {
+  // 6. Earth Day & Settimana Mondiale della Terra: TUTTA LA SETTIMANA dal 18 al 26 Aprile (22 Aprile Earth Day)
+  if (month === 3 && day >= 18 && day <= 26) {
+    return 'earthday';
+  }
+
+  // 7. Inizio Estate & Fine Anno Scolastico: solo nelle prime settimane di giugno (1 Giugno - 21 Giugno)
+  if (month === 5 && day >= 1 && day <= 21) {
     return 'estate';
   }
 
-  // Autunno: 1 Sep - 19 Oct e 6 Nov - 30 Nov
-  if (month === 8 || (month === 9 && day < 20) || (month === 10 && day > 5)) {
+  // 8. Inizio Autunno & Rientro a Scuola: solo nelle prime settimane di avvio anno (10 Settembre - 30 Settembre)
+  if (month === 8 && day >= 10 && day <= 30) {
     return 'autunno';
   }
 
+  // In TUTTI gli altri giorni dell'anno senza festività (la maggior parte dei mesi di scuola):
+  // Tema normale predefinito "ScienzaLab Quotidiano", pulito e didattico.
   return 'standard';
 }
 

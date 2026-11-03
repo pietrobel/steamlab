@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { ExternalLink, ArrowLeft, Home, RefreshCw, AlertCircle, Laptop, ShieldCheck } from 'lucide-react';
-import { profSauroImg, profIpaziaImg, profAdaImg, leoImg, miaImg } from '../../data/mascots';
+import { profSauroImg, profIpaziaImg, profAdaImg, profRitaImg, leoImg, miaImg, samuImg } from '../../data/mascots';
 
 interface ExternalAppConnectorProps {
-  appId: 'cinematica' | 'food-quest' | 'proprieta-operazioni' | 'maestro-problemi' | 'coding-adventure' | string;
+  appId: 'cinematica' | 'food-quest' | 'proprieta-operazioni' | 'maestro-problemi' | 'coding-adventure' | 'mondo-pitagora' | string;
   title: string;
   description: string;
   defaultUrl?: string;
@@ -23,12 +23,13 @@ export const ExternalAppConnector: React.FC<ExternalAppConnectorProps> = ({
   // Directly and safely use the curated educator URL without allowing student tampering
   const appUrl = defaultUrl;
 
-  const isMath = appId === 'maestro-problemi' || appId === 'proprieta-operazioni';
+  const isMath = appId === 'maestro-problemi' || appId === 'proprieta-operazioni' || appId === 'mondo-pitagora' || appId === 'enigmondo';
   const isCoding = appId === 'coding-adventure';
   const teacherImg = isMath ? profIpaziaImg : isCoding ? profAdaImg : profSauroImg;
-  const teacherName = isMath ? 'Prof.ssa Ipazia' : isCoding ? 'Prof.ssa Ada' : 'Prof. Sauro';
-  const studentImg = isMath ? miaImg : leoImg;
-  const studentName = isMath ? 'Mia' : 'Leo';
+  const teacherName = isMath ? 'Prof.ssa Ipazia' : isCoding ? 'Prof.ssa Ada Byte' : 'Prof. Dino Sauro';
+  const isEnigmondoOrPitagora = appId === 'mondo-pitagora' || appId === 'enigmondo';
+  const studentImg = isEnigmondoOrPitagora ? samuImg : isMath ? miaImg : leoImg;
+  const studentName = isEnigmondoOrPitagora ? 'Samu' : isMath ? 'Mia' : 'Leo';
 
   return (
     <div className="space-y-6 text-slate-100">

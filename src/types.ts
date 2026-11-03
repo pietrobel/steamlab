@@ -20,7 +20,10 @@ export interface LinkItem {
     | 'cinematica'
     | 'food-quest'
     | 'maestro-problemi'
-    | 'coding-adventure';
+    | 'coding-adventure'
+    | 'mondo-pitagora'
+    | 'storia-ipazia'
+    | 'enigmondo';
 }
 
 export interface SubjectMeta {

@@ -26,13 +26,14 @@ export const SeasonalThemeSelector: React.FC<SeasonalThemeSelectorProps> = ({
       {/* Seasonal Pill Button in Navbar */}
       <button
         onClick={() => setIsOpen(true)}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800/80 hover:bg-slate-750 text-slate-200 hover:text-white border border-slate-700/80 transition-all shadow-sm hover:scale-[1.02]"
-        title="Personalizza l'aspetto stagionale del portale (Halloween, Natale, Carnevale, Primavera, Estate, Autunno)"
+        className="min-h-[44px] inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-800/80 hover:bg-slate-750 text-slate-200 hover:text-white border border-slate-700/80 transition-all shadow-sm active:scale-95 touch-manipulation"
+        title="Personalizza l'aspetto stagionale del portale (Halloween, Natale, Carnevale, Primavera, Estate, Autunno, Earth Day)"
+        aria-label="Personalizza tema stagionale"
       >
-        <span className="text-sm">{activeMeta.emoji}</span>
-        <span className="hidden lg:inline">{activeMeta.shortName}</span>
+        <span className="text-base">{activeMeta.emoji}</span>
+        <span className="hidden sm:inline text-xs">{activeMeta.shortName}</span>
         {currentSeason === 'auto' && (
-          <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-750 text-cyan-300 font-mono">
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-750 text-cyan-300 font-mono">
             Auto
           </span>
         )}
@@ -40,29 +41,30 @@ export const SeasonalThemeSelector: React.FC<SeasonalThemeSelectorProps> = ({
 
       {/* Modal Dialog */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden p-6 text-slate-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in overflow-y-auto">
+          <div className="relative w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden p-4 sm:p-6 text-slate-100 max-h-[92vh] flex flex-col">
             {/* Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-5">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500/20 via-purple-500/20 to-cyan-500/20 border border-slate-700 flex items-center justify-center text-xl">
+            <div className="flex items-center justify-between pb-3.5 border-b border-slate-800 mb-4 shrink-0">
+              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500/20 via-purple-500/20 to-cyan-500/20 border border-slate-700 flex items-center justify-center text-xl shrink-0">
                   🎨
                 </div>
-                <div>
-                  <h3 className="text-base font-bold text-white flex items-center gap-2">
+                <div className="min-w-0">
+                  <h3 className="text-sm sm:text-base font-bold text-white flex items-center gap-2 truncate">
                     <span>Temi & Aspetto Stagionale</span>
                   </h3>
-                  <p className="text-xs text-slate-400">
-                    Scegli l'aspetto del portale a seconda del periodo dell'anno
+                  <p className="text-[11px] sm:text-xs text-slate-400 truncate">
+                    Scegli l'aspetto del portale a seconda del periodo
                   </p>
                 </div>
               </div>
 
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 rounded-xl text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-750 border border-slate-700 transition-colors"
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-750 border border-slate-700 transition-colors shrink-0 active:scale-95"
+                aria-label="Chiudi"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
@@ -86,14 +88,17 @@ export const SeasonalThemeSelector: React.FC<SeasonalThemeSelectorProps> = ({
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-bold text-white">
-                        Automatico in base alla data
+                        Automatico da calendario
                       </span>
                       <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-semibold border border-cyan-500/30">
                         Consigliato
                       </span>
                     </div>
                     <p className="text-xs text-slate-400 mt-0.5">
-                      Attualmente: <strong className="text-white">{SEASONAL_THEMES[autoSeasonId]?.name}</strong> ({SEASONAL_THEMES[autoSeasonId]?.emoji})
+                      Attualmente attivo: <strong className="text-white">{SEASONAL_THEMES[autoSeasonId]?.name}</strong> ({SEASONAL_THEMES[autoSeasonId]?.emoji})
+                    </p>
+                    <p className="text-[11px] text-cyan-300/90 mt-0.5">
+                      Festività attive solo nei periodi iniziali; nelle lezioni ordinarie usa il tema Quotidiano.
                     </p>
                   </div>
                 </div>
@@ -109,6 +114,7 @@ export const SeasonalThemeSelector: React.FC<SeasonalThemeSelectorProps> = ({
               {(Object.keys(SEASONAL_THEMES) as Array<Exclude<SeasonId, 'auto'>>).map((id) => {
                 const theme = SEASONAL_THEMES[id];
                 const isSelected = currentSeason === id;
+                const isStandard = id === 'standard';
 
                 return (
                   <button
@@ -120,15 +126,24 @@ export const SeasonalThemeSelector: React.FC<SeasonalThemeSelectorProps> = ({
                     className={`w-full text-left p-3 rounded-xl border transition-all flex items-center justify-between gap-3 ${
                       isSelected
                         ? 'bg-slate-850 border-cyan-500 ring-1 ring-cyan-500/40 text-white'
+                        : isStandard
+                        ? 'bg-slate-800/60 hover:bg-slate-800 border-slate-700/80 text-slate-200'
                         : 'bg-slate-800/30 hover:bg-slate-800/80 border-slate-800/80 text-slate-300'
                     }`}
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <span className="text-xl shrink-0">{theme.emoji}</span>
                       <div className="min-w-0">
-                        <span className="text-xs sm:text-sm font-bold block truncate text-white">
-                          {theme.name}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs sm:text-sm font-bold truncate text-white">
+                            {theme.name}
+                          </span>
+                          {isStandard && (
+                            <span className="text-[10px] px-2 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">
+                              Normale
+                            </span>
+                          )}
+                        </div>
                         <span className="text-[11px] text-slate-400 block truncate">
                           {theme.subtitle}
                         </span>
