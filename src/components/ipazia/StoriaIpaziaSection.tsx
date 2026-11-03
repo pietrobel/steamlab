@@ -133,41 +133,41 @@ export const StoriaIpaziaSection: React.FC<StoriaIpaziaSectionProps> = ({
     olio: {
       name: 'Olio d\'Oliva',
       density: 0.92,
-      floatBottom: 28, // Affonda molto: sta in basso
-      submergedPercent: '88% immerso',
-      positionLabel: 'Sta in basso (affonda di più)',
+      floatBottom: 66, // Affonda: 82% immerso
+      submergedPercent: '82% immerso',
+      positionLabel: 'Affonda di più (asta quasi tutta immersa)',
       positionColor: 'text-amber-400 bg-amber-500/20 border-amber-500/30',
-      desc: 'Meno denso dell\'acqua (0.92 g/cm³). Riceve meno spinta dal liquido, per cui l\'idroscopio deve affondare di più per trovare l\'equilibrio: STA IN BASSO!',
+      desc: 'Meno denso dell\'acqua (0.92 g/cm³). Riceve meno spinta idrostatica, quindi l\'idroscopio deve affondare maggiormente nell\'olio per raggiungere l\'equilibrio.',
       color: 'bg-amber-400/35 border-amber-500/50 text-amber-300',
     },
     acqua: {
       name: 'Acqua Dolce (Fiume Nilo)',
       density: 1.0,
-      floatBottom: 68, // Livello di riferimento a metà
-      submergedPercent: '65% immerso',
-      positionLabel: 'Al centro (livello standard)',
+      floatBottom: 80, // Livello di taratura centrale: 70% immerso
+      submergedPercent: '70% immerso',
+      positionLabel: 'Livello standard (tacca centrale 1.0)',
       positionColor: 'text-cyan-400 bg-cyan-500/20 border-cyan-500/30',
-      desc: 'Densità di riferimento: 1 g/cm³. L\'idroscopio si stabilizza esattamente sulla tacca centrale della scala graduata.',
+      desc: 'Densità di riferimento: 1.00 g/cm³. L\'idroscopio si stabilizza esattamente sulla tacca centrale della scala graduata.',
       color: 'bg-cyan-400/35 border-cyan-500/50 text-cyan-300',
     },
     mare: {
       name: 'Acqua Salata (Mar Mediterraneo)',
       density: 1.03,
-      floatBottom: 88, // Più denso: galleggia più in alto
-      submergedPercent: '50% immerso',
-      positionLabel: 'Sta più in alto (emerge di più)',
+      floatBottom: 86, // Circa 64% immerso, emerge di più dell'acqua dolce
+      submergedPercent: '64% immerso',
+      positionLabel: 'Emerge di più (sale a monte della taratura)',
       positionColor: 'text-emerald-400 bg-emerald-500/20 border-emerald-500/30',
-      desc: 'Più densa dell\'acqua dolce per il sale disciolto (1.03 g/cm³). La spinta di Archimede verso l\'alto è maggiore: l\'idroscopio STA PIÙ IN ALTO ed emerge di più!',
+      desc: 'Più densa dell\'acqua dolce per i sali disciolti (1.03 g/cm³). La maggiore spinta di Archimede fa emergere l\'asta di qualche millimetro in più rispetto all\'acqua dolce.',
       color: 'bg-emerald-400/35 border-emerald-500/50 text-emerald-300',
     },
     miele: {
       name: 'Miele d\'Alessandria',
       density: 1.42,
-      floatBottom: 114, // Altissima densità: sta altissimo
-      submergedPercent: '28% immerso',
-      positionLabel: 'Sta altissimo (emerge quasi tutto)',
+      floatBottom: 100, // Circa 52% immerso: emerge chiaramente ma mantiene il bulbo immerso per stabilità
+      submergedPercent: '52% immerso',
+      positionLabel: 'Emerge nettamente (spinta idrostatica elevata)',
       positionColor: 'text-orange-400 bg-orange-500/20 border-orange-500/30',
-      desc: 'Densità molto elevata (1.42 g/cm³). La spinta verso l\'alto è fortissima: l\'idroscopio STA IN ALTO e galleggia in superficie con quasi tutta l\'asta fuori dal liquido!',
+      desc: 'Densità elevata (1.42 g/cm³): la spinta idrostatica è circa il 42% maggiore rispetto all\'acqua. L\'idroscopio emerge con circa metà asta fuori, mantenendo il bulbo immerso per non ribaltarsi.',
       color: 'bg-orange-500/40 border-orange-500/50 text-orange-300',
     },
   };
@@ -874,12 +874,13 @@ export const StoriaIpaziaSection: React.FC<StoriaIpaziaSectionProps> = ({
                   <div className="flex items-center gap-2 mb-1.5">
                     <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
                     <h5 className="text-xs sm:text-sm font-bold text-white">
-                      Regola d'Oro: Più il liquido è denso, più l'idrometro STA IN ALTO!
+                      Principio di Archimede & Densità: La Regola del Galleggiamento
                     </h5>
                   </div>
                   <p className="text-xs text-slate-200 leading-relaxed">
-                    <strong>Hai perfettamente ragione!</strong> Per la <em>Spinta di Archimede</em>, un liquido molto denso (come il miele o l'acqua marina salata) esercita una spinta verso l'alto fortissima: per bilanciare il peso dello strumento basta immergerne solo una piccola parte, quindi l'idrometro <strong>emerge molto e sta in alto</strong>.<br />
-                    In un liquido poco denso (come l'olio), la spinta è debole e l'idrometro deve affondare profondamente: perciò <strong>sta in basso</strong>.
+                    Secondo la <em>Spinta Idrostatica di Archimede</em> (<span className="font-mono text-cyan-300">F = d · V · g</span>), un corpo che galleggia sposta un peso di liquido pari al proprio peso totale.<br />
+                    • Nei liquidi a <strong>maggiore densità</strong> (come l'acqua salata e il miele), la spinta verso l'alto per unità di volume è maggiore: serve immergere meno volume, quindi l'idrometro <strong>emerge e sta più in alto</strong>.<br />
+                    • Nei liquidi a <strong>minore densità</strong> (come l'olio d'oliva), la spinta è inferiore: per compensare il proprio peso l'idrometro deve affondare di più, perciò <strong>sta più in basso</strong>.
                   </p>
                 </div>
 
