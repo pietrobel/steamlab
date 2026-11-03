@@ -12,6 +12,7 @@ import {
   Lightbulb,
   PieChart,
   Shapes,
+  Sparkles,
 } from 'lucide-react';
 import { profIpaziaImg } from '../../data/mascots';
 
@@ -132,30 +133,42 @@ export const StoriaIpaziaSection: React.FC<StoriaIpaziaSectionProps> = ({
     olio: {
       name: 'Olio d\'Oliva',
       density: 0.92,
-      sinkDepth: 85,
-      desc: 'Meno denso dell\'acqua (0.92 g/cm³). Per questo l\'olio galleggia sopra l\'acqua e l\'idroscopio affonda di più!',
-      color: 'bg-amber-400/30 border-amber-500/40 text-amber-300',
+      floatBottom: 28, // Affonda molto: sta in basso
+      submergedPercent: '88% immerso',
+      positionLabel: 'Sta in basso (affonda di più)',
+      positionColor: 'text-amber-400 bg-amber-500/20 border-amber-500/30',
+      desc: 'Meno denso dell\'acqua (0.92 g/cm³). Riceve meno spinta dal liquido, per cui l\'idroscopio deve affondare di più per trovare l\'equilibrio: STA IN BASSO!',
+      color: 'bg-amber-400/35 border-amber-500/50 text-amber-300',
     },
     acqua: {
       name: 'Acqua Dolce (Fiume Nilo)',
       density: 1.0,
-      sinkDepth: 55,
-      desc: 'Densità di riferimento: 1 g/cm³. L\'idroscopio galleggia esattamente sulla linea di mezzo.',
-      color: 'bg-cyan-400/30 border-cyan-500/40 text-cyan-300',
+      floatBottom: 68, // Livello di riferimento a metà
+      submergedPercent: '65% immerso',
+      positionLabel: 'Al centro (livello standard)',
+      positionColor: 'text-cyan-400 bg-cyan-500/20 border-cyan-500/30',
+      desc: 'Densità di riferimento: 1 g/cm³. L\'idroscopio si stabilizza esattamente sulla tacca centrale della scala graduata.',
+      color: 'bg-cyan-400/35 border-cyan-500/50 text-cyan-300',
     },
     mare: {
       name: 'Acqua Salata (Mar Mediterraneo)',
       density: 1.03,
-      sinkDepth: 40,
-      desc: 'Più densa dell\'acqua dolce per il sale disciolto (1.03 g/cm³). La spinta verso l\'alto è maggiore e l\'idroscopio galleggia più in alto!',
-      color: 'bg-emerald-400/30 border-emerald-500/40 text-emerald-300',
+      floatBottom: 88, // Più denso: galleggia più in alto
+      submergedPercent: '50% immerso',
+      positionLabel: 'Sta più in alto (emerge di più)',
+      positionColor: 'text-emerald-400 bg-emerald-500/20 border-emerald-500/30',
+      desc: 'Più densa dell\'acqua dolce per il sale disciolto (1.03 g/cm³). La spinta di Archimede verso l\'alto è maggiore: l\'idroscopio STA PIÙ IN ALTO ed emerge di più!',
+      color: 'bg-emerald-400/35 border-emerald-500/50 text-emerald-300',
     },
     miele: {
       name: 'Miele d\'Alessandria',
       density: 1.42,
-      sinkDepth: 20,
-      desc: 'Molto denso e denso di zuccheri (1.42 g/cm³). L\'idroscopio galleggia in superficie senza quasi affondare!',
-      color: 'bg-orange-500/30 border-orange-500/40 text-orange-300',
+      floatBottom: 114, // Altissima densità: sta altissimo
+      submergedPercent: '28% immerso',
+      positionLabel: 'Sta altissimo (emerge quasi tutto)',
+      positionColor: 'text-orange-400 bg-orange-500/20 border-orange-500/30',
+      desc: 'Densità molto elevata (1.42 g/cm³). La spinta verso l\'alto è fortissima: l\'idroscopio STA IN ALTO e galleggia in superficie con quasi tutta l\'asta fuori dal liquido!',
+      color: 'bg-orange-500/40 border-orange-500/50 text-orange-300',
     },
   };
 
@@ -800,49 +813,88 @@ export const StoriaIpaziaSection: React.FC<StoriaIpaziaSectionProps> = ({
             {/* Split: Vessel visualizer + Physic note */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
               {/* Vessel Drawing */}
-              <div className="md:col-span-5 bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col items-center justify-center min-h-[260px]">
-                <div className="relative w-36 h-56 border-x-4 border-b-4 border-slate-600 rounded-b-2xl overflow-hidden bg-slate-900/60 shadow-inner flex items-end justify-center">
-                  {/* Liquid inside */}
+              <div className="md:col-span-5 bg-slate-950 p-5 rounded-2xl border border-slate-800 flex flex-col items-center justify-center min-h-[300px]">
+                {/* Visual Beaker Container */}
+                <div className="relative w-44 h-64 border-x-4 border-b-4 border-slate-600 rounded-b-2xl overflow-hidden bg-slate-900/80 shadow-inner flex items-end justify-center">
+                  {/* Liquid inside (Height 160px from floor) */}
                   <div
                     className={`w-full h-40 transition-colors duration-500 relative ${LIQUIDS_DATA[selectedLiquid].color}`}
                   >
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-white/40" />
+                    {/* Waterline / Pelo libero del liquido */}
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-white/60 shadow-sm border-t border-white/80" />
+                    <span className="absolute top-1.5 right-2 text-[9px] font-mono font-bold text-white/90 bg-slate-950/60 px-1.5 py-0.5 rounded">
+                      Livello liquido
+                    </span>
                   </div>
 
-                  {/* Floating Hydrometer Tube */}
+                  {/* Floating Hydrometer Tube (Corrected physics: floatBottom is higher for denser liquids) */}
                   <div
-                    className="absolute w-5 bg-gradient-to-b from-slate-200 to-amber-200 border-2 border-slate-800 rounded-full shadow-lg transition-all duration-700 flex flex-col items-center justify-between py-1"
+                    className="absolute w-6 bg-gradient-to-b from-amber-100 via-slate-100 to-amber-200 border-2 border-slate-800 rounded-full shadow-2xl transition-all duration-700 ease-out flex flex-col items-center justify-between py-1.5 z-10"
                     style={{
-                      height: '110px',
-                      bottom: `${LIQUIDS_DATA[selectedLiquid].sinkDepth}px`,
+                      height: '115px',
+                      bottom: `${LIQUIDS_DATA[selectedLiquid].floatBottom}px`,
                     }}
                   >
-                    <div className="w-3 h-0.5 bg-slate-700" />
-                    <div className="w-3 h-0.5 bg-slate-700" />
-                    <div className="w-3 h-0.5 bg-slate-700" />
-                    <div className="w-3.5 h-3.5 rounded-full bg-slate-800 mb-0.5" title="Zavorra di piombo" />
+                    {/* Upper stem markings (low density graduations) */}
+                    <div className="w-full flex flex-col items-center gap-1.5 pt-0.5">
+                      <div className="w-3.5 h-0.5 bg-red-600" title="0.9 g/cm³" />
+                      <div className="w-3.5 h-0.5 bg-cyan-700" title="1.0 g/cm³" />
+                      <div className="w-3.5 h-0.5 bg-emerald-700" title="1.03 g/cm³" />
+                      <div className="w-3.5 h-0.5 bg-purple-700" title="1.42 g/cm³" />
+                    </div>
+
+                    {/* Lead ballast bulb at the base */}
+                    <div className="flex flex-col items-center">
+                      <div
+                        className="w-4 h-4 rounded-full bg-slate-800 border-2 border-slate-900 shadow-inner flex items-center justify-center text-[7px] text-slate-300 font-bold"
+                        title="Zavorra di piombo di Ipazia"
+                      >
+                        Pb
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <span className="text-xs font-bold text-slate-400 mt-3">
-                  Densità: <strong className="text-white">{LIQUIDS_DATA[selectedLiquid].density} g/cm³</strong>
-                </span>
+                {/* Density and Float State Badges */}
+                <div className="mt-3.5 flex flex-col items-center gap-1.5 text-center">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-slate-400 font-medium">Densità:</span>
+                    <strong className="text-sm text-white font-mono">{LIQUIDS_DATA[selectedLiquid].density} g/cm³</strong>
+                  </div>
+                  <div className={`text-[11px] font-bold px-2.5 py-1 rounded-full border ${LIQUIDS_DATA[selectedLiquid].positionColor}`}>
+                    {LIQUIDS_DATA[selectedLiquid].positionLabel} • {LIQUIDS_DATA[selectedLiquid].submergedPercent}
+                  </div>
+                </div>
               </div>
 
               {/* Scientific Note */}
               <div className="md:col-span-7 space-y-3">
-                <div className="p-4 rounded-xl bg-slate-950 border border-slate-800">
-                  <h5 className="text-sm font-bold text-white mb-1">
-                    Cosa dice la legge di Archimede?
-                  </h5>
-                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                {/* Core Physics Rule Highlight Box */}
+                <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-950/40 via-cyan-950/30 to-slate-900 border border-emerald-500/40 shadow-sm">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <h5 className="text-xs sm:text-sm font-bold text-white">
+                      Regola d'Oro: Più il liquido è denso, più l'idrometro STA IN ALTO!
+                    </h5>
+                  </div>
+                  <p className="text-xs text-slate-200 leading-relaxed">
+                    <strong>Hai perfettamente ragione!</strong> Per la <em>Spinta di Archimede</em>, un liquido molto denso (come il miele o l'acqua marina salata) esercita una spinta verso l'alto fortissima: per bilanciare il peso dello strumento basta immergerne solo una piccola parte, quindi l'idrometro <strong>emerge molto e sta in alto</strong>.<br />
+                    In un liquido poco denso (come l'olio), la spinta è debole e l'idrometro deve affondare profondamente: perciò <strong>sta in basso</strong>.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
+                  <h6 className="text-xs font-bold text-amber-300 mb-1">
+                    Comportamento con {LIQUIDS_DATA[selectedLiquid].name}:
+                  </h6>
+                  <p className="text-xs text-slate-300 leading-relaxed">
                     {LIQUIDS_DATA[selectedLiquid].desc}
                   </p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-indigo-950/40 border border-indigo-900/60 text-xs text-indigo-200 leading-relaxed">
-                  <strong className="text-white block mb-0.5">La Lettera di Sinesio (Lettera 15):</strong>
-                  «Ho urgente bisogno di un idroscopio per calcolare il peso specifico dell'acqua che bevo. Si tratta di un tubo cilindrico con sopra incise linee orizzontali e un peso sul fondo...». Grazie a questa lettera, gli scienziati hanno potuto ricostruire fedelmente l'invenzione di Ipazia!
+                <div className="p-3.5 rounded-xl bg-indigo-950/40 border border-indigo-900/60 text-xs text-indigo-200 leading-relaxed">
+                  <strong className="text-white block mb-0.5">La Lettera 15 di Sinesio a Ipazia:</strong>
+                  «Ho urgente bisogno di un idroscopio per calcolare il peso specifico dell'acqua che bevo. Si tratta di un tubo cilindrico con sopra incise linee orizzontali e un peso sul fondo...». Grazie a questa lettera, gli storici hanno potuto ricostruire fedelmente lo strumento!
                 </div>
               </div>
             </div>

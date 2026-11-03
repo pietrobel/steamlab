@@ -53,6 +53,9 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({
               <h3 className="text-sm sm:text-base font-bold text-white truncate">
                 {item.title}
               </h3>
+              <p className="text-[11px] text-slate-300 line-clamp-1 hidden md:block max-w-xl">
+                {item.description}
+              </p>
             </div>
           </div>
 
