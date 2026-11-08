@@ -28,6 +28,22 @@ export const MascotSpotlight: React.FC<MascotSpotlightProps> = ({
   const [ritaTipIndex, setRitaTipIndex] = useState(() => Math.floor(Math.random() * PROF_RITA_TIPS.length));
   const [adaTipIndex, setAdaTipIndex] = useState(() => Math.floor(Math.random() * PROF_ADA_TIPS.length));
   const [studentQuoteIndex, setStudentQuoteIndex] = useState(0);
+  const [teamFilter, setTeamFilter] = useState<'tutti' | 'docenti' | 'studenti'>('tutti');
+
+  const filteredMascots = MASCOTS_DATA.filter((m) => {
+    if (teamFilter === 'docenti') return m.isTeacher;
+    if (teamFilter === 'studenti') return !m.isTeacher;
+    return true;
+  });
+
+  const handleTeamFilterChange = (filter: 'tutti' | 'docenti' | 'studenti') => {
+    setTeamFilter(filter);
+    if (filter === 'docenti' && !currentMascot.isTeacher) {
+      setSelectedMascotId('sauro');
+    } else if (filter === 'studenti' && currentMascot.isTeacher) {
+      setSelectedMascotId('leo');
+    }
+  };
 
   // Auto-align active spotlight professor with filtered subject if activeSubject is specific
   useEffect(() => {
@@ -134,53 +150,105 @@ export const MascotSpotlight: React.FC<MascotSpotlightProps> = ({
       <div className="absolute bottom-0 left-1/4 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute top-1/2 right-10 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Header bar */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 relative z-10 border-b border-slate-800/80 pb-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shrink-0">
-            <GraduationCap className="w-6 h-6" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="text-lg sm:text-xl font-black text-white">
-                La Squadra di ScienzaLab
-              </h3>
-              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                4 Docenti & 4 Studenti
-              </span>
+      {/* Header bar with Team Filter */}
+      <div className="flex flex-col gap-4 mb-6 relative z-10 border-b border-slate-800/80 pb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shrink-0">
+              <GraduationCap className="w-6 h-6" />
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Esplora i consigli dei docenti (Prof. Dino Sauro, Prof.ssa Ipazia, Prof.ssa Rita Ingranaggi, Prof.ssa Ada Byte) e le esperienze degli studenti!
-            </p>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="text-lg sm:text-xl font-black text-white">
+                  La Squadra di ScienzaLab
+                </h3>
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  4 Docenti & 4 Studenti
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Scegli un membro del team per scoprire consigli, metodi di studio ed esperienze guidate!
+              </p>
+            </div>
+          </div>
+
+          {/* Segmented Filter: Tutti / Docenti / Studenti */}
+          <div className="flex items-center gap-1 p-1 bg-slate-950/90 rounded-2xl border border-slate-800 shrink-0 self-start sm:self-auto">
+            <button
+              onClick={() => handleTeamFilterChange('tutti')}
+              className={`min-h-[38px] px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all touch-manipulation ${
+                teamFilter === 'tutti'
+                  ? 'bg-slate-800 text-white shadow-md border border-slate-700'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              Tutti (8)
+            </button>
+            <button
+              onClick={() => handleTeamFilterChange('docenti')}
+              className={`min-h-[38px] px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 touch-manipulation ${
+                teamFilter === 'docenti'
+                  ? 'bg-emerald-500/20 text-emerald-300 shadow-md border border-emerald-500/40'
+                  : 'text-slate-400 hover:text-emerald-300'
+              }`}
+            >
+              <span>🎓 Docenti (4)</span>
+            </button>
+            <button
+              onClick={() => handleTeamFilterChange('studenti')}
+              className={`min-h-[38px] px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 touch-manipulation ${
+                teamFilter === 'studenti'
+                  ? 'bg-amber-500/20 text-amber-300 shadow-md border border-amber-500/40'
+                  : 'text-slate-400 hover:text-amber-300'
+              }`}
+            >
+              <span>🎒 Studenti (4)</span>
+            </button>
           </div>
         </div>
 
-        {/* Mascot switcher pills - touch scrollable on mobile */}
-        <div className="flex items-center gap-1.5 p-1.5 bg-slate-950/80 rounded-2xl border border-slate-800 overflow-x-auto pb-2 sm:pb-1.5 scrollbar-none -mx-1 px-1 touch-pan-x shrink-0">
-          {MASCOTS_DATA.map((mascot) => {
+        {/* Mascot switcher pills - responsive grid/wrap with touch targets >= 44px */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin pt-1">
+          {filteredMascots.map((mascot) => {
             const isSelected = mascot.id === selectedMascotId;
             return (
               <button
                 key={mascot.id}
                 onClick={() => handleMascotSelect(mascot)}
-                className={`flex items-center gap-1.5 sm:gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all shrink-0 active:scale-95 touch-manipulation whitespace-nowrap min-h-[40px] ${
+                className={`flex items-center gap-2.5 px-3.5 py-2 rounded-2xl text-xs font-bold transition-all shrink-0 active:scale-95 touch-manipulation min-h-[44px] ${
                   isSelected
-                    ? 'bg-slate-800 text-white shadow-md border border-slate-700 ring-1 ring-cyan-500/50'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-850'
+                    ? 'bg-gradient-to-r from-slate-850 to-slate-800 text-white shadow-lg border border-cyan-500/60 ring-2 ring-cyan-500/30'
+                    : 'bg-slate-950/70 border border-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-900'
                 }`}
+                aria-pressed={isSelected}
               >
-                <img
-                  src={mascot.avatar}
-                  alt={mascot.name}
-                  className="w-5 h-5 rounded-full object-cover ring-1 ring-white/20 shrink-0"
-                  referrerPolicy="no-referrer"
-                />
-                <span className="whitespace-nowrap">{mascot.name}</span>
-                {mascot.isTeacher && (
-                  <span className="text-[9px] px-1 py-0.2 rounded bg-white/10 text-slate-300">
-                    Prof
+                <div className="relative shrink-0">
+                  <img
+                    src={mascot.avatar}
+                    alt={mascot.name}
+                    className={`w-7 h-7 rounded-xl object-cover ring-2 ${
+                      mascot.isTeacher ? 'ring-emerald-400/70' : 'ring-amber-400/70'
+                    }`}
+                    referrerPolicy="no-referrer"
+                  />
+                  <span className="absolute -bottom-1 -right-1 text-[10px]">
+                    {mascot.id === 'sauro' && '🔬'}
+                    {mascot.id === 'ipazia' && '📐'}
+                    {mascot.id === 'rita' && '⚙️'}
+                    {mascot.id === 'ada' && '💻'}
+                    {mascot.id === 'leo' && '💡'}
+                    {mascot.id === 'mia' && '📐'}
+                    {mascot.id === 'samu' && '🧩'}
+                    {mascot.id === 'chiara' && '🌿'}
                   </span>
-                )}
+                </div>
+
+                <div className="flex flex-col items-start text-left min-w-0">
+                  <span className="whitespace-nowrap font-bold">{mascot.name}</span>
+                  <span className="text-[10px] text-slate-400 font-medium whitespace-nowrap">
+                    {mascot.isTeacher ? 'Docente' : 'Studente'} • {mascot.species}
+                  </span>
+                </div>
               </button>
             );
           })}

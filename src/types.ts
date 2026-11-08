@@ -23,7 +23,8 @@ export interface LinkItem {
     | 'coding-adventure'
     | 'mondo-pitagora'
     | 'storia-ipazia'
-    | 'enigmondo';
+    | 'enigmondo'
+    | 'cinque-sensi';
 }
 
 export interface SubjectMeta {

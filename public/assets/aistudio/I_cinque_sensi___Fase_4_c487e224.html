@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>I cinque sensi</title>
+<style>
+:root{--bg:#fff7e6;--ink:#2b2d42;--card:#ffffff;--p3:#ffd166;--p4:#06d6a0;--p5:#9b5de5;--ok:#06d6a0;--ko:#ff8fa3;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1d1b2e;--ink:#f5f5f5;--card:#2a2740}}
+:root[data-theme="dark"]{--bg:#1d1b2e;--ink:#f5f5f5;--card:#2a2740}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+.wrap{max-width:900px;margin:0 auto;padding:16px;text-align:center}
+h1{font-size:clamp(28px,6vw,48px);margin:8px 0}
+.top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+button{font:inherit;border:0;border-radius:20px;cursor:pointer;min-height:56px;padding:12px 18px;font-weight:700;color:#fff;background:var(--p5)}
+button.ghost{background:var(--card);color:var(--ink)}
+button:focus-visible{outline:3px solid var(--p3)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin:18px 0}
+.sense{height:clamp(120px,22vw,160px);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:16px;color:var(--ink)}
+.sense .e,.organo .e,.ex .e,.opz .e{font-size:44px}
+.organo{width:100%;max-width:420px;margin:12px auto;display:flex;flex-direction:column;align-items:center;color:var(--ink);font-size:20px}
+.bar{height:16px;border-radius:8px;background:var(--card);overflow:hidden;margin:8px auto;max-width:420px}
+.bar div{height:100%;background:var(--p4);transition:width .4s}
+.card{background:var(--card);border-radius:24px;padding:20px;margin:16px auto;font-size:20px;line-height:1.5;max-width:640px}
+.scheda h2{margin:4px 0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:12px}
+.ex{background:var(--bg);border-radius:18px;padding:10px;display:flex;flex-direction:column;align-items:center;font-size:18px}
+.viso{max-width:100%;height:auto;margin:8px auto;display:block}
+.viso [role=button]:focus{outline:3px solid var(--p3)}
+.ascolta{background:var(--p4);color:var(--ink);margin:8px 0}
+.nota{font-size:16px;opacity:.7}
+.play{background:var(--p3);color:var(--ink);font-size:24px;padding:18px 36px}
+.opzioni{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px auto;max-width:700px}
+.opz{background:var(--card);color:var(--ink);font-size:20px;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.opz.grande{font-size:28px;min-height:120px}
+.emoji-grande{font-size:96px;margin:8px 0}
+.esito{font-size:22px;font-weight:700;margin:12px auto;max-width:640px;min-height:40px}
+.esito.ok{color:var(--ok)}
+.esito.ko{color:var(--ko)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script>
+const {useState,useEffect}=React;
+const h=React.createElement;
+
+const SENSI=[
+{id:"vista",nome:"VISTA",organo:"Occhi",emoji:"👁️",colore:"#ff6b6b",funzione:"Ci fanno vedere colori, forme, persone e oggetti.",esempi:[["🍎","rosso"],["🌻","giallo"],["🔺","triangolo"],["👧","persona"]]},
+{id:"udito",nome:"UDITO",organo:"Orecchie",emoji:"👂",colore:"#4ecdc4",funzione:"Ci fanno sentire suoni, voci e rumori.",esempi:[["🐶","cane che abbaia"],["🔔","campanello"],["🎵","musica"],["🗣️","voce"]]},
+{id:"olfatto",nome:"OLFATTO",organo:"Naso",emoji:"👃",colore:"#ffd166",funzione:"Ci fanno sentire gli odori.",esempi:[["🌹","fiore profumato"],["☕","caffè"],["🍊","arancia"],["🥐","pane"]]},
+{id:"gusto",nome:"GUSTO",organo:"Lingua",emoji:"👅",colore:"#06d6a0",funzione:"Ci fanno sentire i sapori: dolce, salato, amaro e aspro.",esempi:[["🍯","dolce"],["🥨","salato"],["🍋","aspro"],["🫒","amaro"]]},
+{id:"tatto",nome:"TATTO",organo:"Pelle e mani",emoji:"✋",colore:"#9b5de5",funzione:"Ci fanno sentire caldo, freddo, liscio, ruvido, morbido e duro.",esempi:[["🔥","caldo"],["🧊","freddo"],["🧸","morbido"],["🪨","duro"]]}
+];
+
+// Banca domande: s = senso (o "tutti"), e = immagine, t = situazione
+const ITEMS=[
+{s:"vista",e:"🌈",t:"Vedo i colori di un arcobaleno."},
+{s:"vista",e:"🔺",t:"Riconosco la forma di un triangolo."},
+{s:"vista",e:"🚦",t:"Vedo il semaforo diventare verde."},
+{s:"vista",e:"👧",t:"Riconosco il volto della mia amica."},
+{s:"vista",e:"🍌",t:"Vedo che la banana è gialla."},
+{s:"vista",e:"🌙",t:"Vedo la luna di notte."},
+{s:"vista",e:"📚",t:"Leggo le parole di un libro."},
+{s:"vista",e:"⭐",t:"Vedo una stella in cielo."},
+{s:"vista",e:"🐠",t:"Guardo un pesce colorato nell'acquario."},
+{s:"vista",e:"🟦",t:"Riconosco un quadrato blu."},
+{s:"udito",e:"🐶",t:"Sento un cane che abbaia."},
+{s:"udito",e:"🔔",t:"Sento suonare il campanello."},
+{s:"udito",e:"🎵",t:"Ascolto una canzone."},
+{s:"udito",e:"🗣️",t:"Sento la voce della maestra."},
+{s:"udito",e:"🌧️",t:"Sento il rumore della pioggia."},
+{s:"udito",e:"🚗",t:"Sento il clacson di una macchina."},
+{s:"udito",e:"🐦",t:"Sento cantare un uccellino."},
+{s:"udito",e:"🥁",t:"Sento il suono del tamburo."},
+{s:"udito",e:"🤫",t:"Sento un sussurro."},
+{s:"udito",e:"📻",t:"Ascolto la radio."},
+{s:"olfatto",e:"🌹",t:"Sento il profumo di una rosa."},
+{s:"olfatto",e:"☕",t:"Sento l'odore del caffè."},
+{s:"olfatto",e:"🍊",t:"Sento l'odore dell'arancia."},
+{s:"olfatto",e:"🥐",t:"Sento il profumo del croissant appena fatto."},
+{s:"olfatto",e:"🌲",t:"Sento l'odore del bosco."},
+{s:"olfatto",e:"🧴",t:"Sento il profumo del sapone."},
+{s:"olfatto",e:"🍕",t:"Sento l'odore della pizza."},
+{s:"olfatto",e:"🌸",t:"Sento il profumo dei fiori."},
+{s:"olfatto",e:"🧀",t:"Sento l'odore del formaggio."},
+{s:"olfatto",e:"🍫",t:"Sento l'odore del cioccolato."},
+{s:"gusto",e:"🍰",t:"Sento il sapore dolce della torta."},
+{s:"gusto",e:"🥨",t:"Sento il sapore salato del pretzel."},
+{s:"gusto",e:"🍋",t:"Sento il sapore aspro del limone."},
+{s:"gusto",e:"🥦",t:"Sento il sapore amaro del broccolo."},
+{s:"gusto",e:"🍬",t:"Sento il sapore dolce della caramella."},
+{s:"gusto",e:"🍓",t:"Sento il sapore dolce della fragola."},
+{s:"gusto",e:"🍟",t:"Sento il sapore salato delle patatine."},
+{s:"gusto",e:"🍇",t:"Sento il sapore dolce dell'uva."},
+{s:"gusto",e:"🍵",t:"Sento il sapore amaro del tè senza zucchero."},
+{s:"gusto",e:"🍒",t:"Sento il sapore aspro della ciliegia acerba."},
+{s:"tatto",e:"🍲",t:"Tocco la pentola calda."},
+{s:"tatto",e:"🧊",t:"Tocco un cubetto di ghiaccio freddo."},
+{s:"tatto",e:"🧸",t:"Tocco un peluche morbido."},
+{s:"tatto",e:"🪨",t:"Tocco una pietra dura."},
+{s:"tatto",e:"🪵",t:"Tocco il legno ruvido."},
+{s:"tatto",e:"🧱",t:"Tocco il muro ruvido."},
+{s:"tatto",e:"🐱",t:"Accarezzo il gatto morbido."},
+{s:"tatto",e:"🧤",t:"Tocco il guanto di lana morbido."},
+{s:"tatto",e:"🧽",t:"Tocco la spugna morbida."},
+{s:"tatto",e:"🧣",t:"Tocco la sciarpa morbida e calda."},
+{s:"tutti",c:["vista","udito","tatto"],e:"🌊",t:"Sono al mare: vedo l'acqua, sento le onde e il vento sulla pelle."},
+{s:"tutti",c:["olfatto","gusto","tatto"],e:"🍕",t:"Mangio una pizza calda e profumata."},
+{s:"tutti",c:["vista","olfatto","gusto"],e:"🍎",t:"Mordo una mela: la vedo rossa, ne sento il profumo e il dolce sapore."},
+{s:"tutti",c:["vista","olfatto","gusto"],e:"🎂",t:"Assaggio una torta: la vedo, la sento e la gusto."},
+{s:"tutti",c:["udito","tatto"],e:"🏖️",t:"Gioco sulla sabbia morbida e sento il rumore del mare."}
+];
+
+// Indovina il senso: un oggetto, più azioni, ciascuna legata a un senso diverso
+const INDOVINA=[
+["🐦",[["vista","per vedere il colore della sua piuma"],["udito","per sentire il suo cinguettio"],["tatto","per capire quanto sono morbide le sue piume"]]],
+["🐶",[["udito","per sentire quando abbaia"],["vista","per vedere il colore del suo pelo"],["tatto","per capire quanto è morbido il suo pelo"]]],
+["🍊",[["vista","per vedere il suo colore"],["olfatto","per sentire il suo profumo"],["gusto","per capire se è dolce o aspra"],["tatto","per capire se la buccia è ruvida"]]],
+["🌹",[["vista","per vedere il colore dei petali"],["olfatto","per sentire il suo profumo"],["tatto","per capire se il petalo è liscio"]]],
+["🍰",[["gusto","per capire se è dolce"],["vista","per vedere il suo colore"],["olfatto","per sentire il suo odore"]]],
+["🔔",[["udito","per sentire il suono"],["vista","per vedere la sua forma"],["tatto","per capire se il metallo è freddo"]]],
+["🧊",[["tatto","per capire se è freddo"],["vista","per vedere se è trasparente"]]],
+["🧸",[["tatto","per capire quanto è morbido"],["vista","per vedere il suo colore"]]],
+["🍋",[["gusto","per capire se è aspro"],["vista","per vedere il suo colore giallo"],["olfatto","per sentire il suo profumo"]]],
+["🎻",[["udito","per sentire la musica"],["vista","per vedere la sua forma"],["tatto","per capire se il legno è liscio"]]],
+["🥐",[["olfatto","per sentire il suo profumo"],["gusto","per capire che sapore ha"],["vista","per vedere se è dorato"],["tatto","per capire se è soffice"]]],
+["📻",[["udito","per sentire la musica"],["vista","per vedere i tasti"],["tatto","per capire se la manopola è liscia"]]],
+["🥁",[["udito","per sentire il suono"],["tatto","per capire se la pelle del tamburo è tesa"]]],
+["🐱",[["udito","per sentire le fusa"],["tatto","per capire quanto è morbido"],["vista","per vedere il colore del pelo"]]],
+["🍒",[["gusto","per capire se è dolce"],["vista","per vedere se è rossa"],["olfatto","per sentire il suo profumo"]]],
+["🥨",[["gusto","per capire se è salato"],["tatto","per capire se è duro"]]],
+["🍫",[["gusto","per capire se è amaro"],["olfatto","per sentire il suo odore"],["vista","per vedere il colore scuro"]]],
+["🎺",[["udito","per sentire il suono"],["vista","per vedere la sua forma dorata"],["tatto","per capire se è liscia"]]],
+["🐸",[["udito","per sentire il gracidare"],["vista","per vedere il suo colore verde"],["tatto","per capire se la pelle è viscida"]]],
+["🚗",[["udito","per sentire il clacson"],["vista","per vedere il colore rosso"],["tatto","per capire se la carrozzeria è liscia"]]],
+["🍕",[["olfatto","per sentire il suo profumo"],["gusto","per capire se è salata"],["vista","per vedere il formaggio fuso"]]],
+["🍪",[["gusto","per capire se è dolce"],["olfatto","per sentire il suo profumo"],["tatto","per capire se è duro"]]],
+["🧀",[["olfatto","per sentire il suo odore"],["gusto","per capire se è saporito"],["vista","per vedere il suo colore"]]],
+["🍇",[["gusto","per capire se è dolce"],["olfatto","per sentire il suo profumo"],["tatto","per capire se è liscia"]]]
+];
+
+// Quale immagine: per ogni domanda una sola risposta giusta, le altre sono cose che l'organo non percepisce
+const ASSOCIA=[
+{t:"Quale immagine si sente con le orecchie?",g:"udito",s:["🔔","🐶","🎺","🥁","🚗","🐸"],d:["🍋","🌹","🧊","🧸","🥐","🍯","🍒","🪨"]},
+{t:"Quale immagine si sente con il naso?",g:"olfatto",s:["🌹","🥐","🍕","🧀","🍊","🍫"],d:["🔔","🥁","🐸","🧊","🪨","🧸"]},
+{t:"Quale immagine si sente con la lingua?",g:"gusto",s:["🍋","🍰","🥨","🍒","🍇","🍵"],d:["🌹","🔔","🧊","🧸","🎻","🪵"]},
+{t:"Quale immagine è morbida?",g:"tatto",s:["🧸","🐱"],d:["🪨","🧊","🪵","🎻","🔔"]},
+{t:"Quale immagine è fredda?",g:"tatto",s:["🧊","🍦"],d:["🍲","🧸","🪨","🍰"]},
+{t:"Quale immagine è rossa?",g:"vista",s:["🌹","🍒","🚗"],d:["🐸","🌙","🍋","🍇","🧀"]},
+{t:"Quale immagine è gialla?",g:"vista",s:["🍋","🧀","🌻"],d:["🌹","🐸","🌙","🍒"]}
+];
+
+const GIOCHI=[
+{id:"indovina",nome:"INDOVINA IL SENSO",emoji:"❓",colore:"#ffb347"},
+{id:"organo",nome:"TROVA L'ORGANO",emoji:"🔍",colore:"#7fd8be"},
+{id:"associa",nome:"QUALE IMMAGINE?",emoji:"🧩",colore:"#ff9ec4"},
+{id:"percepisco",nome:"CHE COSA PERCEPISCO?",emoji:"🤔",colore:"#8ecae6"},
+{id:"vero",nome:"VERO O FALSO",emoji:"✅",colore:"#c3b1e1"}
+];
+
+const ISTRUZIONI="Tocca un senso per scoprirlo. Tocca gli organi per saperne di più. Premi ascolta per sentire la spiegazione.";
+function lodi(p){
+  const n=p.nome, F=p.sesso==="F";
+  const frasi=[
+    "Complimenti "+n+", "+(F?"bravissima":"bravissimo")+"!",
+    "Esatto, "+n+"!",
+    "Ottimo lavoro, "+n+"!",
+    "Hai capito, "+n+", "+(F?"brava":"bravo")+"!"
+  ];
+  return frasi[Math.floor(Math.random()*frasi.length)];
+}
+
+function mescola(a){return [...a].sort(()=>Math.random()-0.5);}
+
+// Sintesi vocale: solo browser, nessuna API esterna
+const Voce={
+  ok:typeof window!=="undefined" && "speechSynthesis" in window && "SpeechSynthesisUtterance" in window,
+  ultimo:"",
+  voce(){
+    const vs=speechSynthesis.getVoices();
+    return vs.find(v=>/^it/i.test(v.lang) && /natural|neural|enhanced|premium/i.test(v.name))
+        || vs.find(v=>/^it/i.test(v.lang)) || null;
+  },
+  parla(testo,onFine){
+    this.ultimo=testo;
+    const fine=()=>{ if(onFine){ const f=onFine; onFine=null; f(); } };
+    if(!this.ok){ if(onFine) setTimeout(fine,1500); return; }
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(testo);
+    u.lang="it-IT"; u.rate=0.85; u.pitch=1.1;
+    u.onend=fine; u.onerror=fine;
+    const v=this.voce(); if(v) u.voice=v;
+    speechSynthesis.speak(u);
+  }
+};
+
+function Bimbo(){
+  return h("svg",{viewBox:"0 0 200 200",width:150,height:150,role:"img","aria-label":"Un bambino allegro"},
+    h("circle",{cx:100,cy:110,r:70,fill:"#ffd7a8"}),
+    h("path",{d:"M30 100 Q40 30 100 35 Q165 35 170 100 Q150 60 100 62 Q55 62 30 100Z",fill:"#7a4a21"}),
+    h("circle",{cx:76,cy:108,r:8,fill:"#2b2d42"}),
+    h("circle",{cx:124,cy:108,r:8,fill:"#2b2d42"}),
+    h("path",{d:"M75 140 Q100 165 125 140",stroke:"#2b2d42",strokeWidth:6,fill:"none",strokeLinecap:"round"}),
+    h("circle",{cx:60,cy:132,r:9,fill:"#ff9b9b",opacity:.6}),
+    h("circle",{cx:140,cy:132,r:9,fill:"#ff9b9b",opacity:.6})
+  );
+}
+
+const PELLE="#f1c27d", CONTORNO="#8d5524";
+function Icona({id,size}){
+  const pelle="url(#gPelle)";
+  const defs=h("defs",{key:"d"},h("linearGradient",{id:"gPelle",x1:"0",y1:"0",x2:"1",y2:"1"},
+    h("stop",{offset:"0",stopColor:"#f8d9b0"}),h("stop",{offset:"1",stopColor:"#e0a878"})));
+  const contorno={stroke:CONTORNO,strokeWidth:3,strokeLinejoin:"round"};
+  const dis={
+    vista:[
+      h("path",{key:"a",d:"M6 50 C24 20 76 20 94 50 C76 80 24 80 6 50Z",fill:pelle,...contorno}),
+      h("ellipse",{key:"b",cx:50,cy:50,rx:30,ry:18,fill:"#fff"}),
+      h("circle",{key:"c",cx:50,cy:50,r:15,fill:"#8b5a2b"}),
+      h("circle",{key:"d",cx:50,cy:50,r:7,fill:"#1d1b2e"}),
+      h("circle",{key:"e",cx:55,cy:45,r:3,fill:"#fff"})],
+    udito:[
+      h("path",{key:"a",d:"M50 10 C78 10 84 40 80 56 C76 76 70 88 58 90 C46 92 40 84 40 74 C40 66 34 64 34 52 C34 30 30 10 50 10Z",fill:pelle,stroke:CONTORNO,strokeWidth:3}),
+      h("path",{key:"b",d:"M52 26 C64 30 66 44 60 52 C56 58 52 60 52 68 C52 76 48 80 44 78",fill:"none",stroke:CONTORNO,strokeWidth:3,strokeLinecap:"round"}),
+      h("path",{key:"c",d:"M58 36 C62 40 62 46 58 50",fill:"none",stroke:"#b87a4a",strokeWidth:2,strokeLinecap:"round"})],
+    olfatto:[
+      h("path",{key:"a",d:"M50 6 C56 6 58 12 57 20 L60 46 C70 54 76 66 72 76 C68 86 58 90 50 90 C42 90 32 86 28 76 C24 66 30 54 40 46 L43 20 C42 12 44 6 50 6Z",fill:pelle,...contorno}),
+      h("path",{key:"b",d:"M50 28 L52 50",fill:"none",stroke:"#f8d9b0",strokeWidth:3,strokeLinecap:"round"}),
+      h("ellipse",{key:"c",cx:41,cy:80,rx:4.5,ry:2.8,fill:CONTORNO}),
+      h("ellipse",{key:"d",cx:59,cy:80,rx:4.5,ry:2.8,fill:CONTORNO})],
+    gusto:[
+      h("path",{key:"a",d:"M24 44 C20 72 34 92 52 92 C72 92 82 72 76 44 C72 34 28 34 24 44Z",fill:"#e8737f",stroke:CONTORNO,strokeWidth:3}),
+      h("path",{key:"b",d:"M50 44 L50 72",fill:"none",stroke:"#b8505c",strokeWidth:2.5,strokeLinecap:"round"}),
+      h("ellipse",{key:"c",cx:38,cy:58,rx:6,ry:3,fill:"#f4a0a8",opacity:.8})],
+    tatto:[
+      h("rect",{key:"d1",x:31,y:22,width:9,height:34,rx:4.5,fill:pelle,...contorno}),
+      h("rect",{key:"d2",x:41,y:14,width:9,height:42,rx:4.5,fill:pelle,...contorno}),
+      h("rect",{key:"d3",x:51,y:10,width:9,height:46,rx:4.5,fill:pelle,...contorno}),
+      h("rect",{key:"d4",x:61,y:16,width:9,height:40,rx:4.5,fill:pelle,...contorno}),
+      h("rect",{key:"d5",x:15,y:50,width:15,height:30,rx:7.5,fill:pelle,transform:"rotate(-28 22 65)",...contorno}),
+      h("rect",{key:"p",x:28,y:46,width:46,height:46,rx:18,fill:pelle,...contorno}),
+      h("path",{key:"l",d:"M40 62 L40 74",fill:"none",stroke:"#c98a5a",strokeWidth:2,strokeLinecap:"round"})]
+  };
+  if(id==="tutti"){
+    const ordine=["vista","udito","olfatto","gusto","tatto"];
+    return h("svg",{viewBox:"0 0 500 100",width:(size||64)*4,height:size||64,"aria-hidden":true},defs,
+      ordine.map((k,i)=>h("g",{key:k,transform:"translate("+(i*100)+",0)"},dis[k])));
+  }
+  return h("svg",{viewBox:"0 0 100 100",width:size||64,height:size||64,"aria-hidden":true},defs,dis[id]||[]);
+}
+
+function Pulsante(p){
+  return h("button",{className:"sense",style:{background:p.colore},onClick:p.onClick,"aria-label":p.nome},
+    h("span",{className:"e","aria-hidden":true},p.emoji), p.nome);
+}
+
+function Ascolta({testo,etichetta}){
+  if(!Voce.ok) return h("p",{className:"nota"},"Audio non disponibile su questo dispositivo. Il testo è scritto qui sopra.");
+  return h("button",{className:"ascolta",onClick:()=>Voce.parla(testo)},"🔊 "+(etichetta||"ASCOLTA"));
+}
+
+function Scheda({s}){
+  const testo=s.organo+". Senso: "+s.nome+". "+s.funzione;
+  return h("div",{className:"card scheda",role:"region","aria-label":s.organo},
+    h("h2",null,s.organo),
+    h("p",null,h("b",null,"Senso: "),s.nome),
+    h("p",null,s.funzione),
+    h(Ascolta,{testo:testo,etichetta:"ASCOLTA LA SPIEGAZIONE"}),
+    h("div",{className:"grid2"},
+      s.esempi.map((e,i)=>h("div",{key:i,className:"ex"},h("span",{className:"e","aria-hidden":true},e[0]),h("span",null,e[1])))
+    )
+  );
+}
+
+// Costruisce una domanda per il gioco "tipo" a partire da un elemento della banca
+function domanda(tipo,it){
+  const sen=SENSI.find(x=>x.id===it.s);
+  const sug=sen?sen.funzione:"Qui usiamo più sensi insieme.";
+  if(tipo==="indovina") return {titolo:"Guarda l'immagine: quale senso usiamo?",emoji:it.e,opz:SENSI.map(s=>({label:s.nome,val:s.id,icona:s.id})),cor:it.s,sug,voce:"Quale senso usiamo?"};
+  if(tipo==="organo") return {titolo:"Quale organo usiamo?",testo:it.t,opz:SENSI.map(s=>({label:s.organo,val:s.id,icona:s.id})),cor:it.s,sug,voce:it.t+" Quale organo usiamo?"};
+  if(tipo==="associa"){
+    const altri=mescola(ITEMS.filter(x=>x.s!==it.s && x.s!=="tutti")).slice(0,3).map(x=>({val:x.e,e:x.e}));
+    return {titolo:"Quale immagine va con "+sen.organo+"?",opz:mescola([{val:it.e,e:it.e},...altri]),cor:it.e,sug,voce:"Quale immagine va con "+sen.organo+"?"};
+  }
+  if(tipo==="percepisco") return {titolo:"Quali sensi usiamo?",testo:it.t,opz:SENSI.map(s=>({label:s.nome,val:s.id,icona:s.id})),cor:it.c||[it.s],multi:true,sug,voce:it.t+" Quali sensi usiamo?"};
+  // vero o falso
+  const vero=Math.random()<0.5;
+  const affermato=vero?sen:mescola(SENSI.filter(x=>x.id!==it.s))[0];
+  return {titolo:"Vero o falso?",testo:it.t+" Per questo usiamo il senso: "+affermato.nome+".",opz:[{label:"VERO",val:"V",e:"✅"},{label:"FALSO",val:"F",e:"❌"}],cor:vero?"V":"F",sug,voce:it.t+" Per questo usiamo il senso "+affermato.nome+". Vero o falso?"};
+}
+
+// Pesca n domande alternando i sensi, così non compaiono tutte le domande di un senso di seguito
+function pesca(lista,n){
+  const gruppi={};
+  mescola(lista).forEach(q=>{const k=q.grp||q.cor;(gruppi[k]=gruppi[k]||[]).push(q);});
+  const out=[];
+  while(out.length<n && Object.keys(gruppi).some(k=>gruppi[k].length)){
+    mescola(Object.keys(gruppi)).forEach(k=>{
+      if(out.length<n && gruppi[k].length) out.push(gruppi[k].pop());
+    });
+  }
+  return out;
+}
+
+function costruisci(tipo){
+  if(tipo==="associa"){
+    const tutte=[];
+    ASSOCIA.forEach(a=>{
+      const sen=SENSI.find(x=>x.id===a.g);
+      a.s.forEach(c=>{
+        tutte.push({titolo:a.t,opz:mescola([c,...mescola(a.d).slice(0,3)]).map(e=>({val:e,e:e})),cor:c,grp:a.g,sug:sen.funzione,voce:a.t});
+      });
+    });
+    return pesca(tutte,15);
+  }
+  if(tipo==="indovina"){
+    const tutte=INDOVINA.flatMap(([e,azioni])=>azioni.map(([senso,azione])=>{
+      const dom="Guarda l'immagine. Quale senso usiamo "+azione+"?";
+      return {titolo:dom,emoji:e,opz:SENSI.map(x=>({label:x.nome,val:x.id,icona:x.id})),cor:senso,sug:SENSI.find(x=>x.id===senso).funzione,voce:dom};
+    }));
+    return pesca(tutte,15);
+  }
+  const base=tipo==="percepisco"?ITEMS:ITEMS.filter(i=>i.s!=="tutti");
+  return pesca(base.map(it=>domanda(tipo,it)),15);
+}
+
+function Gioco({tipo,onEsci,onMenu,profilo}){
+  const [deck,setDeck]=useState(()=>costruisci(tipo));
+  const [i,setI]=useState(0);
+  const [esito,setEsito]=useState(null);
+  const [giuste,setGiuste]=useState(0);
+  const [sbagliate,setSbagliate]=useState([]);
+  const [scelte,setScelte]=useState([]);
+  const q=deck[i];
+  const multi=!!q && Array.isArray(q.cor);
+  const corretti=multi?q.cor:(q?[q.cor]:[]);
+  const chiusa=!!(esito&&(esito.ok||esito.rivelata));
+  useEffect(()=>{
+    if(!q) return;
+    const t=setTimeout(()=>Voce.parla(q.voce),300);
+    return ()=>clearTimeout(t);
+  },[i,deck]);
+
+  function avanzaDopo(){ setEsito(null); setSbagliate([]); setScelte([]); setI(x=>x+1); }
+  function vinci(){
+    const msg=lodi(profilo);
+    setEsito({ok:true,msg}); setGiuste(g=>g+1); Voce.parla(msg,avanzaDopo);
+  }
+  function sbaglia(){
+    if(sbagliate.length+1>=2){
+      let msg;
+      if(multi){
+        msg="La risposta giusta è: "+corretti.map(v=>SENSI.find(x=>x.id===v).nome).join(", ")+".";
+      }else{
+        const giusta=q.opz.find(o=>o.val===q.cor);
+        msg=giusta&&giusta.label?"La risposta giusta è: "+giusta.label+".":"La risposta giusta è quella evidenziata in verde.";
+      }
+      setEsito({ok:false,rivelata:true,msg}); Voce.parla(msg);
+    }else{
+      const msg="Quasi! Riprova. Suggerimento: "+q.sug;
+      setEsito({ok:false,msg}); Voce.parla(msg);
+    }
+  }
+  function scegli(val){
+    if(chiusa) return;
+    if(multi){
+      if(scelte.includes(val)){ setScelte(s=>s.filter(x=>x!==val)); return; }
+      if(!corretti.includes(val)){ setSbagliate(n=>[...n,val]); sbaglia(); return; }
+      const nuove=[...scelte,val];
+      setScelte(nuove);
+      if(corretti.every(c=>nuove.includes(c))){ vinci(); }
+      else {
+        const msg="Bene! E poi quale altro senso utilizzi?";
+        setEsito({parziale:true,msg}); Voce.parla(msg);
+      }
+      return;
+    }
+    if(val===q.cor){ vinci(); }
+    else { setSbagliate(n=>[...n,val]); sbaglia(); }
+  }
+  function verifica(){
+    if(chiusa) return;
+    const giusto=scelte.length===corretti.length && corretti.every(c=>scelte.includes(c));
+    if(giusto){ vinci(); }
+    else { setSbagliate(n=>[...n,"x"]); sbaglia(); }
+  }
+  function avanti(){ setEsito(null); setSbagliate([]); setScelte([]); setI(x=>x+1); }
+  function ricomincia(){ setDeck(costruisci(tipo)); setI(0); setEsito(null); setGiuste(0); setSbagliate([]); setScelte([]); }
+
+  if(i>=deck.length){
+    return h("div",{className:"card"},
+      h("h2",null,"Hai completato il gioco! 🎉"),
+      h("p",null,"Risposte giuste: "+giuste+" su "+deck.length),
+      h("div",{className:"top",style:{justifyContent:"center"}},
+        h("button",{onClick:ricomincia},"RICOMINCIA"),
+        h("button",{className:"ghost",onClick:onEsci},"ALTRI GIOCHI"),
+        h("button",{className:"play",onClick:onMenu},"MENU INIZIALE")
+      )
+    );
+  }
+
+  const opzioni=q.opz.map((o,k)=>{
+    const vero=tipo==="vero";
+    const base=vero?{background:o.val==="V"?"#06d6a0":"#ff8fa3"}:{};
+    const sel=multi&&scelte.includes(o.val)&&!chiusa;
+    const giustaVisibile=chiusa&&corretti.includes(o.val);
+    const st=Object.assign({},base,
+      giustaVisibile?{outline:"6px solid #06d6a0"}:{},
+      sel?{outline:"6px solid #8ecae6"}:{},
+      (!chiusa&&sbagliate.includes(o.val))?{opacity:.4}:{});
+    return h("button",{key:k,className:"opz"+(vero?" grande":""),style:st,"aria-pressed":multi?sel:undefined,onClick:()=>scegli(o.val)},
+      o.icona&&h("span",{className:"e","aria-hidden":true},h(Icona,{id:o.icona,size:70})),
+      o.e&&h("span",{className:"e","aria-hidden":true},o.e),
+      o.label&&h("span",null,o.label));
+  });
+
+  return h("div",null,
+    h("p",null,"Domanda "+(i+1)+" di "+deck.length),
+    h("h2",null,q.titolo),
+    q.testo&&h("div",{className:"card"},q.testo),
+    h("div",null,h(Ascolta,{testo:q.voce,etichetta:"ASCOLTA LA DOMANDA"})),
+    q.emoji&&h("div",{className:"emoji-grande","aria-hidden":true},q.emoji),
+    h("div",{className:"opzioni"},opzioni),
+    esito&&h("p",{className:"esito "+(esito.ok||esito.parziale?"ok":"ko"),role:"status","aria-live":"polite"},esito.msg),
+    esito&&esito.rivelata&&h("button",{className:"play",onClick:avanti},i+1<deck.length?"AVANTI":"FINE")
+  );
+}
+
+function Benvenuto({profilo,onSalva}){
+  const [nome,setNome]=useState(profilo?profilo.nome:"");
+  const [sesso,setSesso]=useState(profilo?profilo.sesso:null);
+  const pronto=nome.trim().length>0 && !!sesso;
+  const sc=(v)=>sesso===v?{outline:"6px solid #2b2d42"}:{};
+  return h("div",{className:"wrap"},
+    h("h1",null,"CHI GIOCA?"),
+    h("input",{type:"text",value:nome,placeholder:"Scrivi il tuo nome",onChange:e=>setNome(e.target.value),"aria-label":"Nome",
+      style:{fontSize:"24px",padding:"14px",borderRadius:"16px",border:"2px solid var(--ink)",width:"100%",maxWidth:"420px",margin:"12px auto",display:"block",background:"var(--card)",color:"var(--ink)"}}),
+    h("p",null,"Scegli:"),
+    h("div",{className:"grid"},
+      h("button",{className:"sense",style:Object.assign({background:"#8ecae6"},sc("M")),onClick:()=>setSesso("M"),"aria-pressed":sesso==="M"},
+        h("span",{className:"e","aria-hidden":true},"👦"),"ALUNNO"),
+      h("button",{className:"sense",style:Object.assign({background:"#ffb3c6"},sc("F")),onClick:()=>setSesso("F"),"aria-pressed":sesso==="F"},
+        h("span",{className:"e","aria-hidden":true},"👧"),"ALUNNA")
+    ),
+    h("button",{className:"play",disabled:!pronto,style:{opacity:pronto?1:.5},
+      onClick:()=>{if(pronto) onSalva({nome:nome.trim(),sesso:sesso});}},"INIZIA")
+  );
+}
+
+function App(){
+  const [schermo,setSchermo]=useState("home");
+  const [gioco,setGioco]=useState(null);
+  const [dettaglio,setDettaglio]=useState(null);
+  const [modifica,setModifica]=useState(false);
+  const [profilo,setProfilo]=useState(()=>{
+    try{return JSON.parse(localStorage.getItem("cinque-sensi-profilo")||"null");}catch(e){return null;}
+  });
+  function salvaProfilo(p){
+    try{localStorage.setItem("cinque-sensi-profilo",JSON.stringify(p));}catch(e){}
+    setProfilo(p); setModifica(false);
+  }
+  const [visti,setVisti]=useState(()=>{
+    try{return JSON.parse(localStorage.getItem("cinque-sensi-visti")||"[]");}catch(e){return [];}
+  });
+  useEffect(()=>{
+    try{localStorage.setItem("cinque-sensi-visti",JSON.stringify(visti));}catch(e){}
+  },[visti]);
+
+  const pct=Math.round(visti.length/SENSI.length*100);
+  const sensoAttuale=SENSI.find(s=>s.id===schermo);
+  const sensoDettaglio=SENSI.find(s=>s.id===dettaglio);
+
+  function apri(id){
+    setVisti(v=>v.includes(id)?v:[...v,id]);
+    setDettaglio(null); setGioco(null); setSchermo(id);
+  }
+  function vai(s){ setDettaglio(null); setGioco(null); setSchermo(s); }
+
+  const nav=(indietro)=>h("div",{className:"top"},
+    h("button",{className:"ghost",onClick:indietro||(()=>vai("home"))},"← Indietro"),
+    Voce.ok && h("button",{className:"ghost",onClick:()=>Voce.parla(Voce.ultimo||ISTRUZIONI)},"🔁 RIPETI"),
+    h("button",{className:"ghost",onClick:()=>vai("home")},"🏠 HOME")
+  );
+
+  const zona=(id,label,figli)=>h("g",{key:id,role:"button",tabIndex:0,"aria-label":label,style:{cursor:"pointer"},
+    onClick:()=>setDettaglio(id),
+    onKeyDown:e=>{if(e.key==="Enter"||e.key===" ")setDettaglio(id);}},figli);
+
+  if(!profilo||modifica){
+    return h(Benvenuto,{profilo:profilo,onSalva:salvaProfilo});
+  }
+
+  if(schermo==="volto"){
+    return h("div",{className:"wrap"},
+      nav(),
+      h("h1",null,"IL VISO"),
+      h("p",null,"Tocca una parte del viso."),
+      h("svg",{className:"viso",viewBox:"0 0 240 260",width:240,height:260,role:"group","aria-label":"Volto"},
+        h("ellipse",{cx:120,cy:130,rx:95,ry:110,fill:"#ffd7a8"}),
+        zona("udito","Orecchie",[
+          h("ellipse",{key:"o1",cx:24,cy:130,rx:14,ry:24,fill:"#ffb98a",stroke:"#2b2d42",strokeWidth:3}),
+          h("ellipse",{key:"o2",cx:216,cy:130,rx:14,ry:24,fill:"#ffb98a",stroke:"#2b2d42",strokeWidth:3})
+        ]),
+        zona("vista","Occhi",[
+          h("circle",{key:"e1",cx:85,cy:110,r:16,fill:"#fff",stroke:"#2b2d42",strokeWidth:3}),
+          h("circle",{key:"e2",cx:155,cy:110,r:16,fill:"#fff",stroke:"#2b2d42",strokeWidth:3}),
+          h("circle",{key:"p1",cx:88,cy:112,r:7,fill:"#2b2d42"}),
+          h("circle",{key:"p2",cx:158,cy:112,r:7,fill:"#2b2d42"})
+        ]),
+        zona("olfatto","Naso",[
+          h("path",{key:"n",d:"M120 130 L108 165 L132 165",fill:"none",stroke:"#2b2d42",strokeWidth:4,strokeLinejoin:"round"})
+        ]),
+        zona("gusto","Bocca e lingua",[
+          h("path",{key:"b",d:"M90 195 Q120 222 150 195",stroke:"#2b2d42",strokeWidth:8,fill:"none",strokeLinecap:"round"}),
+          h("ellipse",{key:"l",cx:120,cy:204,rx:12,ry:6,fill:"#ff6b8a"})
+        ])
+      ),
+      sensoDettaglio && h(Scheda,{s:sensoDettaglio})
+    );
+  }
+
+  if(sensoAttuale){
+    return h("div",{className:"wrap"},
+      nav(),
+      h("h1",null,sensoAttuale.nome),
+      h("button",{className:"organo",style:{background:sensoAttuale.colore},
+        onClick:()=>setDettaglio(d=>d===sensoAttuale.id?null:sensoAttuale.id),
+        "aria-expanded":dettaglio===sensoAttuale.id},
+        h("span",{className:"e","aria-hidden":true},sensoAttuale.emoji),
+        sensoAttuale.organo),
+      dettaglio===sensoAttuale.id && h(Scheda,{s:sensoAttuale})
+    );
+  }
+
+  if(schermo==="giochi"){
+    if(gioco){
+      const g=GIOCHI.find(x=>x.id===gioco);
+      return h("div",{className:"wrap"},
+        nav(()=>setGioco(null)),
+        h("h1",null,g.nome),
+        h(Gioco,{key:gioco,tipo:gioco,profilo:profilo,onEsci:()=>setGioco(null),onMenu:()=>vai("home")})
+      );
+    }
+    return h("div",{className:"wrap"},
+      nav(),
+      h("h1",null,"GIOCHIAMO"),
+      h("div",{className:"grid"},
+        GIOCHI.map(g=>h(Pulsante,{key:g.id,nome:g.nome,emoji:g.emoji,colore:g.colore,onClick:()=>setGioco(g.id)}))
+      )
+    );
+  }
+
+  return h("div",{className:"wrap"},
+    h("h1",null,"I CINQUE SENSI"),
+    h("p",null,"Ciao "+profilo.nome+"!"),
+    h("button",{className:"ghost",onClick:()=>setModifica(true)},"CAMBIA ALUNNO"),
+    h(Bimbo),
+    h("div",{className:"grid"},
+      SENSI.map(s=>h(Pulsante,{key:s.id,nome:s.nome,emoji:s.emoji,colore:s.colore,onClick:()=>apri(s.id)}))
+    ),
+    h("div",{className:"top",style:{justifyContent:"center"}},
+      h("button",{className:"ghost",onClick:()=>vai("volto")},"👤 IL VISO"),
+      h("button",{className:"play",onClick:()=>vai("giochi")},"GIOCHIAMO")
+    ),
+    h("div",{style:{margin:"16px 0"}},
+      h(Ascolta,{testo:ISTRUZIONI,etichetta:"ASCOLTA LE ISTRUZIONI"})
+    ),
+    h("p",null,"Sensi esplorati: "+visti.length+" / "+SENSI.length),
+    h("div",{className:"bar",role:"progressbar","aria-valuenow":pct,"aria-valuemin":0,"aria-valuemax":100,"aria-label":"Progressi"},
+      h("div",{style:{width:pct+"%"}}))
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(h(App));
+</script>
+</body>
+</html>

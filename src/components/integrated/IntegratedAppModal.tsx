@@ -5,6 +5,7 @@ import { MondoPitagoraApp } from './MondoPitagoraApp';
 import { ExternalAppConnector } from './ExternalAppConnector';
 import { StoriaIpaziaSection } from '../ipazia/StoriaIpaziaSection';
 import { EnigMondoApp } from './EnigMondoApp';
+import { CinqueSensiApp } from './CinqueSensiApp';
 import { LinkItem } from '../../types';
 
 interface IntegratedAppModalProps {
@@ -184,6 +185,9 @@ export const IntegratedAppModal: React.FC<IntegratedAppModalProps> = ({
                   <EnigMondoApp onBackToHome={onClose} />
                 </div>
               </div>
+            )}
+            {item.internalAppId === 'cinque-sensi' && (
+              <CinqueSensiApp onBackToHome={onClose} />
             )}
           </div>
         </div>

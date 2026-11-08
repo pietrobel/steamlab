@@ -173,6 +173,21 @@ export const INITIAL_LINKS: LinkItem[] = [
 
   // --- SCIENZE ---
   {
+    id: 'sci-cinque-sensi',
+    title: 'I Cinque Sensi: Laboratorio & Giochi',
+    url: '/cinque-sensi.html',
+    description: 'Applicazione didattica interattiva originale per la scoperta e lo studio dei cinque sensi (vista, udito, olfatto, gusto, tatto), l\'esplorazione anatomica del viso, 5 giochi didattici (Indovina il senso, Trova l\'organo, Quale immagine, Che cosa percepisco, Vero o Falso) con sintesi vocale e profilo alunno.',
+    subject: 'scienze',
+    tags: ['Scienze', 'Cinque Sensi', 'Corpo Umano', 'Vista', 'Udito', 'Olfatto', 'Gusto', 'Tatto', 'Giochi Didattici', 'Sintesi Vocale', 'App Integrata'],
+    gradeLevel: 'Classe 1ª',
+    iconName: 'Eye',
+    isVercel: false,
+    isFavorite: true,
+    addedAt: '2026-11-08',
+    featured: true,
+    internalAppId: 'cinque-sensi',
+  },
+  {
     id: 'sci-cinematica',
     title: 'Simulazione dei Moti & Cinematica',
     url: 'https://simulazionedeimoti.vercel.app/',
