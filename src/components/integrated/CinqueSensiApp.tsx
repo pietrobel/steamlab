@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Sparkles,
   Eye,
@@ -16,6 +16,8 @@ import {
   ShieldCheck,
   Maximize2,
   BookOpen,
+  Tv,
+  Monitor,
 } from 'lucide-react';
 import { profSauroImg, chiaraImg } from '../../data/mascots';
 
@@ -27,6 +29,18 @@ export const CinqueSensiApp: React.FC<CinqueSensiAppProps> = ({ onBackToHome }) 
   const [activeTab, setActiveTab] = useState<'app' | 'schede' | 'giochi'>('app');
   const [iframeKey, setIframeKey] = useState(0);
   const [selectedSense, setSelectedSense] = useState<string>('vista');
+  const [isLimRatio, setIsLimRatio] = useState<boolean>(true);
+  const frameContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleToggleFullscreen = () => {
+    if (frameContainerRef.current) {
+      if (!document.fullscreenElement) {
+        frameContainerRef.current.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+  };
 
   const SENSI_DETAILS = [
     {
@@ -244,61 +258,105 @@ export const CinqueSensiApp: React.FC<CinqueSensiAppProps> = ({ onBackToHome }) 
       {/* TAB 1: THE INTERACTIVE APPLICATION RUNNER */}
       {activeTab === 'app' && (
         <div className="space-y-4 animate-fade-in">
-          {/* Controls Bar */}
+          {/* Controls Bar with 16:9 LIM buttons */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 text-xs">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-slate-300 font-semibold">
                 Applicazione Attiva: <strong className="text-white">I Cinque Sensi (Fase 4)</strong>
               </span>
-              <span className="hidden md:inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                <Tv className="w-3 h-3 text-emerald-400" />
+                Ottimizzato LIM 16:9
+              </span>
+              <span className="hidden md:inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
                 <Volume2 className="w-3 h-3" />
                 Sintesi Vocale Inclusa
               </span>
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-2 flex-wrap shrink-0">
+              {/* Aspect Ratio 16:9 LIM Toggle */}
+              <button
+                onClick={() => setIsLimRatio((prev) => !prev)}
+                className={`px-3 py-1.5 rounded-xl border transition-all flex items-center gap-1.5 text-xs font-semibold active:scale-95 touch-manipulation ${
+                  isLimRatio
+                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm'
+                    : 'bg-slate-800 text-slate-300 border-slate-700 hover:text-white'
+                }`}
+                title="Attiva o disattiva il rapporto di forma 16:9 ideale per le lavagne interattive LIM"
+              >
+                <Monitor className="w-3.5 h-3.5 text-emerald-400" />
+                <span>{isLimRatio ? 'Rapporto LIM (16:9) ON' : 'Formato Libero'}</span>
+              </button>
+
               <button
                 onClick={() => setIframeKey((k) => k + 1)}
-                className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white border border-slate-700 transition-all flex items-center gap-1.5 text-xs font-semibold active:scale-95"
+                className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white border border-slate-700 transition-all flex items-center gap-1.5 text-xs font-semibold active:scale-95 touch-manipulation"
                 title="Ricarica l'applicazione"
               >
                 <RotateCw className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Ricarica</span>
               </button>
 
+              <button
+                onClick={handleToggleFullscreen}
+                className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold transition-all shadow-md shadow-emerald-900/30 flex items-center gap-1.5 text-xs active:scale-95 touch-manipulation"
+                title="Attiva la modalità Schermo Intero sulla lavagna LIM"
+              >
+                <Maximize2 className="w-3.5 h-3.5" />
+                <span>Schermo Intero LIM</span>
+              </button>
+
               <a
                 href="/cinque-sensi.html"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-md shadow-emerald-900/30 flex items-center gap-1.5 text-xs active:scale-95"
-                title="Apri l'app a schermo intero in una nuova scheda"
+                className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white border border-slate-700 font-semibold transition-all flex items-center gap-1.5 text-xs active:scale-95"
+                title="Apri l'app in una nuova scheda del browser"
               >
-                <Maximize2 className="w-3.5 h-3.5" />
-                <span>Schermo Intero</span>
-                <ExternalLink className="w-3 h-3" />
+                <ExternalLink className="w-3 h-3 text-cyan-400" />
+                <span className="hidden sm:inline">Nuova Scheda</span>
               </a>
             </div>
           </div>
 
-          {/* Embedded App Frame */}
-          <div className="relative w-full h-[680px] sm:h-[740px] md:h-[800px] rounded-3xl overflow-hidden border-2 border-slate-800 shadow-2xl bg-slate-950">
+          {/* Embedded App Frame with Aspect 16:9 */}
+          <div
+            ref={frameContainerRef}
+            className={`relative w-full rounded-3xl overflow-hidden border-2 border-slate-800 shadow-2xl bg-[#fff7e6] dark:bg-[#1d1b2e] transition-all duration-300 ${
+              isLimRatio
+                ? 'aspect-[16/9] min-h-[440px] max-h-[85vh]'
+                : 'h-[720px] sm:h-[800px]'
+            }`}
+          >
             <iframe
               key={iframeKey}
               src="/cinque-sensi.html"
-              title="I Cinque Sensi - Applicazione Didattica Interattiva"
-              className="w-full h-full border-0 bg-[#fff7e6] dark:bg-[#1d1b2e]"
+              title="I Cinque Sensi - Applicazione Didattica Interattiva Ottimizzata per LIM 16:9"
+              className="w-full h-full border-0"
               sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
               loading="lazy"
             />
           </div>
 
-          {/* Bottom Helpful Callout */}
-          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300 flex items-start gap-3">
-            <Volume2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-            <p className="leading-relaxed">
-              <strong className="text-white">Suggerimento per docenti e studenti:</strong> All'inizio puoi inserire il nome dell'alunno/alunna per ricevere complimenti personalizzati con la sintesi vocale. Tocca il pulsante <span className="text-emerald-300 font-bold">«ASCOLTA LA SPIEGAZIONE»</span> o <span className="text-amber-300 font-bold">«ASCOLTA LA DOMANDA»</span> per far leggere al computer ogni contenuto ad alta voce.
-            </p>
+          {/* LIM Optimization Info Callout */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="p-4 rounded-2xl bg-emerald-950/30 border border-emerald-500/30 text-xs text-slate-300 flex items-start gap-3">
+              <Tv className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+              <div>
+                <strong className="text-white block mb-0.5">Adattamento per LIM 16:9 (1920×1080 o 1366×768):</strong>
+                L'applicazione è progettata per distribuire i contenuti orizzontalmente in formato panoramico widescreen: i 5 sensi occupano un'unica riga orizzontale, la mappa del viso si affianca alle schede esplicative e le opzioni dei quiz sono disposte su ampi pulsanti touch ad alta leggibilità, azzerando la necessità di scorrimento verticale.
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300 flex items-start gap-3">
+              <Volume2 className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
+              <div>
+                <strong className="text-white block mb-0.5">Utilizzo con gli studenti alla lavagna:</strong>
+                All'inizio dell'attività, fai inserire all'alunno il proprio nome: riceverà elogi audio personalizzati. Tocca <span className="text-emerald-300 font-bold">«ASCOLTA LA SPIEGAZIONE»</span> o <span className="text-amber-300 font-bold">«ASCOLTA LA DOMANDA»</span> per azionare l'audio vocale in classe.
+              </div>
+            </div>
           </div>
         </div>
       )}

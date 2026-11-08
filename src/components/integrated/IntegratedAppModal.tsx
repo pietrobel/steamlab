@@ -23,7 +23,7 @@ export const IntegratedAppModal: React.FC<IntegratedAppModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-slate-950/90 backdrop-blur-md overflow-hidden animate-fade-in">
-      <div className="relative w-full max-w-6xl h-[94vh] bg-slate-950 border border-slate-800 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+      <div className="relative w-full max-w-7xl lg:max-w-[1480px] h-[94vh] bg-slate-950 border border-slate-800 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
         {/* Modal Top Bar */}
         <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-slate-800 bg-slate-900/95 shrink-0 gap-3">
           <div className="flex items-center gap-3 min-w-0">
@@ -80,7 +80,7 @@ export const IntegratedAppModal: React.FC<IntegratedAppModalProps> = ({
 
         {/* Scrollable Container with Integrated App */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-950">
-          <div className="max-w-5xl mx-auto">
+          <div className={item.internalAppId === 'cinque-sensi' ? 'max-w-6xl mx-auto' : 'max-w-5xl mx-auto'}>
             {item.internalAppId === 'proprieta-operazioni' && (
               <div className="space-y-10">
                 <ExternalAppConnector

@@ -38,6 +38,32 @@ button:focus-visible{outline:3px solid var(--p3)}
 .esito{font-size:22px;font-weight:700;margin:12px auto;max-width:640px;min-height:40px}
 .esito.ok{color:var(--ok)}
 .esito.ko{color:var(--ko)}
+/* LIM 16:9 & Widescreen Interactive Whiteboard styles */
+.lim-split{display:flex;flex-direction:column;align-items:center;gap:16px;width:100%}
+.lim-media{display:flex;justify-content:center;align-items:center}
+.lim-detail{width:100%;max-width:640px}
+.lim-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(6,214,160,0.18);color:var(--ok);font-size:14px;font-weight:800;padding:4px 12px;border-radius:20px;vertical-align:middle;margin-left:10px}
+.home-center{display:flex;flex-direction:column;align-items:center;width:100%}
+@media (min-aspect-ratio: 16/10) and (min-width: 860px), (min-width: 1024px){
+  html,body{height:100%;min-height:100%;overflow-x:hidden}
+  .wrap{max-width:min(1380px,96vw);min-height:96vh;padding:12px 24px;display:flex;flex-direction:column;justify-content:space-evenly}
+  h1{font-size:clamp(26px,3.2vw,40px);margin:4px 0 8px}
+  .grid{grid-template-columns:repeat(5,1fr);gap:16px;margin:8px 0 14px}
+  .sense{height:clamp(130px,16vh,180px);font-size:18px;font-weight:800;border-radius:26px;transition:transform .2s}
+  .sense:hover{transform:scale(1.03)}
+  .sense .e{font-size:52px}
+  .lim-split{flex-direction:row;align-items:center;justify-content:center;gap:36px;max-width:1200px;margin:10px auto}
+  .lim-media{flex:0 0 320px}
+  .lim-detail{flex:1;min-width:380px;max-width:680px}
+  .home-center{flex-direction:row;justify-content:center;gap:24px;margin:8px 0}
+  .viso{width:280px;height:300px}
+  .card{padding:22px 28px;font-size:21px;border-radius:26px;max-width:800px;margin:10px auto}
+  .opzioni{max-width:1100px;gap:16px;margin:12px auto;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+  .opz{font-size:22px;min-height:105px;border-radius:22px;font-weight:700}
+  .opz.grande{font-size:32px;min-height:135px}
+  .emoji-grande{font-size:105px;margin:4px 0}
+  .play{font-size:24px;padding:16px 40px;border-radius:22px}
+}
 </style>
 </head>
 <body>
@@ -497,42 +523,54 @@ function App(){
   if(schermo==="volto"){
     return h("div",{className:"wrap"},
       nav(),
-      h("h1",null,"IL VISO"),
-      h("p",null,"Tocca una parte del viso."),
-      h("svg",{className:"viso",viewBox:"0 0 240 260",width:240,height:260,role:"group","aria-label":"Volto"},
-        h("ellipse",{cx:120,cy:130,rx:95,ry:110,fill:"#ffd7a8"}),
-        zona("udito","Orecchie",[
-          h("ellipse",{key:"o1",cx:24,cy:130,rx:14,ry:24,fill:"#ffb98a",stroke:"#2b2d42",strokeWidth:3}),
-          h("ellipse",{key:"o2",cx:216,cy:130,rx:14,ry:24,fill:"#ffb98a",stroke:"#2b2d42",strokeWidth:3})
-        ]),
-        zona("vista","Occhi",[
-          h("circle",{key:"e1",cx:85,cy:110,r:16,fill:"#fff",stroke:"#2b2d42",strokeWidth:3}),
-          h("circle",{key:"e2",cx:155,cy:110,r:16,fill:"#fff",stroke:"#2b2d42",strokeWidth:3}),
-          h("circle",{key:"p1",cx:88,cy:112,r:7,fill:"#2b2d42"}),
-          h("circle",{key:"p2",cx:158,cy:112,r:7,fill:"#2b2d42"})
-        ]),
-        zona("olfatto","Naso",[
-          h("path",{key:"n",d:"M120 130 L108 165 L132 165",fill:"none",stroke:"#2b2d42",strokeWidth:4,strokeLinejoin:"round"})
-        ]),
-        zona("gusto","Bocca e lingua",[
-          h("path",{key:"b",d:"M90 195 Q120 222 150 195",stroke:"#2b2d42",strokeWidth:8,fill:"none",strokeLinecap:"round"}),
-          h("ellipse",{key:"l",cx:120,cy:204,rx:12,ry:6,fill:"#ff6b8a"})
-        ])
-      ),
-      sensoDettaglio && h(Scheda,{s:sensoDettaglio})
+      h("h1",null,"IL VISO",h("span",{className:"lim-badge"},"📺 LIM 16:9")),
+      h("p",null,"Tocca una parte del viso per visualizzarne la scheda didattica."),
+      h("div",{className:"lim-split"},
+        h("div",{className:"lim-media"},
+          h("svg",{className:"viso",viewBox:"0 0 240 260",width:260,height:280,role:"group","aria-label":"Volto"},
+            h("ellipse",{cx:120,cy:130,rx:95,ry:110,fill:"#ffd7a8"}),
+            zona("udito","Orecchie",[
+              h("ellipse",{key:"o1",cx:24,cy:130,rx:14,ry:24,fill:"#ffb98a",stroke:"#2b2d42",strokeWidth:3}),
+              h("ellipse",{key:"o2",cx:216,cy:130,rx:14,ry:24,fill:"#ffb98a",stroke:"#2b2d42",strokeWidth:3})
+            ]),
+            zona("vista","Occhi",[
+              h("circle",{key:"e1",cx:85,cy:110,r:16,fill:"#fff",stroke:"#2b2d42",strokeWidth:3}),
+              h("circle",{key:"e2",cx:155,cy:110,r:16,fill:"#fff",stroke:"#2b2d42",strokeWidth:3}),
+              h("circle",{key:"p1",cx:88,cy:112,r:7,fill:"#2b2d42"}),
+              h("circle",{key:"p2",cx:158,cy:112,r:7,fill:"#2b2d42"})
+            ]),
+            zona("olfatto","Naso",[
+              h("path",{key:"n",d:"M120 130 L108 165 L132 165",fill:"none",stroke:"#2b2d42",strokeWidth:4,strokeLinejoin:"round"})
+            ]),
+            zona("gusto","Bocca e lingua",[
+              h("path",{key:"b",d:"M90 195 Q120 222 150 195",stroke:"#2b2d42",strokeWidth:8,fill:"none",strokeLinecap:"round"}),
+              h("ellipse",{key:"l",cx:120,cy:204,rx:12,ry:6,fill:"#ff6b8a"})
+            ])
+          )
+        ),
+        h("div",{className:"lim-detail"},
+          sensoDettaglio ? h(Scheda,{s:sensoDettaglio}) : h("div",{className:"card"},h("p",{style:{fontSize:"20px",color:"#777"}},"👈 Tocca occhi, orecchie, naso o bocca per scoprire il senso e ascoltare la spiegazione."))
+        )
+      )
     );
   }
 
   if(sensoAttuale){
     return h("div",{className:"wrap"},
       nav(),
-      h("h1",null,sensoAttuale.nome),
-      h("button",{className:"organo",style:{background:sensoAttuale.colore},
-        onClick:()=>setDettaglio(d=>d===sensoAttuale.id?null:sensoAttuale.id),
-        "aria-expanded":dettaglio===sensoAttuale.id},
-        h("span",{className:"e","aria-hidden":true},sensoAttuale.emoji),
-        sensoAttuale.organo),
-      dettaglio===sensoAttuale.id && h(Scheda,{s:sensoAttuale})
+      h("h1",null,sensoAttuale.nome,h("span",{className:"lim-badge"},"📺 LIM 16:9")),
+      h("div",{className:"lim-split"},
+        h("div",{className:"lim-media"},
+          h("button",{className:"organo",style:{background:sensoAttuale.colore,minHeight:"150px",fontSize:"24px",borderRadius:"28px"},
+            onClick:()=>setDettaglio(d=>d===sensoAttuale.id?null:sensoAttuale.id),
+            "aria-expanded":dettaglio===sensoAttuale.id},
+            h("span",{className:"e",style:{fontSize:"54px"},"aria-hidden":true},sensoAttuale.emoji),
+            sensoAttuale.organo)
+        ),
+        h("div",{className:"lim-detail"},
+          h(Scheda,{s:sensoAttuale})
+        )
+      )
     );
   }
 
@@ -555,18 +593,17 @@ function App(){
   }
 
   return h("div",{className:"wrap"},
-    h("h1",null,"I CINQUE SENSI"),
-    h("p",null,"Ciao "+profilo.nome+"!"),
-    h("button",{className:"ghost",onClick:()=>setModifica(true)},"CAMBIA ALUNNO"),
+    h("h1",null,"I CINQUE SENSI",h("span",{className:"lim-badge"},"📺 LIM 16:9")),
+    h("p",null,"Ciao "+profilo.nome+"! ", h("button",{className:"ghost",style:{fontSize:"14px",padding:"6px 14px",minHeight:"36px",borderRadius:"12px"},onClick:()=>setModifica(true)},"CAMBIA ALUNNO")),
     h(Bimbo),
     h("div",{className:"grid"},
       SENSI.map(s=>h(Pulsante,{key:s.id,nome:s.nome,emoji:s.emoji,colore:s.colore,onClick:()=>apri(s.id)}))
     ),
-    h("div",{className:"top",style:{justifyContent:"center"}},
+    h("div",{className:"top",style:{justifyContent:"center",gap:"16px"}},
       h("button",{className:"ghost",onClick:()=>vai("volto")},"👤 IL VISO"),
-      h("button",{className:"play",onClick:()=>vai("giochi")},"GIOCHIAMO")
+      h("button",{className:"play",onClick:()=>vai("giochi")},"🎮 GIOCHIAMO")
     ),
-    h("div",{style:{margin:"16px 0"}},
+    h("div",{style:{margin:"10px 0"}},
       h(Ascolta,{testo:ISTRUZIONI,etichetta:"ASCOLTA LE ISTRUZIONI"})
     ),
     h("p",null,"Sensi esplorati: "+visti.length+" / "+SENSI.length),
