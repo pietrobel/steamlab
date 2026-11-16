@@ -24,7 +24,8 @@ export interface LinkItem {
     | 'mondo-pitagora'
     | 'storia-ipazia'
     | 'enigmondo'
-    | 'cinque-sensi';
+    | 'cinque-sensi'
+    | 'struttura-atomo';
 }
 
 export interface SubjectMeta {

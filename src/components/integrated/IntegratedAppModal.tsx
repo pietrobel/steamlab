@@ -6,6 +6,7 @@ import { ExternalAppConnector } from './ExternalAppConnector';
 import { StoriaIpaziaSection } from '../ipazia/StoriaIpaziaSection';
 import { EnigMondoApp } from './EnigMondoApp';
 import { CinqueSensiApp } from './CinqueSensiApp';
+import { StrutturaAtomoApp } from './StrutturaAtomoApp';
 import { LinkItem } from '../../types';
 
 interface IntegratedAppModalProps {
@@ -188,6 +189,9 @@ export const IntegratedAppModal: React.FC<IntegratedAppModalProps> = ({
             )}
             {item.internalAppId === 'cinque-sensi' && (
               <CinqueSensiApp onBackToHome={onClose} />
+            )}
+            {item.internalAppId === 'struttura-atomo' && (
+              <StrutturaAtomoApp onBackToHome={onClose} />
             )}
           </div>
         </div>

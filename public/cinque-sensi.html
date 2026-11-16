@@ -207,22 +207,50 @@ const Voce={
   ok:typeof window!=="undefined" && "speechSynthesis" in window && "SpeechSynthesisUtterance" in window,
   ultimo:"",
   voce(){
-    const vs=speechSynthesis.getVoices();
-    return vs.find(v=>/^it/i.test(v.lang) && /natural|neural|enhanced|premium/i.test(v.name))
-        || vs.find(v=>/^it/i.test(v.lang)) || null;
+    try{
+      const vs=speechSynthesis.getVoices();
+      return vs.find(v=>/^it/i.test(v.lang) && /natural|neural|enhanced|premium/i.test(v.name))
+          || vs.find(v=>/^it/i.test(v.lang)) || null;
+    }catch(e){return null;}
   },
   parla(testo,onFine){
     this.ultimo=testo;
-    const fine=()=>{ if(onFine){ const f=onFine; onFine=null; f(); } };
+    let invocato=false;
+    const fine=()=>{
+      if(!invocato){
+        invocato=true;
+        if(onFine){ const f=onFine; onFine=null; f(); }
+      }
+    };
     if(!this.ok){ if(onFine) setTimeout(fine,1500); return; }
-    speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(testo);
-    u.lang="it-IT"; u.rate=0.85; u.pitch=1.1;
-    u.onend=fine; u.onerror=fine;
-    const v=this.voce(); if(v) u.voice=v;
-    speechSynthesis.speak(u);
+    try{
+      speechSynthesis.cancel();
+      if(speechSynthesis.paused){
+        speechSynthesis.resume();
+      }
+      const u=new SpeechSynthesisUtterance(testo);
+      u.lang="it-IT"; u.rate=0.88; u.pitch=1.05;
+      u.onend=fine; u.onerror=fine;
+      const v=this.voce(); if(v) u.voice=v;
+      speechSynthesis.speak(u);
+      // Timer di sicurezza se la sintesi vocale si interrompe o non scatta onend
+      const parole=(testo||"").trim().split(/\s+/).length;
+      setTimeout(fine, Math.max(2800, parole * 450));
+    }catch(e){
+      fine();
+    }
   }
 };
+if(typeof window!=="undefined" && "speechSynthesis" in window){
+  try{
+    speechSynthesis.onvoiceschanged=()=>{ Voce.voce(); };
+    const sbloccaAudio=()=>{
+      if(speechSynthesis.paused) speechSynthesis.resume();
+    };
+    window.addEventListener("click", sbloccaAudio, {passive:true});
+    window.addEventListener("touchstart", sbloccaAudio, {passive:true});
+  }catch(e){}
+}
 
 function Bimbo(){
   return h("svg",{viewBox:"0 0 200 200",width:150,height:150,role:"img","aria-label":"Un bambino allegro"},
@@ -291,6 +319,12 @@ function Ascolta({testo,etichetta}){
 
 function Scheda({s}){
   const testo=s.organo+". Senso: "+s.nome+". "+s.funzione;
+  // Avvia subito l'audio della spiegazione non appena si apre la scheda
+  useEffect(()=>{
+    const t=setTimeout(()=>Voce.parla(testo),250);
+    return ()=>clearTimeout(t);
+  },[s.id]);
+
   return h("div",{className:"card scheda",role:"region","aria-label":s.organo},
     h("h2",null,s.organo),
     h("p",null,h("b",null,"Senso: "),s.nome),
@@ -306,7 +340,7 @@ function Scheda({s}){
 function domanda(tipo,it){
   const sen=SENSI.find(x=>x.id===it.s);
   const sug=sen?sen.funzione:"Qui usiamo più sensi insieme.";
-  if(tipo==="indovina") return {titolo:"Guarda l'immagine: quale senso usiamo?",emoji:it.e,opz:SENSI.map(s=>({label:s.nome,val:s.id,icona:s.id})),cor:it.s,sug,voce:"Quale senso usiamo?"};
+  if(tipo==="indovina") return {titolo:"Guarda l'immagine: quale senso usiamo?",emoji:it.e,opz:SENSI.map(s=>({label:s.nome,val:s.id,icona:s.id})),cor:it.s,sug,voce:"Guarda l'immagine. Quale senso usiamo?"};
   if(tipo==="organo") return {titolo:"Quale organo usiamo?",testo:it.t,opz:SENSI.map(s=>({label:s.organo,val:s.id,icona:s.id})),cor:it.s,sug,voce:it.t+" Quale organo usiamo?"};
   if(tipo==="associa"){
     const altri=mescola(ITEMS.filter(x=>x.s!==it.s && x.s!=="tutti")).slice(0,3).map(x=>({val:x.e,e:x.e}));
@@ -354,7 +388,7 @@ function costruisci(tipo){
   return pesca(base.map(it=>domanda(tipo,it)),15);
 }
 
-function Gioco({tipo,onEsci,onMenu,profilo}){
+function Gioco({tipo,onEsci,onMenu,onProssimoGioco,profilo}){
   const [deck,setDeck]=useState(()=>costruisci(tipo));
   const [i,setI]=useState(0);
   const [esito,setEsito]=useState(null);
@@ -365,17 +399,32 @@ function Gioco({tipo,onEsci,onMenu,profilo}){
   const multi=!!q && Array.isArray(q.cor);
   const corretti=multi?q.cor:(q?[q.cor]:[]);
   const chiusa=!!(esito&&(esito.ok||esito.rivelata));
+
+  // Fa partire subito la voce della domanda non appena compare la schermata o il livello successivo
   useEffect(()=>{
     if(!q) return;
-    const t=setTimeout(()=>Voce.parla(q.voce),300);
+    const t=setTimeout(()=>Voce.parla(q.voce),250);
     return ()=>clearTimeout(t);
   },[i,deck]);
 
-  function avanzaDopo(){ setEsito(null); setSbagliate([]); setScelte([]); setI(x=>x+1); }
+  function avanzaDopo(){
+    setEsito(null);
+    setSbagliate([]);
+    setScelte([]);
+    setI(x=>x+1);
+  }
+
+  // Risposta corretta: ascoltato il complimento, avanza automaticamente al livello o domanda successiva
   function vinci(){
     const msg=lodi(profilo);
-    setEsito({ok:true,msg}); setGiuste(g=>g+1); Voce.parla(msg,avanzaDopo);
+    setEsito({ok:true,msg});
+    setGiuste(g=>g+1);
+    Voce.parla(msg,()=>{
+      setTimeout(avanzaDopo,700);
+    });
   }
+
+  // Risposta errata: al 2° errore rivela la risposta giusta e poi avanza automaticamente
   function sbaglia(){
     if(sbagliate.length+1>=2){
       let msg;
@@ -385,12 +434,17 @@ function Gioco({tipo,onEsci,onMenu,profilo}){
         const giusta=q.opz.find(o=>o.val===q.cor);
         msg=giusta&&giusta.label?"La risposta giusta è: "+giusta.label+".":"La risposta giusta è quella evidenziata in verde.";
       }
-      setEsito({ok:false,rivelata:true,msg}); Voce.parla(msg);
+      setEsito({ok:false,rivelata:true,msg});
+      Voce.parla(msg,()=>{
+        setTimeout(avanzaDopo,1400);
+      });
     }else{
       const msg="Quasi! Riprova. Suggerimento: "+q.sug;
-      setEsito({ok:false,msg}); Voce.parla(msg);
+      setEsito({ok:false,msg});
+      Voce.parla(msg);
     }
   }
+
   function scegli(val){
     if(chiusa) return;
     if(multi){
@@ -408,23 +462,46 @@ function Gioco({tipo,onEsci,onMenu,profilo}){
     if(val===q.cor){ vinci(); }
     else { setSbagliate(n=>[...n,val]); sbaglia(); }
   }
-  function verifica(){
-    if(chiusa) return;
-    const giusto=scelte.length===corretti.length && corretti.every(c=>scelte.includes(c));
-    if(giusto){ vinci(); }
-    else { setSbagliate(n=>[...n,"x"]); sbaglia(); }
-  }
-  function avanti(){ setEsito(null); setSbagliate([]); setScelte([]); setI(x=>x+1); }
+
+  function avanti(){ avanzaDopo(); }
   function ricomincia(){ setDeck(costruisci(tipo)); setI(0); setEsito(null); setGiuste(0); setSbagliate([]); setScelte([]); }
+
+  // Gestione completamento del gioco e transizione automatica al gioco successivo
+  const gCurrent=GIOCHI.find(x=>x.id===tipo)||{nome:"il gioco"};
+  const idxCurrent=GIOCHI.findIndex(x=>x.id===tipo);
+  const prossimoGioco=(idxCurrent>=0 && idxCurrent+1<GIOCHI.length)?GIOCHI[idxCurrent+1]:null;
+
+  useEffect(()=>{
+    if(i>=deck.length){
+      let annullato=false;
+      const complimentoFinale=prossimoGioco
+        ? ("Bravissimo "+profilo.nome+"! Hai completato "+gCurrent.nome+" con "+giuste+" risposte esatte su "+deck.length+"! Ora passiamo al gioco successivo: "+prossimoGioco.nome+"!")
+        : ("Fantastico "+profilo.nome+"! Hai completato tutti i giochi dei cinque sensi! Bravissimo, sei un vero scienziato!");
+      Voce.parla(complimentoFinale,()=>{
+        if(annullato) return;
+        if(prossimoGioco && onProssimoGioco){
+          setTimeout(()=>{
+            if(!annullato) onProssimoGioco(prossimoGioco.id);
+          },1500);
+        }
+      });
+      return ()=>{ annullato=true; };
+    }
+  },[i,deck.length]);
 
   if(i>=deck.length){
     return h("div",{className:"card"},
       h("h2",null,"Hai completato il gioco! 🎉"),
-      h("p",null,"Risposte giuste: "+giuste+" su "+deck.length),
-      h("div",{className:"top",style:{justifyContent:"center"}},
+      h("p",{style:{fontSize:"22px",fontWeight:"700",color:"var(--ok)"}},"Risposte esatte: "+giuste+" su "+deck.length),
+      prossimoGioco && h("div",{style:{margin:"16px auto",padding:"14px",background:"rgba(6,214,160,0.15)",borderRadius:"18px",border:"2px solid var(--ok)",maxWidth:"520px"}},
+        h("p",{style:{margin:"4px 0",fontSize:"19px",fontWeight:"800"}},"⏩ Prossimo gioco: "+prossimoGioco.nome),
+        h("p",{style:{margin:"4px 0",fontSize:"14px",opacity:.85}},"Passaggio automatico al termine della spiegazione audio...")
+      ),
+      h("div",{className:"top",style:{justifyContent:"center",gap:"10px",marginTop:"18px"}},
+        prossimoGioco && h("button",{className:"play",onClick:()=>onProssimoGioco(prossimoGioco.id)},"VAI A: "+prossimoGioco.nome+" ➔"),
         h("button",{onClick:ricomincia},"RICOMINCIA"),
         h("button",{className:"ghost",onClick:onEsci},"ALTRI GIOCHI"),
-        h("button",{className:"play",onClick:onMenu},"MENU INIZIALE")
+        h("button",{className:"ghost",onClick:onMenu},"MENU INIZIALE")
       )
     );
   }
@@ -574,13 +651,28 @@ function App(){
     );
   }
 
+  // Audio di spiegazione automatico quando si entra nella sezione del viso o nella selezione giochi
+  useEffect(()=>{
+    if(schermo==="volto" && !dettaglio){
+      const t=setTimeout(()=>Voce.parla("Il viso. Tocca gli occhi, le orecchie, il naso o la bocca per ascoltare la spiegazione dei sensi."),250);
+      return ()=>clearTimeout(t);
+    }
+  },[schermo,dettaglio]);
+
+  useEffect(()=>{
+    if(schermo==="giochi" && !gioco){
+      const t=setTimeout(()=>Voce.parla("Scegli uno dei cinque giochi per iniziare la sfida!"),250);
+      return ()=>clearTimeout(t);
+    }
+  },[schermo,gioco]);
+
   if(schermo==="giochi"){
     if(gioco){
       const g=GIOCHI.find(x=>x.id===gioco);
       return h("div",{className:"wrap"},
         nav(()=>setGioco(null)),
         h("h1",null,g.nome),
-        h(Gioco,{key:gioco,tipo:gioco,profilo:profilo,onEsci:()=>setGioco(null),onMenu:()=>vai("home")})
+        h(Gioco,{key:gioco,tipo:gioco,profilo:profilo,onEsci:()=>setGioco(null),onMenu:()=>vai("home"),onProssimoGioco:(nextId)=>setGioco(nextId)})
       );
     }
     return h("div",{className:"wrap"},

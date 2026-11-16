@@ -173,6 +173,21 @@ export const INITIAL_LINKS: LinkItem[] = [
 
   // --- SCIENZE ---
   {
+    id: 'sci-struttura-atomo',
+    title: 'La Struttura dell\'Atomo: Esercizi & Simulatore',
+    url: '',
+    description: 'Scheda interattiva di esercizi per la seconda media sulla struttura atomica (Z, protoni, elettroni, neutroni, numero di massa A e carica elettrica). Include verifica immediata, generatore infinito di schede, simulatore 2D a gusci di Bohr e tavola rapida dei primi 20 elementi.',
+    subject: 'scienze',
+    tags: ['Chimica', 'Atomo', 'Protoni', 'Elettroni', 'Neutroni', 'Numero Atomico', 'Numero di Massa', 'Ioni', 'App Integrata'],
+    gradeLevel: 'Classe 2ª',
+    iconName: 'Atom',
+    isVercel: false,
+    isFavorite: true,
+    addedAt: '2026-11-16',
+    featured: true,
+    internalAppId: 'struttura-atomo',
+  },
+  {
     id: 'sci-cinque-sensi',
     title: 'I Cinque Sensi: Laboratorio & Giochi',
     url: '/cinque-sensi.html',

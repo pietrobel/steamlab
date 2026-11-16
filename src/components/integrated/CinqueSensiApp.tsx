@@ -353,8 +353,8 @@ export const CinqueSensiApp: React.FC<CinqueSensiAppProps> = ({ onBackToHome }) 
             <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300 flex items-start gap-3">
               <Volume2 className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
               <div>
-                <strong className="text-white block mb-0.5">Utilizzo con gli studenti alla lavagna:</strong>
-                All'inizio dell'attività, fai inserire all'alunno il proprio nome: riceverà elogi audio personalizzati. Tocca <span className="text-emerald-300 font-bold">«ASCOLTA LA SPIEGAZIONE»</span> o <span className="text-amber-300 font-bold">«ASCOLTA LA DOMANDA»</span> per azionare l'audio vocale in classe.
+                <strong className="text-white block mb-0.5">Sintesi vocale e avanzamento automatico:</strong>
+                All'apertura delle spiegazioni e delle domande l'audio parte subito automaticamente. Una volta data la risposta corretta e ascoltato il complimento vocale, l'app avanza in automatico alla domanda e al gioco successivo!
               </div>
             </div>
           </div>
