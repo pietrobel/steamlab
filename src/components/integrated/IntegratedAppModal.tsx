@@ -80,8 +80,18 @@ export const IntegratedAppModal: React.FC<IntegratedAppModalProps> = ({
         </div>
 
         {/* Scrollable Container with Integrated App */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-950">
-          <div className={item.internalAppId === 'cinque-sensi' ? 'max-w-6xl mx-auto' : 'max-w-5xl mx-auto'}>
+        <div
+          className={`flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 ${
+            item.internalAppId === 'struttura-atomo' ? 'bg-slate-100' : 'bg-slate-950'
+          }`}
+        >
+          <div
+            className={
+              item.internalAppId === 'cinque-sensi' || item.internalAppId === 'struttura-atomo'
+                ? 'max-w-6xl mx-auto'
+                : 'max-w-5xl mx-auto'
+            }
+          >
             {item.internalAppId === 'proprieta-operazioni' && (
               <div className="space-y-10">
                 <ExternalAppConnector

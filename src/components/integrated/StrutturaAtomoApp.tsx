@@ -66,7 +66,7 @@ interface AtomExerciseRow {
     electrons: number;
     neutrons: number;
     massNumber: number;
-    charge: string; // e.g. '0', '+2', '-1'
+    charge: string;
   };
   given: FieldKey[];
 }
@@ -220,7 +220,6 @@ function generateRandomRows(): AtomExerciseRow[] {
   });
 }
 
-// Compute electron shells (2, 8, 8, 2 for Z <= 20)
 function getShellDistribution(electrons: number): number[] {
   const caps = [2, 8, 8, 2];
   const shells: number[] = [];
@@ -235,7 +234,7 @@ function getShellDistribution(electrons: number): number[] {
   return shells;
 }
 
-// Crisp SVG Bohr Atomic Model
+// High-Contrast Light-Background Bohr Atomic Diagram
 const BohrAtomDiagram: React.FC<{
   protons: number;
   neutrons: number;
@@ -249,11 +248,9 @@ const BohrAtomDiagram: React.FC<{
   const cx = size / 2;
   const cy = size / 2;
 
-  // Deterministic nucleon coordinates inside nucleus
   const nucleons = useMemo(() => {
     const total = Math.min(protons + neutrons, 44);
     const items: { x: number; y: number; isProton: boolean }[] = [];
-    // Interleave protons and neutrons evenly
     let pLeft = protons;
     let nLeft = neutrons;
     for (let i = 0; i < total; i++) {
@@ -269,7 +266,7 @@ const BohrAtomDiagram: React.FC<{
       if (i === 0) {
         items.push({ x: cx, y: cy, isProton });
       } else {
-        const angle = i * 2.39996; // Golden angle
+        const angle = i * 2.39996;
         const radius = Math.min(26, 4.2 * Math.sqrt(i));
         items.push({
           x: cx + Math.cos(angle) * radius,
@@ -283,108 +280,107 @@ const BohrAtomDiagram: React.FC<{
 
   return (
     <div className="flex flex-col items-center">
-      <svg
-        viewBox={`0 0 ${size} ${size}`}
-        className="w-full max-w-[270px] h-auto select-none"
-        role="img"
-        aria-label={`Modello atomico di ${name}: ${protons} protoni, ${neutrons} neutroni, ${electrons} elettroni`}
-      >
-        <defs>
-          <radialGradient id="nucleusGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#10b981" stopOpacity="0.18" />
-            <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
-          </radialGradient>
-        </defs>
+      <div className="p-2 rounded-2xl bg-slate-50 border border-slate-200">
+        <svg
+          viewBox={`0 0 ${size} ${size}`}
+          className="w-full max-w-[260px] h-auto select-none"
+          role="img"
+          aria-label={`Modello atomico di ${name}: ${protons} protoni, ${neutrons} neutroni, ${electrons} elettroni`}
+        >
+          <defs>
+            <radialGradient id="nucleusGlowLight" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#0284c7" stopOpacity="0.14" />
+              <stop offset="100%" stopColor="#0284c7" stopOpacity="0" />
+            </radialGradient>
+          </defs>
 
-        {/* Subtle nucleus glow */}
-        <circle cx={cx} cy={cy} r={52} fill="url(#nucleusGlow)" />
+          <circle cx={cx} cy={cy} r={48} fill="url(#nucleusGlowLight)" />
 
-        {/* Electron shells */}
-        {shells.map((count, sIdx) => {
-          const r = 52 + sIdx * 23;
-          return (
-            <g key={`shell-${sIdx}`}>
-              <circle
-                cx={cx}
-                cy={cy}
-                r={r}
-                fill="none"
-                stroke="#334155"
-                strokeWidth="1.25"
-                strokeDasharray={sIdx % 2 === 1 ? '4 3' : undefined}
-              />
-              {Array.from({ length: count }).map((_, eIdx) => {
-                const angle = (eIdx / count) * Math.PI * 2 - Math.PI / 2 + sIdx * 0.4;
-                const ex = cx + Math.cos(angle) * r;
-                const ey = cy + Math.sin(angle) * r;
-                return (
-                  <g key={`e-${sIdx}-${eIdx}`}>
-                    <circle cx={ex} cy={ey} r={5.5} fill="#0284c7" stroke="#bae6fd" strokeWidth="1.2" />
-                    <text
-                      x={ex}
-                      y={ey + 0.5}
-                      textAnchor="middle"
-                      dominantBaseline="central"
-                      fontSize="7"
-                      fontWeight="bold"
-                      fill="#ffffff"
-                    >
-                      -
-                    </text>
-                  </g>
-                );
-              })}
-            </g>
-          );
-        })}
+          {shells.map((count, sIdx) => {
+            const r = 52 + sIdx * 23;
+            return (
+              <g key={`shell-${sIdx}`}>
+                <circle
+                  cx={cx}
+                  cy={cy}
+                  r={r}
+                  fill="none"
+                  stroke="#94a3b8"
+                  strokeWidth="1.5"
+                  strokeDasharray={sIdx % 2 === 1 ? '5 4' : undefined}
+                />
+                {Array.from({ length: count }).map((_, eIdx) => {
+                  const angle = (eIdx / count) * Math.PI * 2 - Math.PI / 2 + sIdx * 0.4;
+                  const ex = cx + Math.cos(angle) * r;
+                  const ey = cy + Math.sin(angle) * r;
+                  return (
+                    <g key={`e-${sIdx}-${eIdx}`}>
+                      <circle cx={ex} cy={ey} r={6} fill="#0369a1" stroke="#ffffff" strokeWidth="1.5" />
+                      <text
+                        x={ex}
+                        y={ey + 0.5}
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                        fontSize="8"
+                        fontWeight="bold"
+                        fill="#ffffff"
+                      >
+                        −
+                      </text>
+                    </g>
+                  );
+                })}
+              </g>
+            );
+          })}
 
-        {/* Nucleus particles */}
-        {nucleons.map((nuc, idx) => (
-          <circle
-            key={`nuc-${idx}`}
-            cx={nuc.x}
-            cy={nuc.y}
-            r={4.2}
-            fill={nuc.isProton ? '#e11d48' : '#64748b'}
-            stroke="#0f172a"
-            strokeWidth="0.9"
-          />
-        ))}
-      </svg>
+          {nucleons.map((nuc, idx) => (
+            <circle
+              key={`nuc-${idx}`}
+              cx={nuc.x}
+              cy={nuc.y}
+              r={4.5}
+              fill={nuc.isProton ? '#e11d48' : '#64748b'}
+              stroke="#ffffff"
+              strokeWidth="1"
+            />
+          ))}
+        </svg>
+      </div>
 
-      {/* Diagram Legend */}
-      <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-slate-300 mt-1">
+      {/* High-contrast Legend */}
+      <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-semibold text-slate-700 mt-3">
         <span className="inline-flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded-full bg-rose-600 inline-block border border-rose-300/40" />
+          <span className="w-3 h-3 rounded-full bg-rose-600 inline-block border border-rose-800/30" />
           <span className="tabular-nums">Protoni ({protons})</span>
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded-full bg-slate-500 inline-block border border-slate-300/40" />
+          <span className="w-3 h-3 rounded-full bg-slate-500 inline-block border border-slate-700/30" />
           <span className="tabular-nums">Neutroni ({neutrons})</span>
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded-full bg-sky-600 inline-block border border-sky-200/60" />
+          <span className="w-3 h-3 rounded-full bg-sky-700 inline-block border border-sky-900/30" />
           <span className="tabular-nums">Elettroni ({electrons})</span>
         </span>
       </div>
 
       {/* Element Notation Badge */}
-      <div className="mt-3 px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 flex items-center gap-3">
-        <div className="flex flex-col text-right leading-none font-mono text-xs text-slate-400 tabular-nums">
+      <div className="mt-3 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-300 flex items-center gap-3.5 shadow-xs">
+        <div className="flex flex-col text-right leading-tight font-mono text-xs font-bold text-slate-600 tabular-nums">
           <span>{protons + neutrons}</span>
           <span>{protons}</span>
         </div>
-        <div className="text-2xl font-bold text-white tracking-tight">
+        <div className="text-2xl font-extrabold text-slate-900 tracking-tight">
           {symbol}
           {charge !== '0' && (
-            <sup className="text-sm font-mono text-amber-400 ml-0.5">
+            <sup className="text-sm font-mono font-bold text-amber-700 ml-0.5">
               {charge === '+1' ? '+' : charge === '-1' ? '−' : charge.replace('-', '−')}
             </sup>
           )}
         </div>
-        <div className="text-left">
-          <div className="text-sm font-semibold text-white">{name}</div>
-          <div className="text-xs text-slate-400">
+        <div className="text-left border-l border-slate-300 pl-3">
+          <div className="text-sm font-bold text-slate-900">{name}</div>
+          <div className="text-xs font-medium text-slate-600">
             {charge === '0' ? 'Atomo neutro' : charge.startsWith('+') ? 'Catione (+)' : 'Anione (−)'}
           </div>
         </div>
@@ -396,7 +392,6 @@ const BohrAtomDiagram: React.FC<{
 export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHome }) => {
   const [activeTab, setActiveTab] = useState<'scheda' | 'simulatore' | 'formule'>('scheda');
 
-  // Tab 1: Exercise Worksheet state
   const [levelKey, setLevelKey] = useState<'livello1' | 'livello2' | 'livello3' | 'casuale'>('livello1');
   const [rows, setRows] = useState<AtomExerciseRow[]>(() => PRESET_LEVELS.livello1.rows);
   const [answers, setAnswers] = useState<Record<number, Partial<Record<FieldKey, string>>>>({});
@@ -405,7 +400,6 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
   const [hintRowId, setHintRowId] = useState<number | null>(null);
   const [copiedMd, setCopiedMd] = useState(false);
 
-  // Tab 2: 2D Atom Simulator state
   const [simProtons, setSimProtons] = useState<number>(6);
   const [simNeutrons, setSimNeutrons] = useState<number>(6);
   const [simElectrons, setSimElectrons] = useState<number>(6);
@@ -536,32 +530,32 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
   };
 
   return (
-    <div className="space-y-6 text-slate-100">
-      {/* Header */}
-      <div className="p-5 sm:p-6 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <div className="space-y-6 bg-slate-50 text-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
+      {/* Light Editorial Header */}
+      <div className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xs">
         <div className="flex items-start sm:items-center gap-4 min-w-0">
           <div className="relative shrink-0">
-            <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-emerald-500/60 bg-slate-950">
+            <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-emerald-600/70 bg-slate-100">
               <img src={profSauroImg} alt="Prof. Dino Sauro" className="w-full h-full object-cover" />
             </div>
-            <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full overflow-hidden border-2 border-slate-900 bg-slate-950">
+            <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full overflow-hidden border-2 border-white bg-slate-100 shadow-xs">
               <img src={samuImg} alt="Samu" className="w-full h-full object-cover" />
             </div>
           </div>
 
           <div className="min-w-0">
-            <div className="flex items-center gap-2 text-xs text-slate-400 flex-wrap">
-              <span className="font-semibold text-emerald-400">Scienze</span>
+            <div className="flex items-center gap-2 text-xs font-medium text-slate-600 flex-wrap">
+              <span className="font-bold text-emerald-700">Scienze</span>
               <span aria-hidden="true">·</span>
               <span>Seconda secondaria di primo grado</span>
               <span aria-hidden="true">·</span>
               <span>Chimica e struttura della materia</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-white mt-0.5 tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-0.5 tracking-tight">
               La struttura dell'atomo
             </h2>
-            <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
-              Completa la tabella interattiva degli esercizi ricavando Z, numero di massa A e carica, oppure costruisci gli atomi nel simulatore 2D.
+            <p className="text-sm text-slate-700 mt-1 max-w-2xl leading-relaxed">
+              Completa la tabella interattiva degli esercizi ricavando Z, numero di massa A e carica, oppure esplora gli atomi nel simulatore 2D.
             </p>
           </div>
         </div>
@@ -569,23 +563,23 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
         {onBackToHome && (
           <button
             onClick={onBackToHome}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-750 text-cyan-300 hover:text-white border border-slate-700 transition-colors shrink-0 whitespace-nowrap"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 transition-colors shrink-0 whitespace-nowrap"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <Home className="w-4 h-4 text-cyan-400" />
+            <ArrowLeft className="w-4 h-4 text-slate-700" />
+            <Home className="w-4 h-4 text-sky-700" />
             <span>Torna a ScienzaLab</span>
           </button>
         )}
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex items-center gap-1.5 p-1.5 bg-slate-900 rounded-xl border border-slate-800 overflow-x-auto scrollbar-none">
+      <div className="flex items-center gap-1.5 p-1.5 bg-white rounded-xl border border-slate-200 overflow-x-auto scrollbar-none shadow-xs">
         <button
           onClick={() => setActiveTab('scheda')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-colors shrink-0 whitespace-nowrap ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-colors shrink-0 whitespace-nowrap ${
             activeTab === 'scheda'
-              ? 'bg-emerald-600 text-white shadow-sm'
-              : 'text-slate-400 hover:text-white hover:bg-slate-800'
+              ? 'bg-emerald-700 text-white shadow-xs'
+              : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
           }`}
         >
           <Table2 className="w-4 h-4" />
@@ -594,10 +588,10 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
 
         <button
           onClick={() => setActiveTab('simulatore')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-colors shrink-0 whitespace-nowrap ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-colors shrink-0 whitespace-nowrap ${
             activeTab === 'simulatore'
-              ? 'bg-emerald-600 text-white shadow-sm'
-              : 'text-slate-400 hover:text-white hover:bg-slate-800'
+              ? 'bg-emerald-700 text-white shadow-xs'
+              : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
           }`}
         >
           <Atom className="w-4 h-4" />
@@ -606,10 +600,10 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
 
         <button
           onClick={() => setActiveTab('formule')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-colors shrink-0 whitespace-nowrap ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-colors shrink-0 whitespace-nowrap ${
             activeTab === 'formule'
-              ? 'bg-emerald-600 text-white shadow-sm'
-              : 'text-slate-400 hover:text-white hover:bg-slate-800'
+              ? 'bg-emerald-700 text-white shadow-xs'
+              : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
           }`}
         >
           <BookOpen className="w-4 h-4" />
@@ -622,65 +616,65 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
         <div className="space-y-5 animate-fade-in">
           {/* Instructions & Core Formulas Strip */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-            <div className="lg:col-span-7 p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
-              <div className="text-xs font-semibold text-slate-200">
+            <div className="lg:col-span-7 p-4 sm:p-5 rounded-xl bg-white border border-slate-200 space-y-2 shadow-xs">
+              <div className="text-sm font-bold text-slate-900">
                 Istruzioni della scheda
               </div>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                Le celle <span className="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-medium">evidenziate</span> sono i dati forniti. Completa le celle vuote. Usa il simbolo della carica con il segno: <code className="font-mono text-amber-300 bg-slate-950 px-1.5 py-0.5 rounded">0</code>, <code className="font-mono text-amber-300 bg-slate-950 px-1.5 py-0.5 rounded">+2</code>, <code className="font-mono text-amber-300 bg-slate-950 px-1.5 py-0.5 rounded">-1</code>.
+              <p className="text-sm text-slate-700 leading-relaxed">
+                Le celle <span className="px-2 py-0.5 rounded bg-sky-100 text-sky-950 border border-sky-300 font-bold">evidenziate</span> sono i dati forniti. Completa le celle vuote. Usa il simbolo della carica con il segno: <code className="font-mono font-bold text-slate-900 bg-slate-100 border border-slate-300 px-1.5 py-0.5 rounded">0</code>, <code className="font-mono font-bold text-slate-900 bg-slate-100 border border-slate-300 px-1.5 py-0.5 rounded">+2</code>, <code className="font-mono font-bold text-slate-900 bg-slate-100 border border-slate-300 px-1.5 py-0.5 rounded">-1</code>.
               </p>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs sm:text-sm font-medium text-slate-600">
                 Suggerimento: prima trova il numero di protoni (Z), poi ricava il resto con le formule.
               </p>
             </div>
 
-            <div className="lg:col-span-5 p-4 rounded-xl bg-slate-900 border border-slate-800 flex flex-col justify-center space-y-1.5 text-xs font-mono">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-1">
-                <span className="text-slate-400 font-sans">Numero atomico Z</span>
-                <span className="text-emerald-300 font-semibold">Z = numero di protoni</span>
+            <div className="lg:col-span-5 p-4 sm:p-5 rounded-xl bg-white border border-slate-200 flex flex-col justify-center space-y-2 text-xs sm:text-sm font-mono shadow-xs">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-1.5">
+                <span className="text-slate-700 font-sans font-semibold">Numero atomico Z</span>
+                <span className="text-emerald-800 font-bold">Z = numero di protoni</span>
               </div>
-              <div className="flex items-center justify-between border-b border-slate-800 pb-1">
-                <span className="text-slate-400 font-sans">Numero di massa A</span>
-                <span className="text-cyan-300 font-semibold">A = protoni + neutroni</span>
+              <div className="flex items-center justify-between border-b border-slate-200 pb-1.5">
+                <span className="text-slate-700 font-sans font-semibold">Numero di massa A</span>
+                <span className="text-sky-800 font-bold">A = protoni + neutroni</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-400 font-sans">Carica elettrica</span>
-                <span className="text-amber-300 font-semibold">Carica = protoni − elettroni</span>
+                <span className="text-slate-700 font-sans font-semibold">Carica elettrica</span>
+                <span className="text-amber-800 font-bold">Carica = protoni − elettroni</span>
               </div>
             </div>
           </div>
 
           {/* Level Selector & Actions */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-1 p-1 bg-slate-900 rounded-lg border border-slate-800 overflow-x-auto">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div className="flex items-center gap-1 p-1 bg-white rounded-xl border border-slate-200 overflow-x-auto shadow-xs">
               <button
                 onClick={() => loadLevel('livello1')}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap shrink-0 ${
-                  levelKey === 'livello1' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-slate-200'
+                className={`px-3 py-2 rounded-lg text-xs font-bold transition-colors whitespace-nowrap shrink-0 ${
+                  levelKey === 'livello1' ? 'bg-slate-900 text-white' : 'text-slate-700 hover:bg-slate-100'
                 }`}
               >
                 Livello 1 · Neutri
               </button>
               <button
                 onClick={() => loadLevel('livello2')}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap shrink-0 ${
-                  levelKey === 'livello2' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-slate-200'
+                className={`px-3 py-2 rounded-lg text-xs font-bold transition-colors whitespace-nowrap shrink-0 ${
+                  levelKey === 'livello2' ? 'bg-slate-900 text-white' : 'text-slate-700 hover:bg-slate-100'
                 }`}
               >
                 Livello 2 · Ioni
               </button>
               <button
                 onClick={() => loadLevel('livello3')}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap shrink-0 ${
-                  levelKey === 'livello3' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-slate-200'
+                className={`px-3 py-2 rounded-lg text-xs font-bold transition-colors whitespace-nowrap shrink-0 ${
+                  levelKey === 'livello3' ? 'bg-slate-900 text-white' : 'text-slate-700 hover:bg-slate-100'
                 }`}
               >
                 Livello 3 · Isotopi
               </button>
               <button
                 onClick={() => loadLevel('casuale')}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap shrink-0 ${
-                  levelKey === 'casuale' ? 'bg-emerald-600 text-white' : 'text-emerald-400 hover:bg-slate-800'
+                className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-colors whitespace-nowrap shrink-0 ${
+                  levelKey === 'casuale' ? 'bg-emerald-700 text-white' : 'text-emerald-800 hover:bg-emerald-50'
                 }`}
               >
                 <RefreshCw className="w-3.5 h-3.5" />
@@ -691,32 +685,32 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
             <div className="flex items-center gap-2 flex-wrap">
               <button
                 onClick={handleCopyMarkdown}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 transition-colors whitespace-nowrap"
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 transition-colors whitespace-nowrap shadow-xs"
                 title="Copia la tabella in formato Markdown"
               >
-                {copiedMd ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                {copiedMd ? <Check className="w-3.5 h-3.5 text-emerald-700" /> : <Copy className="w-3.5 h-3.5 text-slate-600" />}
                 <span>{copiedMd ? 'Tabella copiata' : 'Copia Markdown'}</span>
               </button>
 
               <button
                 onClick={handleResetAnswers}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 transition-colors whitespace-nowrap"
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 transition-colors whitespace-nowrap shadow-xs"
               >
-                <Eraser className="w-3.5 h-3.5" />
+                <Eraser className="w-3.5 h-3.5 text-slate-600" />
                 <span>Svuota</span>
               </button>
 
               <button
                 onClick={handleShowSolutions}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-900 hover:bg-slate-800 text-amber-300 border border-slate-700 transition-colors whitespace-nowrap"
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 transition-colors whitespace-nowrap shadow-xs"
               >
-                <Eye className="w-3.5 h-3.5" />
+                <Eye className="w-3.5 h-3.5 text-amber-700" />
                 <span>Soluzioni</span>
               </button>
 
               <button
                 onClick={() => setChecked(true)}
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition-colors whitespace-nowrap shadow-sm"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold bg-emerald-700 hover:bg-emerald-800 text-white transition-colors whitespace-nowrap shadow-sm"
               >
                 <CheckCircle2 className="w-4 h-4" />
                 <span>Verifica Risposte</span>
@@ -727,52 +721,52 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
           {/* Feedback Banner when checked */}
           {checked && (
             <div
-              className={`p-3.5 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs sm:text-sm ${
+              className={`p-4 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-sm ${
                 scoreSummary.totalCorrect === scoreSummary.totalBlank
-                  ? 'bg-emerald-950/50 border-emerald-500/40 text-emerald-200'
-                  : 'bg-slate-900 border-slate-700 text-slate-200'
+                  ? 'bg-emerald-50 border-emerald-400 text-emerald-950'
+                  : 'bg-amber-50 border-amber-400 text-slate-900'
               }`}
               role="status"
             >
-              <div className="flex items-center gap-2 font-medium">
+              <div className="flex items-center gap-2.5 font-semibold">
                 {scoreSummary.totalCorrect === scoreSummary.totalBlank ? (
                   <>
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <CheckCircle2 className="w-5 h-5 text-emerald-700 shrink-0" />
                     <span>Ottimo lavoro! Tutte le {scoreSummary.totalBlank} celle sono corrette.</span>
                   </>
                 ) : (
                   <>
-                    <HelpCircle className="w-4 h-4 text-amber-400 shrink-0" />
+                    <HelpCircle className="w-5 h-5 text-amber-700 shrink-0" />
                     <span className="tabular-nums">
                       Risposte esatte: <strong>{scoreSummary.totalCorrect}</strong> su <strong>{scoreSummary.totalBlank}</strong> celle da completare. Controlla le celle contrassegnate con ✗.
                     </span>
                   </>
                 )}
               </div>
-              <span className="text-xs text-slate-400">
-                Ricorda il segno per la carica (<code className="font-mono">+1</code>, <code className="font-mono">-2</code>, <code className="font-mono">0</code>)
+              <span className="text-xs font-medium text-slate-700">
+                Ricorda il segno per la carica (<code className="font-mono font-bold">+1</code>, <code className="font-mono font-bold">-2</code>, <code className="font-mono font-bold">0</code>)
               </span>
             </div>
           )}
 
-          {/* Exercise Table */}
-          <div className="rounded-xl border border-slate-800 bg-slate-900 overflow-hidden">
+          {/* High-Contrast Exercise Table */}
+          <div className="rounded-xl border border-slate-300 bg-white overflow-hidden shadow-xs">
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse min-w-[780px]">
+              <table className="w-full text-left border-collapse min-w-[800px]">
                 <thead>
-                  <tr className="border-b border-slate-800 bg-slate-950/70 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                    <th className="py-3 px-3 text-center w-12">N.</th>
-                    <th className="py-3 px-2.5 w-24">Simbolo</th>
-                    <th className="py-3 px-2.5 w-36">Nome</th>
-                    <th className="py-3 px-2.5 text-center w-24">Protoni</th>
-                    <th className="py-3 px-2.5 text-center w-24">Elettroni</th>
-                    <th className="py-3 px-2.5 text-center w-24">Neutroni</th>
-                    <th className="py-3 px-2.5 text-center w-28">N° di massa A</th>
-                    <th className="py-3 px-2.5 text-center w-24">Carica</th>
-                    <th className="py-3 px-3 text-center w-20">Aiuto</th>
+                  <tr className="border-b-2 border-slate-200 bg-slate-100 text-xs font-bold uppercase tracking-wider text-slate-700">
+                    <th className="py-3.5 px-3 text-center w-12">N.</th>
+                    <th className="py-3.5 px-2.5 w-24">Simbolo</th>
+                    <th className="py-3.5 px-2.5 w-36">Nome</th>
+                    <th className="py-3.5 px-2.5 text-center w-24">Protoni</th>
+                    <th className="py-3.5 px-2.5 text-center w-24">Elettroni</th>
+                    <th className="py-3.5 px-2.5 text-center w-24">Neutroni</th>
+                    <th className="py-3.5 px-2.5 text-center w-32">N° di massa A</th>
+                    <th className="py-3.5 px-2.5 text-center w-24">Carica</th>
+                    <th className="py-3.5 px-3 text-center w-20">Aiuto</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/80 text-sm">
+                <tbody className="divide-y divide-slate-200 text-sm">
                   {rows.map((row) => {
                     const isSelected = selectedRow?.id === row.id;
                     const rowOk = checked && isRowCompleteAndCorrect(row);
@@ -783,13 +777,13 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
                         key={row.id}
                         onClick={() => setSelectedRowId(row.id)}
                         className={`transition-colors cursor-pointer ${
-                          isSelected ? 'bg-slate-800/40' : 'hover:bg-slate-800/20'
+                          isSelected ? 'bg-sky-50/60' : 'hover:bg-slate-50'
                         }`}
                       >
-                        <td className="py-2.5 px-3 text-center font-mono tabular-nums text-xs text-slate-400">
+                        <td className="py-2.5 px-3 text-center font-mono tabular-nums text-sm font-bold text-slate-700">
                           <div className="flex items-center justify-center gap-1">
                             <span>{row.id}</span>
-                            {rowOk && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" aria-label="Riga corretta" />}
+                            {rowOk && <CheckCircle2 className="w-4 h-4 text-emerald-700" aria-label="Riga corretta" />}
                           </div>
                         </td>
 
@@ -802,9 +796,9 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
 
                           if (isGiven) {
                             return (
-                              <td key={field} className="py-2 px-2">
+                              <td key={field} className="py-2.5 px-2">
                                 <div
-                                  className={`px-2.5 py-2 rounded-lg bg-emerald-500/15 border border-emerald-500/35 text-emerald-200 font-semibold text-xs sm:text-sm ${
+                                  className={`px-3 py-2.5 rounded-lg bg-sky-100/90 border border-sky-300 text-sky-950 font-bold text-sm sm:text-base ${
                                     isNumeric ? 'text-center font-mono tabular-nums' : 'text-left'
                                   }`}
                                   title="Dato fornito"
@@ -816,34 +810,34 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
                           }
 
                           return (
-                            <td key={field} className="py-2 px-2">
+                            <td key={field} className="py-2.5 px-2">
                               <div className="relative flex items-center">
                                 <input
                                   type="text"
                                   inputMode={field === 'protons' || field === 'electrons' || field === 'neutrons' || field === 'massNumber' ? 'numeric' : 'text'}
                                   value={val}
                                   onChange={(e) => handleCellChange(row.id, field, e.target.value)}
-                                  placeholder={field === 'charge' ? '0, +1, -2' : field === 'symbol' ? 'Es. C' : field === 'name' ? 'Elemento' : '?'}
+                                  placeholder={field === 'charge' ? '0, +1' : field === 'symbol' ? 'Es. C' : field === 'name' ? 'Nome' : '?'}
                                   aria-label={`Riga ${row.id}, ${field}`}
-                                  className={`w-full px-2.5 py-2 rounded-lg bg-slate-950 border text-xs sm:text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 transition-colors ${
+                                  className={`w-full px-3 py-2.5 rounded-lg border text-sm sm:text-base font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 transition-colors ${
                                     isNumeric ? 'text-center font-mono tabular-nums' : 'text-left'
                                   } ${
                                     ok
-                                      ? 'border-emerald-500/70 focus:ring-emerald-500/30 pr-6'
+                                      ? 'bg-emerald-50 border-emerald-600 text-emerald-950 focus:ring-emerald-500/30 pr-7'
                                       : bad
-                                      ? 'border-rose-500/70 focus:ring-rose-500/30 pr-6'
-                                      : 'border-slate-700 focus:border-cyan-500 focus:ring-cyan-500/20'
+                                      ? 'bg-rose-50 border-rose-600 text-rose-950 focus:ring-rose-500/30 pr-7'
+                                      : 'bg-white border-slate-300 focus:border-sky-600 focus:ring-sky-500/25'
                                   }`}
                                 />
                                 {ok && (
                                   <CheckCircle2
-                                    className="w-3.5 h-3.5 text-emerald-400 absolute right-1.5 pointer-events-none"
+                                    className="w-4 h-4 text-emerald-700 absolute right-2 pointer-events-none"
                                     aria-label="Corretto"
                                   />
                                 )}
                                 {bad && (
                                   <XCircle
-                                    className="w-3.5 h-3.5 text-rose-400 absolute right-1.5 pointer-events-none"
+                                    className="w-4 h-4 text-rose-700 absolute right-2 pointer-events-none"
                                     aria-label="Errato o mancante"
                                   />
                                 )}
@@ -852,17 +846,17 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
                           );
                         })}
 
-                        <td className="py-2 px-3 text-center">
+                        <td className="py-2.5 px-3 text-center">
                           <button
                             type="button"
                             onClick={(e) => {
                               e.stopPropagation();
                               setHintRowId((prev) => (prev === row.id ? null : row.id));
                             }}
-                            className={`p-1.5 rounded-lg border transition-colors ${
+                            className={`p-2 rounded-lg border transition-colors ${
                               hintRowId === row.id
-                                ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                                : 'bg-slate-800 text-slate-400 hover:text-amber-300 border-slate-700'
+                                ? 'bg-amber-100 text-amber-900 border-amber-400'
+                                : 'bg-slate-100 text-slate-700 hover:bg-amber-50 hover:text-amber-800 border-slate-300'
                             }`}
                             title={`Suggerimento per riga ${row.id}`}
                           >
@@ -879,17 +873,17 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
 
           {/* Inline Row Hint */}
           {hintRowId && (
-            <div className="p-3.5 rounded-xl bg-amber-950/30 border border-amber-500/30 text-xs sm:text-sm text-amber-100 flex items-start gap-2.5">
-              <Lightbulb className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+            <div className="p-4 rounded-xl bg-amber-50 border border-amber-300 text-sm font-medium text-amber-950 flex items-start gap-2.5 shadow-xs">
+              <Lightbulb className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
               <span>{getHintText(rows.find((r) => r.id === hintRowId) || rows[0])}</span>
             </div>
           )}
 
           {/* Selected Row Atomic Visualizer */}
           {selectedRow && (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 p-5 rounded-xl bg-slate-900 border border-slate-800 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 p-5 sm:p-6 rounded-xl bg-white border border-slate-200 items-center shadow-xs">
               <div className="lg:col-span-5 flex flex-col items-center">
-                <div className="text-xs font-medium text-slate-400 mb-1">
+                <div className="text-xs font-bold uppercase tracking-wide text-slate-600 mb-2">
                   Anteprima modello atomico · Esercizio N. {selectedRow.id}
                 </div>
                 {checked && isRowCompleteAndCorrect(selectedRow) ? (
@@ -902,12 +896,12 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
                     charge={selectedRow.solution.charge}
                   />
                 ) : (
-                  <div className="py-8 px-4 text-center space-y-2 max-w-xs">
-                    <Atom className="w-12 h-12 text-slate-600 mx-auto" />
-                    <div className="text-sm font-semibold text-slate-200">
+                  <div className="py-8 px-5 text-center space-y-2.5 max-w-xs rounded-2xl bg-slate-50 border border-slate-200">
+                    <Atom className="w-12 h-12 text-slate-500 mx-auto" />
+                    <div className="text-sm font-bold text-slate-900">
                       Esercizio N. {selectedRow.id} selezionato
                     </div>
-                    <p className="text-xs text-slate-400 leading-relaxed">
+                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                       Completa tutte le celle della riga {selectedRow.id} e premi <strong>Verifica Risposte</strong> per visualizzare il modello di Bohr dell'atomo corrispondente.
                     </p>
                   </div>
@@ -915,21 +909,21 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
               </div>
 
               <div className="lg:col-span-7 space-y-3">
-                <h3 className="text-sm font-semibold text-white">
+                <h3 className="text-base font-bold text-slate-900">
                   Procedimento passo dopo passo per la riga {selectedRow.id}
                 </h3>
-                <div className="space-y-2 text-xs sm:text-sm text-slate-300">
-                  <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
-                    <strong className="text-emerald-400">1. Individua Z (Protoni):</strong>{' '}
+                <div className="space-y-2.5 text-sm text-slate-800">
+                  <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200">
+                    <strong className="text-emerald-800">1. Individua Z (Protoni):</strong>{' '}
                     Usa il simbolo, il nome o il numero di protoni fornito per identificare l'atomo nella tavola degli elementi.
                   </div>
-                  <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
-                    <strong className="text-cyan-400">2. Calcola A o i Neutroni:</strong>{' '}
-                    Applica <code className="font-mono text-white">A = protoni + neutroni</code> oppure <code className="font-mono text-white">neutroni = A − protoni</code>.
+                  <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200">
+                    <strong className="text-sky-800">2. Calcola A o i Neutroni:</strong>{' '}
+                    Applica <code className="font-mono font-bold text-slate-900 bg-white px-1.5 py-0.5 rounded border border-slate-200">A = protoni + neutroni</code> oppure <code className="font-mono font-bold text-slate-900 bg-white px-1.5 py-0.5 rounded border border-slate-200">neutroni = A − protoni</code>.
                   </div>
-                  <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
-                    <strong className="text-amber-400">3. Determina Carica o Elettroni:</strong>{' '}
-                    Ricorda <code className="font-mono text-white">Carica = protoni − elettroni</code>. Se neutro scrivi <code className="font-mono text-white">0</code>; altrimenti scrivi sempre <code className="font-mono text-white">+</code> o <code className="font-mono text-white">-</code>.
+                  <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200">
+                    <strong className="text-amber-800">3. Determina Carica o Elettroni:</strong>{' '}
+                    Ricorda <code className="font-mono font-bold text-slate-900 bg-white px-1.5 py-0.5 rounded border border-slate-200">Carica = protoni − elettroni</code>. Se neutro scrivi <code className="font-mono font-bold text-slate-900 bg-white px-1.5 py-0.5 rounded border border-slate-200">0</code>; altrimenti scrivi sempre <code className="font-mono font-bold text-slate-900 bg-white px-1.5 py-0.5 rounded border border-slate-200">+</code> o <code className="font-mono font-bold text-slate-900 bg-white px-1.5 py-0.5 rounded border border-slate-200">-</code>.
                   </div>
                 </div>
               </div>
@@ -941,11 +935,11 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
       {/* TAB 2: 2D ATOM SIMULATOR SANDBOX */}
       {activeTab === 'simulatore' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-fade-in">
-          {/* Left / Main Zone: Interactive Bohr Diagram (60%+) */}
-          <div className="lg:col-span-7 p-6 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col items-center justify-center min-h-[420px]">
-            <div className="w-full flex items-center justify-between mb-2 text-xs text-slate-400">
+          {/* Left / Main Zone: Interactive Bohr Diagram */}
+          <div className="lg:col-span-7 p-6 rounded-2xl bg-white border border-slate-200 flex flex-col items-center justify-center min-h-[420px] shadow-xs">
+            <div className="w-full flex items-center justify-between mb-3 text-xs font-semibold text-slate-600">
               <span>Modello a gusci elettronici (Bohr)</span>
-              <span className="font-mono tabular-nums">
+              <span className="font-mono tabular-nums text-slate-800">
                 Z = {simProtons} · A = {simProtons + simNeutrons}
               </span>
             </div>
@@ -960,22 +954,22 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
             />
 
             {/* Formula Readout */}
-            <div className="w-full grid grid-cols-3 gap-2.5 mt-5 pt-4 border-t border-slate-800 text-center">
-              <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800">
-                <div className="text-[11px] text-slate-400">Numero Atomico Z</div>
-                <div className="text-base font-bold font-mono tabular-nums text-rose-400 mt-0.5">
+            <div className="w-full grid grid-cols-3 gap-3 mt-5 pt-4 border-t border-slate-200 text-center">
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="text-xs font-semibold text-slate-600">Numero Atomico Z</div>
+                <div className="text-lg font-extrabold font-mono tabular-nums text-rose-700 mt-0.5">
                   {simProtons}
                 </div>
               </div>
-              <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800">
-                <div className="text-[11px] text-slate-400">Massa A (p⁺ + n⁰)</div>
-                <div className="text-base font-bold font-mono tabular-nums text-cyan-400 mt-0.5">
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="text-xs font-semibold text-slate-600">Massa A (p⁺ + n⁰)</div>
+                <div className="text-lg font-extrabold font-mono tabular-nums text-sky-800 mt-0.5">
                   {simProtons} + {simNeutrons} = {simProtons + simNeutrons}
                 </div>
               </div>
-              <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800">
-                <div className="text-[11px] text-slate-400">Carica (p⁺ − e⁻)</div>
-                <div className="text-base font-bold font-mono tabular-nums text-amber-400 mt-0.5">
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="text-xs font-semibold text-slate-600">Carica (p⁺ − e⁻)</div>
+                <div className="text-lg font-extrabold font-mono tabular-nums text-amber-800 mt-0.5">
                   {simChargeStr}
                 </div>
               </div>
@@ -983,27 +977,27 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
           </div>
 
           {/* Right Zone: Particle Controllers */}
-          <div className="lg:col-span-5 p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-5">
+          <div className="lg:col-span-5 p-6 rounded-2xl bg-white border border-slate-200 space-y-5 shadow-xs">
             <div>
-              <h3 className="text-base font-bold text-white">Controllo Particelle Subatomiche</h3>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <h3 className="text-lg font-bold text-slate-900">Controllo Particelle Subatomiche</h3>
+              <p className="text-xs sm:text-sm text-slate-600 mt-1">
                 Modifica protoni, neutroni ed elettroni per osservare come cambiano elemento, isotopo e carica netta.
               </p>
             </div>
 
             {/* Protons control */}
-            <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2.5">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">
               <div className="flex items-center justify-between">
-                <label htmlFor="slider-protons" className="text-xs font-semibold text-rose-300">
-                  Protoni (p⁺) · Determinano l'elemento
+                <label htmlFor="slider-protons" className="text-xs sm:text-sm font-bold text-rose-800">
+                  Protoni (p⁺) · Elemento
                 </label>
-                <span className="font-mono tabular-nums text-sm font-bold text-white">{simProtons}</span>
+                <span className="font-mono tabular-nums text-base font-extrabold text-slate-900">{simProtons}</span>
               </div>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => setSimProtons((p) => Math.max(1, p - 1))}
-                  className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white border border-slate-700"
+                  className="p-2.5 rounded-lg bg-white hover:bg-slate-100 text-slate-900 border border-slate-300 shadow-xs"
                   aria-label="Diminuisci protoni"
                 >
                   <Minus className="w-4 h-4" />
@@ -1015,12 +1009,12 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
                   max={20}
                   value={simProtons}
                   onChange={(e) => setSimProtons(Number(e.target.value))}
-                  className="flex-1 accent-rose-500"
+                  className="flex-1 accent-rose-600"
                 />
                 <button
                   type="button"
                   onClick={() => setSimProtons((p) => Math.min(20, p + 1))}
-                  className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white border border-slate-700"
+                  className="p-2.5 rounded-lg bg-white hover:bg-slate-100 text-slate-900 border border-slate-300 shadow-xs"
                   aria-label="Aumenta protoni"
                 >
                   <Plus className="w-4 h-4" />
@@ -1029,18 +1023,18 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
             </div>
 
             {/* Neutrons control */}
-            <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2.5">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">
               <div className="flex items-center justify-between">
-                <label htmlFor="slider-neutrons" className="text-xs font-semibold text-slate-300">
-                  Neutroni (n⁰) · Determinano gli isotopi
+                <label htmlFor="slider-neutrons" className="text-xs sm:text-sm font-bold text-slate-700">
+                  Neutroni (n⁰) · Isotopi
                 </label>
-                <span className="font-mono tabular-nums text-sm font-bold text-white">{simNeutrons}</span>
+                <span className="font-mono tabular-nums text-base font-extrabold text-slate-900">{simNeutrons}</span>
               </div>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => setSimNeutrons((n) => Math.max(0, n - 1))}
-                  className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white border border-slate-700"
+                  className="p-2.5 rounded-lg bg-white hover:bg-slate-100 text-slate-900 border border-slate-300 shadow-xs"
                   aria-label="Diminuisci neutroni"
                 >
                   <Minus className="w-4 h-4" />
@@ -1052,12 +1046,12 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
                   max={24}
                   value={simNeutrons}
                   onChange={(e) => setSimNeutrons(Number(e.target.value))}
-                  className="flex-1 accent-slate-400"
+                  className="flex-1 accent-slate-600"
                 />
                 <button
                   type="button"
                   onClick={() => setSimNeutrons((n) => Math.min(24, n + 1))}
-                  className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white border border-slate-700"
+                  className="p-2.5 rounded-lg bg-white hover:bg-slate-100 text-slate-900 border border-slate-300 shadow-xs"
                   aria-label="Aumenta neutroni"
                 >
                   <Plus className="w-4 h-4" />
@@ -1066,18 +1060,18 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
             </div>
 
             {/* Electrons control */}
-            <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2.5">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">
               <div className="flex items-center justify-between">
-                <label htmlFor="slider-electrons" className="text-xs font-semibold text-sky-300">
-                  Elettroni (e⁻) · Determinano la carica
+                <label htmlFor="slider-electrons" className="text-xs sm:text-sm font-bold text-sky-800">
+                  Elettroni (e⁻) · Carica
                 </label>
-                <span className="font-mono tabular-nums text-sm font-bold text-white">{simElectrons}</span>
+                <span className="font-mono tabular-nums text-base font-extrabold text-slate-900">{simElectrons}</span>
               </div>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => setSimElectrons((el) => Math.max(0, el - 1))}
-                  className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white border border-slate-700"
+                  className="p-2.5 rounded-lg bg-white hover:bg-slate-100 text-slate-900 border border-slate-300 shadow-xs"
                   aria-label="Diminuisci elettroni"
                 >
                   <Minus className="w-4 h-4" />
@@ -1089,12 +1083,12 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
                   max={22}
                   value={simElectrons}
                   onChange={(e) => setSimElectrons(Number(e.target.value))}
-                  className="flex-1 accent-sky-500"
+                  className="flex-1 accent-sky-700"
                 />
                 <button
                   type="button"
                   onClick={() => setSimElectrons((el) => Math.min(22, el + 1))}
-                  className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white border border-slate-700"
+                  className="p-2.5 rounded-lg bg-white hover:bg-slate-100 text-slate-900 border border-slate-300 shadow-xs"
                   aria-label="Aumenta elettroni"
                 >
                   <Plus className="w-4 h-4" />
@@ -1104,7 +1098,7 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
 
             {/* Quick Presets */}
             <div className="space-y-2 pt-1">
-              <div className="text-xs font-semibold text-slate-300">Esempi rapidi notevoli:</div>
+              <div className="text-xs font-bold text-slate-700">Esempi rapidi notevoli:</div>
               <div className="flex flex-wrap gap-2">
                 {[
                   { label: 'Carbonio-12 (Neutro)', p: 6, n: 6, e: 6 },
@@ -1121,7 +1115,7 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
                       setSimNeutrons(ex.n);
                       setSimElectrons(ex.e);
                     }}
-                    className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 border border-slate-700 transition-colors"
+                    className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-800 border border-slate-300 transition-colors"
                   >
                     {ex.label}
                   </button>
@@ -1136,54 +1130,54 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
       {activeTab === 'formule' && (
         <div className="space-y-6 animate-fade-in">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
-              <div className="text-xs font-semibold text-emerald-400">Formula 1 · Identità</div>
-              <h3 className="text-base font-bold text-white">Numero Atomico (Z)</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+            <div className="p-5 rounded-2xl bg-white border border-slate-200 space-y-2.5 shadow-xs">
+              <div className="text-xs font-bold text-emerald-700">Formula 1 · Identità</div>
+              <h3 className="text-base font-bold text-slate-900">Numero Atomico (Z)</h3>
+              <p className="text-sm text-slate-700 leading-relaxed">
                 Indica il numero di <strong>protoni</strong> nel nucleo. È la carta d'identità dell'elemento chimico.
               </p>
-              <div className="p-2.5 rounded-lg bg-slate-950 border border-slate-800 font-mono text-xs text-emerald-300 text-center">
+              <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 font-mono text-sm font-bold text-emerald-950 text-center">
                 Z = protoni
               </div>
             </div>
 
-            <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
-              <div className="text-xs font-semibold text-cyan-400">Formula 2 · Nucleo</div>
-              <h3 className="text-base font-bold text-white">Numero di Massa (A)</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+            <div className="p-5 rounded-2xl bg-white border border-slate-200 space-y-2.5 shadow-xs">
+              <div className="text-xs font-bold text-sky-700">Formula 2 · Nucleo</div>
+              <h3 className="text-base font-bold text-slate-900">Numero di Massa (A)</h3>
+              <p className="text-sm text-slate-700 leading-relaxed">
                 Somma di tutte le particelle pesanti presenti nel nucleo: <strong>protoni + neutroni</strong>.
               </p>
-              <div className="p-2.5 rounded-lg bg-slate-950 border border-slate-800 font-mono text-xs text-cyan-300 text-center">
+              <div className="p-3 rounded-lg bg-sky-50 border border-sky-200 font-mono text-sm font-bold text-sky-950 text-center">
                 A = p⁺ + n⁰ &nbsp;·&nbsp; n⁰ = A − p⁺
               </div>
             </div>
 
-            <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
-              <div className="text-xs font-semibold text-amber-400">Formula 3 · Bilancio Elettrico</div>
-              <h3 className="text-base font-bold text-white">Carica Elettrica</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Differenza tra cariche positive e negative. È <code className="font-mono text-white">0</code> se l'atomo è neutro.
+            <div className="p-5 rounded-2xl bg-white border border-slate-200 space-y-2.5 shadow-xs">
+              <div className="text-xs font-bold text-amber-800">Formula 3 · Bilancio Elettrico</div>
+              <h3 className="text-base font-bold text-slate-900">Carica Elettrica</h3>
+              <p className="text-sm text-slate-700 leading-relaxed">
+                Differenza tra cariche positive e negative. È <code className="font-mono font-bold text-slate-900">0</code> se l'atomo è neutro.
               </p>
-              <div className="p-2.5 rounded-lg bg-slate-950 border border-slate-800 font-mono text-xs text-amber-300 text-center">
+              <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 font-mono text-sm font-bold text-amber-950 text-center">
                 Carica = p⁺ − e⁻
               </div>
             </div>
           </div>
 
           {/* Quick Periodic Table Reference (Z = 1..20) */}
-          <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+          <div className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 space-y-4 shadow-xs">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <h3 className="text-base font-bold text-white">
+                <h3 className="text-lg font-bold text-slate-900">
                   Tavola Rapida di Riferimento (Primi 20 Elementi)
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-sm text-slate-600">
                   Usa questa tabella per trovare il numero atomico Z partendo dal simbolo o dal nome italiano.
                 </p>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-2.5">
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3">
               {ELEMENTS_DB.map((el) => (
                 <button
                   key={el.z}
@@ -1194,16 +1188,16 @@ export const StrutturaAtomoApp: React.FC<StrutturaAtomoAppProps> = ({ onBackToHo
                     setSimElectrons(el.z);
                     setActiveTab('simulatore');
                   }}
-                  className="p-3 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/40 text-left transition-colors group"
+                  className="p-3.5 rounded-xl bg-slate-50 hover:bg-sky-50 border border-slate-200 hover:border-sky-400 text-left transition-colors group shadow-2xs"
                 >
-                  <div className="flex items-center justify-between text-xs text-slate-400 font-mono tabular-nums">
+                  <div className="flex items-center justify-between text-xs font-semibold text-slate-600 font-mono tabular-nums">
                     <span>Z = {el.z}</span>
                     <span>A ≈ {el.commonMass}</span>
                   </div>
-                  <div className="text-lg font-bold text-white group-hover:text-emerald-300 mt-0.5">
+                  <div className="text-xl font-extrabold text-slate-900 group-hover:text-sky-800 mt-1">
                     {el.symbol}
                   </div>
-                  <div className="text-xs text-slate-300 truncate">{el.name}</div>
+                  <div className="text-xs font-semibold text-slate-700 truncate">{el.name}</div>
                 </button>
               ))}
             </div>
