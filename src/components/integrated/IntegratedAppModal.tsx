@@ -7,6 +7,7 @@ import { StoriaIpaziaSection } from '../ipazia/StoriaIpaziaSection';
 import { EnigMondoApp } from './EnigMondoApp';
 import { CinqueSensiApp } from './CinqueSensiApp';
 import { StrutturaAtomoApp } from './StrutturaAtomoApp';
+import { GliAnimaliApp } from './GliAnimaliApp';
 import { LinkItem } from '../../types';
 
 interface IntegratedAppModalProps {
@@ -87,7 +88,9 @@ export const IntegratedAppModal: React.FC<IntegratedAppModalProps> = ({
         >
           <div
             className={
-              item.internalAppId === 'cinque-sensi' || item.internalAppId === 'struttura-atomo'
+              item.internalAppId === 'cinque-sensi' ||
+              item.internalAppId === 'struttura-atomo' ||
+              item.internalAppId === 'gli-animali'
                 ? 'max-w-6xl mx-auto'
                 : 'max-w-5xl mx-auto'
             }
@@ -202,6 +205,9 @@ export const IntegratedAppModal: React.FC<IntegratedAppModalProps> = ({
             )}
             {item.internalAppId === 'struttura-atomo' && (
               <StrutturaAtomoApp onBackToHome={onClose} />
+            )}
+            {item.internalAppId === 'gli-animali' && (
+              <GliAnimaliApp onBackToHome={onClose} />
             )}
           </div>
         </div>

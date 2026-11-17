@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gli animali</title>
+<style>
+:root{--bg:#eef9f1;--ink:#2b2d42;--card:#ffffff;--p3:#ffd166;--p4:#06d6a0;--p5:#5a6bd6;--ok:#06a57a;--ko:#e0607e;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1d2a24;--ink:#f5f5f5;--card:#2a3a33}}
+:root[data-theme="dark"]{--bg:#1d2a24;--ink:#f5f5f5;--card:#2a3a33}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+.wrap{max-width:900px;margin:0 auto;padding:16px;text-align:center}
+h1{font-size:clamp(28px,6vw,48px);margin:8px 0}
+.top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+button{font:inherit;border:0;border-radius:20px;cursor:pointer;min-height:56px;padding:12px 18px;font-weight:700;color:#fff;background:var(--p5)}
+button.ghost{background:var(--card);color:var(--ink)}
+button:focus-visible{outline:3px solid var(--p3)}
+button:disabled{cursor:default}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;margin:18px 0}
+.tile{height:clamp(120px,22vw,150px);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:18px;color:var(--ink)}
+.tile .e{font-size:clamp(56px,10vw,80px)}
+.opz .e{font-size:clamp(72px,14vw,112px);line-height:1.1}
+.bar{height:16px;border-radius:8px;background:var(--card);overflow:hidden;margin:8px auto;max-width:420px}
+.bar div{height:100%;background:var(--p4);transition:width .4s}
+.card{background:var(--card);border-radius:24px;padding:20px;margin:16px auto;font-size:20px;line-height:1.5;max-width:640px}
+.emoji-grande{font-size:clamp(110px,20vw,150px);margin:8px 0;line-height:1.1}
+.ascolta{background:var(--p4);color:var(--ink);margin:8px 0}
+.nota{font-size:16px;opacity:.7}
+.play{background:var(--p3);color:var(--ink);font-size:24px;padding:18px 36px}
+.opzioni{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:16px auto;max-width:700px}
+.opz{background:var(--card);color:var(--ink);font-size:20px;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.opz.grande{font-size:28px;min-height:120px}
+.esito{font-size:22px;font-weight:700;margin:12px auto;max-width:640px;min-height:40px}
+.esito.ok{color:var(--ok)}
+.esito.ko{color:var(--ko)}
+.lim-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(6,214,160,0.18);color:var(--ok);font-size:14px;font-weight:800;padding:4px 12px;border-radius:20px;vertical-align:middle;margin-left:10px}
+@media (min-aspect-ratio: 16/10) and (min-width: 860px), (min-width: 1024px){
+  html,body{min-height:100%;overflow-x:hidden}
+  .wrap{max-width:min(1380px,96vw);min-height:96vh;padding:12px 24px;display:flex;flex-direction:column;justify-content:space-evenly}
+  h1{font-size:clamp(26px,3.2vw,40px);margin:4px 0 8px}
+  .tile{height:clamp(115px,15vh,155px);font-size:18px;font-weight:800;border-radius:24px;transition:transform .2s}
+  .tile:hover{transform:scale(1.03)}
+  .opzioni{max-width:1100px;gap:16px;margin:12px auto;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+  .opz{font-size:22px;min-height:135px;border-radius:22px;font-weight:700}
+  .opz.grande{font-size:30px;min-height:135px}
+  .emoji-grande{font-size:clamp(95px,14vh,130px);margin:4px 0}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script>
+const {useState,useEffect,useRef}=React;
+const h=React.createElement;
+
+// Dati: dove vive e cosa mangia ogni animale
+const ANIMALI=[
+{n:"cane",g:"m",e:"🐶",dove:"terra",cibo:"carne"},
+{n:"gatto",g:"m",e:"🐱",dove:"terra",cibo:"carne"},
+{n:"mucca",g:"f",e:"🐮",dove:"terra",cibo:"erba"},
+{n:"coniglio",g:"m",e:"🐰",dove:"terra",cibo:"erba"},
+{n:"cavallo",g:"m",e:"🐴",dove:"terra",cibo:"erba"},
+{n:"elefante",g:"m",e:"🐘",dove:"terra",cibo:"erba"},
+{n:"leone",g:"m",e:"🦁",dove:"terra",cibo:"carne"},
+{n:"scimmia",g:"f",e:"🐒",dove:"terra",cibo:"frutta"},
+{n:"rana",g:"f",e:"🐸",dove:"terra",cibo:"insetti"},
+{n:"ape",g:"f",e:"🐝",dove:"cielo",cibo:"fiori"},
+{n:"farfalla",g:"f",e:"🦋",dove:"cielo",cibo:"fiori"},
+{n:"uccello",g:"m",e:"🐦",dove:"cielo",cibo:"insetti"},
+{n:"aquila",g:"f",e:"🦅",dove:"cielo",cibo:"carne"},
+{n:"delfino",g:"m",e:"🐬",dove:"mare",cibo:"pesce"},
+{n:"squalo",g:"m",e:"🦈",dove:"mare",cibo:"pesce"},
+{n:"polpo",g:"m",e:"🐙",dove:"mare",cibo:"pesce"},
+{n:"maiale",g:"m",e:"🐷",dove:"terra",cibo:"erba"},
+{n:"gallina",g:"f",e:"🐔",dove:"terra",cibo:"erba"},
+{n:"pecora",g:"f",e:"🐑",dove:"terra",cibo:"erba"},
+{n:"topo",g:"m",e:"🐭",dove:"terra",cibo:"frutta"},
+{n:"orso",g:"m",e:"🐻",dove:"terra",cibo:"frutta"},
+{n:"giraffa",g:"f",e:"🦒",dove:"terra",cibo:"erba"},
+{n:"tartaruga",g:"f",e:"🐢",dove:"terra",cibo:"erba"},
+{n:"serpente",g:"m",e:"🐍",dove:"terra",cibo:"carne"},
+{n:"gufo",g:"m",e:"🦉",dove:"cielo",cibo:"carne"},
+{n:"pappagallo",g:"m",e:"🦜",dove:"cielo",cibo:"frutta"},
+{n:"coccinella",g:"f",e:"🐞",dove:"cielo",cibo:"insetti"},
+{n:"lumaca",g:"f",e:"🐌",dove:"terra",cibo:"erba"},
+{n:"riccio",g:"m",e:"🦔",dove:"terra",cibo:"insetti"},
+{n:"scoiattolo",g:"m",e:"🐿️",dove:"terra",cibo:"frutta"},
+{n:"ragno",g:"m",e:"🕷️",dove:"terra",cibo:"insetti"},
+{n:"granchio",g:"m",e:"🦀",dove:"mare",cibo:"pesce"},
+{n:"balena",g:"f",e:"🐳",dove:"mare",cibo:"pesce"},
+{n:"aragosta",g:"f",e:"🦞",dove:"mare",cibo:"pesce"},
+{n:"iguana",g:"f",e:"🦎",dove:"terra",cibo:"erba"},
+{n:"canguro",g:"m",e:"🦘",dove:"terra",cibo:"erba"},
+{n:"koala",g:"m",e:"🐨",dove:"terra",cibo:"erba"},
+{n:"lupo",g:"m",e:"🐺",dove:"terra",cibo:"carne"},
+{n:"volpe",g:"f",e:"🦊",dove:"terra",cibo:"carne"},
+{n:"cammello",g:"m",e:"🐫",dove:"terra",cibo:"erba"},
+{n:"rinoceronte",g:"m",e:"🦏",dove:"terra",cibo:"erba"},
+{n:"zebra",g:"f",e:"🦓",dove:"terra",cibo:"erba"},
+{n:"panda",g:"m",e:"🐼",dove:"terra",cibo:"erba"},
+{n:"pipistrello",g:"m",e:"🦇",dove:"cielo",cibo:"insetti"},
+{n:"grillo",g:"m",e:"🦗",dove:"terra",cibo:"insetti"},
+{n:"orca",g:"f",e:"🐋",dove:"mare",cibo:"pesce"},
+{n:"tonno",g:"m",e:"🐟",dove:"mare",cibo:"pesce"}
+];
+const DOVE={
+  cielo:{e:"☁️",l:"in cielo"},
+  mare:{e:"🌊",l:"in mare"},
+  terra:{e:"🌳",l:"sulla terra"}
+};
+const CIBI={
+  erba:{e:"🌿",l:"erba"},
+  carne:{e:"🍖",l:"carne"},
+  pesce:{e:"🐟",l:"pesce"},
+  frutta:{e:"🍎",l:"frutta"},
+  fiori:{e:"🌸",l:"fiori"},
+  insetti:{e:"🪲",l:"insetti"}
+};
+const GIOCHI=[
+{id:"riconosci",nome:"TROVA L'ANIMALE",emoji:"🔍",colore:"#ffd6a5"},
+{id:"dove",nome:"DOVE VIVE?",emoji:"🗺️",colore:"#bde0fe"},
+{id:"cibo",nome:"COSA MANGIA?",emoji:"🍽️",colore:"#caffbf"},
+{id:"vero",nome:"VERO O FALSO",emoji:"✅",colore:"#e0c3fc"}
+];
+const ISTRUZIONI="Tocca un animale per scoprirlo. Premi ascolta per sentire la scheda. Poi prova i giochi.";
+
+function nomeArt(a,cap){
+  let art;
+  if(a.g==="f") art=/^[aeiou]/i.test(a.n)?"l'":"la ";
+  else if(/^[aeiou]/i.test(a.n)) art="l'";
+  else if(/^(s[^aeiou]|z|gn|ps|x)/i.test(a.n)) art="lo ";
+  else art="il ";
+  const t=art+a.n;
+  return cap?t.charAt(0).toUpperCase()+t.slice(1):t;
+}
+
+function mescola(a){return [...a].sort(()=>Math.random()-0.5);}
+function casuali(lista,n){return mescola(lista).slice(0,n);}
+
+// Pesca n domande alternando i gruppi (qui: ambiente in cui vive l'animale)
+function pesca(lista,n){
+  const gruppi={};
+  mescola(lista).forEach(q=>{const k=q.grp;(gruppi[k]=gruppi[k]||[]).push(q);});
+  const out=[];
+  while(out.length<n && Object.keys(gruppi).some(k=>gruppi[k].length)){
+    mescola(Object.keys(gruppi)).forEach(k=>{
+      if(out.length<n && gruppi[k].length) out.push(gruppi[k].pop());
+    });
+  }
+  return out;
+}
+
+// Sintesi vocale: solo browser, nessuna API esterna
+const Voce={
+  stop(){ try{ if(this.ok) speechSynthesis.cancel(); }catch(e){} },
+  ok:typeof window!=="undefined" && "speechSynthesis" in window && "SpeechSynthesisUtterance" in window,
+  ultimo:"",
+  voce(){
+    try{
+      const vs=speechSynthesis.getVoices();
+      return vs.find(v=>/^it/i.test(v.lang) && /natural|neural|enhanced|premium/i.test(v.name))
+          || vs.find(v=>/^it/i.test(v.lang)) || null;
+    }catch(e){return null;}
+  },
+  parla(testo,onFine){
+    this.ultimo=testo;
+    let invocato=false;
+    const fine=()=>{
+      if(!invocato){
+        invocato=true;
+        if(onFine){ const f=onFine; onFine=null; f(); }
+      }
+    };
+    if(!this.ok){ if(onFine) setTimeout(fine,1500); return; }
+    try{
+      speechSynthesis.cancel();
+      if(speechSynthesis.paused){
+        speechSynthesis.resume();
+      }
+      const u=new SpeechSynthesisUtterance(testo);
+      u.lang="it-IT"; u.rate=0.88; u.pitch=1.05;
+      u.onend=fine; u.onerror=fine;
+      const v=this.voce(); if(v) u.voice=v;
+      speechSynthesis.speak(u);
+      const parole=(testo||"").trim().split(/\s+/).length;
+      setTimeout(fine, Math.max(2600, parole * 450));
+    }catch(e){
+      fine();
+    }
+  }
+};
+if(typeof window!=="undefined" && "speechSynthesis" in window){
+  try{
+    speechSynthesis.onvoiceschanged=()=>{ Voce.voce(); };
+    const sbloccaAudio=()=>{
+      if(speechSynthesis.paused) speechSynthesis.resume();
+    };
+    window.addEventListener("click", sbloccaAudio, {passive:true});
+    window.addEventListener("touchstart", sbloccaAudio, {passive:true});
+  }catch(e){}
+}
+
+function lodi(p){
+  const n=p.nome, F=p.sesso==="F";
+  const frasi=[
+    "Complimenti "+n+", "+(F?"bravissima":"bravissimo")+"!",
+    "Esatto, "+n+"!",
+    "Ottimo lavoro, "+n+"!",
+    "Hai capito, "+n+", "+(F?"brava":"bravo")+"!"
+  ];
+  return frasi[Math.floor(Math.random()*frasi.length)];
+}
+
+function Ascolta({testo,etichetta}){
+  if(!Voce.ok) return h("p",{className:"nota"},"Audio non disponibile su questo dispositivo. Il testo è scritto qui sopra.");
+  return h("button",{className:"ascolta",onClick:()=>Voce.parla(testo)},"🔊 "+(etichetta||"ASCOLTA"));
+}
+
+function Bimbo(){
+  return h("svg",{viewBox:"0 0 200 200",width:130,height:130,role:"img","aria-label":"Un bambino allegro"},
+    h("circle",{cx:100,cy:110,r:70,fill:"#ffd7a8"}),
+    h("path",{d:"M30 100 Q40 30 100 35 Q165 35 170 100 Q150 60 100 62 Q55 62 30 100Z",fill:"#7a4a21"}),
+    h("circle",{cx:76,cy:108,r:8,fill:"#2b2d42"}),
+    h("circle",{cx:124,cy:108,r:8,fill:"#2b2d42"}),
+    h("path",{d:"M75 140 Q100 165 125 140",stroke:"#2b2d42",strokeWidth:6,fill:"none",strokeLinecap:"round"}),
+    h("circle",{cx:60,cy:132,r:9,fill:"#ff9b9b",opacity:.6}),
+    h("circle",{cx:140,cy:132,r:9,fill:"#ff9b9b",opacity:.6})
+  );
+}
+
+function Benvenuto({profilo,onSalva}){
+  const [nome,setNome]=useState(profilo?profilo.nome:"");
+  const [sesso,setSesso]=useState(profilo?profilo.sesso:null);
+  const pronto=nome.trim().length>0 && !!sesso;
+  const sc=(v)=>sesso===v?{outline:"6px solid #2b2d42"}:{};
+  return h("div",{className:"wrap"},
+    h("h1",null,"CHI GIOCA?"),
+    h("input",{type:"text",value:nome,placeholder:"Scrivi il tuo nome",onChange:e=>setNome(e.target.value),"aria-label":"Nome",
+      style:{fontSize:"24px",padding:"14px",borderRadius:"16px",border:"2px solid var(--ink)",width:"100%",maxWidth:"420px",margin:"12px auto",display:"block",background:"var(--card)",color:"var(--ink)"}}),
+    h("p",null,"Scegli:"),
+    h("div",{className:"grid"},
+      h("button",{className:"tile",style:Object.assign({background:"#8ecae6"},sc("M")),onClick:()=>setSesso("M"),"aria-pressed":sesso==="M"},
+        h("span",{className:"e","aria-hidden":true},"👦"),"ALUNNO"),
+      h("button",{className:"tile",style:Object.assign({background:"#ffb3c6"},sc("F")),onClick:()=>setSesso("F"),"aria-pressed":sesso==="F"},
+        h("span",{className:"e","aria-hidden":true},"👧"),"ALUNNA")
+    ),
+    h("button",{className:"play",disabled:!pronto,style:{opacity:pronto?1:.5},
+      onClick:()=>{if(pronto) onSalva({nome:nome.trim(),sesso:sesso});}},"INIZIA")
+  );
+}
+
+// Costruisce la banca per un gioco: due domande per animale, con alternative diverse
+function costruisci(tipo){
+  const tutte=[];
+  ANIMALI.forEach(a=>{
+    for(let r=0;r<2;r++){
+      if(tipo==="riconosci"){
+        const altri=casuali(ANIMALI.filter(x=>x.n!==a.n),5);
+        tutte.push({titolo:"Trova "+nomeArt(a)+"!",voce:"Trova "+nomeArt(a)+".",emoji:null,
+          opz:mescola([a,...altri]).map(x=>({val:x.n,e:x.e})),
+          cor:a.n,grp:a.dove,sug:"Guarda con calma le figure e prova ancora."});
+      }
+      if(tipo==="dove"){
+        tutte.push({titolo:"Dove vive "+nomeArt(a)+"?",voce:"Dove vive "+nomeArt(a)+"?",emoji:a.e,
+          opz:["cielo","mare","terra"].map(d=>({val:d,e:DOVE[d].e,label:DOVE[d].l})),
+          cor:a.dove,grp:a.dove,sug:"Pensa: vola, nuota o cammina?"});
+      }
+      if(tipo==="cibo"){
+        const altri=casuali(Object.keys(CIBI).filter(c=>c!==a.cibo),5);
+        tutte.push({titolo:"Che cosa mangia "+nomeArt(a)+"?",voce:"Che cosa mangia "+nomeArt(a)+"?",emoji:a.e,
+          opz:mescola([a.cibo,...altri]).map(c=>({val:c,e:CIBI[c].e,label:CIBI[c].l})),
+          cor:a.cibo,grp:a.dove,sug:"Pensa: mangia erba, carne o frutta?"});
+      }
+      if(tipo==="vero"){
+        const vero=r===0;
+        const altro=casuali(Object.keys(DOVE).filter(d=>d!==a.dove),1)[0];
+        const dove=vero?a.dove:altro;
+        const frase=nomeArt(a,true)+" vive "+DOVE[dove].l+".";
+        tutte.push({titolo:"Vero o falso?",testo:frase,voce:frase+" Vero o falso?",emoji:a.e,
+          opz:[{val:"V",e:"✅",label:"VERO"},{val:"F",e:"❌",label:"FALSO"}],
+          cor:vero?"V":"F",grp:a.dove,sug:nomeArt(a,true)+" vive "+DOVE[a.dove].l+"."});
+      }
+    }
+  });
+  return pesca(tutte,15);
+}
+
+function Gioco({tipo,onEsci,onMenu,onProssimoGioco,profilo}){
+  const [deck,setDeck]=useState(()=>costruisci(tipo));
+  const [i,setI]=useState(0);
+  const [esito,setEsito]=useState(null);
+  const [giuste,setGiuste]=useState(0);
+  const [sbagliate,setSbagliate]=useState([]);
+  const fattoRef=useRef(-1);
+  const q=deck[i];
+  const chiusa=!!(esito&&(esito.ok||esito.rivelata));
+
+  useEffect(()=>{
+    if(!q) return;
+    const t=setTimeout(()=>Voce.parla(q.voce),250);
+    return ()=>clearTimeout(t);
+  },[i,deck]);
+
+  function avanzaDopo(){
+    if(fattoRef.current===i) return;
+    fattoRef.current=i;
+    setEsito(null); setSbagliate([]); setI(x=>x+1);
+  }
+  function vinci(){
+    const msg=lodi(profilo);
+    setEsito({ok:true,msg});
+    setGiuste(g=>g+1);
+    Voce.parla(msg,()=>setTimeout(avanzaDopo,700));
+  }
+  function scegli(val){
+    if(chiusa) return;
+    if(val===q.cor){ vinci(); return; }
+    setSbagliate(n=>[...n,val]);
+    if(sbagliate.length+1>=2){
+      const giusta=q.opz.find(o=>o.val===q.cor);
+      const msg="La risposta giusta è: "+(giusta.label||"quella con l'immagine evidenziata")+".";
+      setEsito({ok:false,rivelata:true,msg});
+      Voce.parla(msg,()=>setTimeout(avanzaDopo,1300));
+    }else{
+      const msg="Quasi! Riprova. Suggerimento: "+q.sug;
+      setEsito({ok:false,msg}); Voce.parla(msg);
+    }
+  }
+  function ricomincia(){ fattoRef.current=-1; setDeck(costruisci(tipo)); setI(0); setEsito(null); setGiuste(0); setSbagliate([]); }
+
+  const gCurrent=GIOCHI.find(x=>x.id===tipo)||{nome:"il gioco"};
+  const idxCurrent=GIOCHI.findIndex(x=>x.id===tipo);
+  const prossimoGioco=(idxCurrent>=0 && idxCurrent+1<GIOCHI.length)?GIOCHI[idxCurrent+1]:null;
+
+  useEffect(()=>{
+    if(i>=deck.length){
+      let annullato=false;
+      const complimentoFinale=prossimoGioco
+        ? ("Bravissimo "+profilo.nome+"! Hai completato "+gCurrent.nome+" con "+giuste+" risposte esatte su "+deck.length+"! Ora passiamo al gioco successivo: "+prossimoGioco.nome+"!")
+        : ("Fantastico "+profilo.nome+"! Hai completato tutti i giochi degli animali! Sei un vero esploratore!");
+      Voce.parla(complimentoFinale,()=>{
+        if(annullato) return;
+        if(prossimoGioco && onProssimoGioco){
+          setTimeout(()=>{
+            if(!annullato) onProssimoGioco(prossimoGioco.id);
+          },1500);
+        }
+      });
+      return ()=>{ annullato=true; };
+    }
+  },[i,deck.length]);
+
+  if(i>=deck.length){
+    return h("div",{className:"card"},
+      h("h2",null,"Hai completato il gioco! 🎉"),
+      h("p",{style:{fontSize:"22px",fontWeight:"700",color:"var(--ok)"}},"Risposte esatte: "+giuste+" su "+deck.length),
+      prossimoGioco && h("div",{style:{margin:"16px auto",padding:"14px",background:"rgba(6,214,160,0.15)",borderRadius:"18px",border:"2px solid var(--ok)",maxWidth:"520px"}},
+        h("p",{style:{margin:"4px 0",fontSize:"19px",fontWeight:"800"}},"⏩ Prossimo gioco: "+prossimoGioco.nome),
+        h("p",{style:{margin:"4px 0",fontSize:"14px",opacity:.85}},"Passaggio automatico al termine della voce...")
+      ),
+      h("div",{className:"top",style:{justifyContent:"center",gap:"10px",marginTop:"16px"}},
+        prossimoGioco && h("button",{className:"play",onClick:()=>onProssimoGioco(prossimoGioco.id)},"VAI A: "+prossimoGioco.nome+" ➔"),
+        h("button",{onClick:ricomincia},"RICOMINCIA"),
+        h("button",{className:"ghost",onClick:onEsci},"ALTRI GIOCHI"),
+        h("button",{className:"ghost",onClick:onMenu},"MENU INIZIALE")
+      )
+    );
+  }
+
+  const opzioni=q.opz.map((o,k)=>{
+    const vero=tipo==="vero";
+    const base=vero?{background:o.val==="V"?"#06d6a0":"#ff8fa3"}:{};
+    const giusta=chiusa&&o.val===q.cor;
+    const st=Object.assign({},base,giusta?{outline:"6px solid #06d6a0"}:{},(!chiusa&&sbagliate.includes(o.val))?{opacity:.4}:{});
+    return h("button",{key:k,className:"opz"+(vero?" grande":""),style:st,onClick:()=>scegli(o.val)},
+      o.e&&h("span",{className:"e","aria-hidden":true},o.e),
+      o.label&&h("span",null,o.label));
+  });
+
+  return h("div",null,
+    h("p",null,"Domanda "+(i+1)+" di "+deck.length),
+    h("h2",null,q.titolo),
+    q.testo&&h("div",{className:"card"},q.testo),
+    h("div",null,h(Ascolta,{testo:q.voce,etichetta:"ASCOLTA LA DOMANDA"})),
+    q.emoji&&h("div",{className:"emoji-grande","aria-hidden":true},q.emoji),
+    h("div",{className:"opzioni"},opzioni),
+    esito&&h("p",{className:"esito "+(esito.ok?"ok":"ko"),role:"status","aria-live":"polite"},esito.msg),
+    esito&&(esito.ok||esito.rivelata)&&h("button",{className:"play",onClick:()=>{Voce.stop();avanzaDopo();}},i+1<deck.length?"AVANTI":"FINE")
+  );
+}
+
+function Scheda({a}){
+  const testo=nomeArt(a,true)+" vive "+DOVE[a.dove].l+" e mangia "+CIBI[a.cibo].l+".";
+  useEffect(()=>{
+    const t=setTimeout(()=>Voce.parla(testo),250);
+    return ()=>clearTimeout(t);
+  },[a.n]);
+
+  return h("div",{className:"card"},
+    h("div",{className:"emoji-grande","aria-hidden":true},a.e),
+    h("h2",null,nomeArt(a,true)),
+    h("p",null,"Vive: "+DOVE[a.dove].e+" "+DOVE[a.dove].l),
+    h("p",null,"Mangia: "+CIBI[a.cibo].e+" "+CIBI[a.cibo].l),
+    h(Ascolta,{testo:testo,etichetta:"ASCOLTA LA SCHEDA"})
+  );
+}
+
+function App(){
+  const [schermo,setSchermo]=useState("home");
+  const [gioco,setGioco]=useState(null);
+  const [dettaglio,setDettaglio]=useState(null);
+  const [modifica,setModifica]=useState(false);
+  const [profilo,setProfilo]=useState(()=>{
+    try{return JSON.parse(localStorage.getItem("animali-profilo")||"null");}catch(e){return null;}
+  });
+  const [visti,setVisti]=useState(()=>{
+    try{return JSON.parse(localStorage.getItem("animali-visti")||"[]");}catch(e){return [];}
+  });
+  useEffect(()=>{
+    try{localStorage.setItem("animali-visti",JSON.stringify(visti));}catch(e){}
+  },[visti]);
+
+  function salvaProfilo(p){
+    try{localStorage.setItem("animali-profilo",JSON.stringify(p));}catch(e){}
+    setProfilo(p); setModifica(false);
+  }
+  function vai(s){ setDettaglio(null); setGioco(null); setSchermo(s); }
+  function apriAnimale(n){
+    setVisti(v=>v.includes(n)?v:[...v,n]);
+    setDettaglio(n);
+  }
+  const pct=Math.round(visti.length/ANIMALI.length*100);
+  const animaleScelto=ANIMALI.find(a=>a.n===dettaglio);
+
+  useEffect(()=>{
+    if(schermo==="giochi" && !gioco){
+      const t=setTimeout(()=>Voce.parla("Scegli uno dei quattro giochi sugli animali per iniziare!"),250);
+      return ()=>clearTimeout(t);
+    }
+  },[schermo,gioco]);
+
+  const nav=(indietro)=>h("div",{className:"top"},
+    h("button",{className:"ghost",onClick:indietro||(()=>vai("home"))},"← Indietro"),
+    Voce.ok && h("button",{className:"ghost",onClick:()=>Voce.parla(Voce.ultimo||ISTRUZIONI)},"🔁 RIPETI"),
+    h("button",{className:"ghost",onClick:()=>vai("home")},"🏠 HOME")
+  );
+
+  if(!profilo||modifica){
+    return h(Benvenuto,{profilo:profilo,onSalva:salvaProfilo});
+  }
+
+  if(schermo==="animali"){
+    return h("div",{className:"wrap"},
+      nav(dettaglio?()=>setDettaglio(null):undefined),
+      h("h1",null,"GLI ANIMALI",h("span",{className:"lim-badge"},"📺 LIM 16:9")),
+      animaleScelto
+        ? h(Scheda,{a:animaleScelto})
+        : h("div",{className:"grid"},
+            ANIMALI.map(a=>h("button",{key:a.n,className:"tile",style:{background:"#ffe8a3"},onClick:()=>apriAnimale(a.n),"aria-label":a.n},
+              h("span",{className:"e","aria-hidden":true},a.e), a.n)))
+    );
+  }
+
+  if(schermo==="giochi"){
+    if(gioco){
+      return h("div",{className:"wrap"},
+        nav(()=>setGioco(null)),
+        h("h1",null,GIOCHI.find(x=>x.id===gioco).nome),
+        h(Gioco,{key:gioco,tipo:gioco,profilo:profilo,onEsci:()=>setGioco(null),onMenu:()=>vai("home"),onProssimoGioco:(nextId)=>setGioco(nextId)})
+      );
+    }
+    return h("div",{className:"wrap"},
+      nav(),
+      h("h1",null,"GIOCHIAMO",h("span",{className:"lim-badge"},"📺 LIM 16:9")),
+      h("div",{className:"grid"},
+        GIOCHI.map(g=>h("button",{key:g.id,className:"tile",style:{background:g.colore},onClick:()=>setGioco(g.id),"aria-label":g.nome},
+          h("span",{className:"e","aria-hidden":true},g.emoji), g.nome)))
+    );
+  }
+
+  return h("div",{className:"wrap"},
+    h("h1",null,"GLI ANIMALI",h("span",{className:"lim-badge"},"📺 LIM 16:9")),
+    h("p",null,"Ciao "+profilo.nome+"! ",h("button",{className:"ghost",style:{fontSize:"14px",padding:"6px 14px",minHeight:"36px",borderRadius:"12px"},onClick:()=>setModifica(true)},"CAMBIA ALUNNO")),
+    h(Bimbo),
+    h("div",{className:"grid"},
+      h("button",{className:"tile",style:{background:"#ffe8a3"},onClick:()=>vai("animali")},
+        h("span",{className:"e","aria-hidden":true},"🐾"),"ANIMALI"),
+      h("button",{className:"tile",style:{background:"#caffbf"},onClick:()=>vai("giochi")},
+        h("span",{className:"e","aria-hidden":true},"🎮"),"GIOCHIAMO")
+    ),
+    h("div",{style:{margin:"16px 0"}},h(Ascolta,{testo:ISTRUZIONI,etichetta:"ASCOLTA LE ISTRUZIONI"})),
+    h("p",null,"Animali scoperti: "+visti.length+" / "+ANIMALI.length),
+    h("div",{className:"bar",role:"progressbar","aria-valuenow":pct,"aria-valuemin":0,"aria-valuemax":100,"aria-label":"Progressi"},
+      h("div",{style:{width:pct+"%"}}))
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(h(App));
+</script>
+</body>
+</html>

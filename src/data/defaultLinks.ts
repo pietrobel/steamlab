@@ -173,6 +173,21 @@ export const INITIAL_LINKS: LinkItem[] = [
 
   // --- SCIENZE ---
   {
+    id: 'sci-gli-animali',
+    title: 'Gli Animali: Habitat, Cibo & Giochi',
+    url: '/gli-animali.html',
+    description: 'Applicazione didattica interattiva dedicata a 47 specie animali con schede illustrate su habitat (terra, cielo, mare) e alimentazione. Include 4 giochi progressivi (Trova l\'animale, Dove vive, Cosa mangia, Vero o falso) con sintesi vocale automatica, profilo alunno e ottimizzazione LIM 16:9.',
+    subject: 'scienze',
+    tags: ['Scienze', 'Animali', 'Zoologia', 'Habitat', 'Alimentazione', 'Giochi Didattici', 'Sintesi Vocale', 'App Integrata'],
+    gradeLevel: 'Classe 1ª',
+    iconName: 'PawPrint',
+    isVercel: false,
+    isFavorite: true,
+    addedAt: '2026-11-17',
+    featured: true,
+    internalAppId: 'gli-animali',
+  },
+  {
     id: 'sci-struttura-atomo',
     title: 'La Struttura dell\'Atomo: Esercizi & Simulatore',
     url: '',

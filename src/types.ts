@@ -25,7 +25,8 @@ export interface LinkItem {
     | 'storia-ipazia'
     | 'enigmondo'
     | 'cinque-sensi'
-    | 'struttura-atomo';
+    | 'struttura-atomo'
+    | 'gli-animali';
 }
 
 export interface SubjectMeta {

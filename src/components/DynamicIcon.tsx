@@ -39,6 +39,7 @@ import {
   Layers,
   Lightbulb,
   Eye,
+  PawPrint,
   LucideProps,
 } from 'lucide-react';
 
@@ -85,6 +86,7 @@ const ICON_MAP: Record<string, React.FC<LucideProps>> = {
   Layers,
   Lightbulb,
   Eye,
+  PawPrint,
 };
 
 export const DynamicIcon: React.FC<DynamicIconProps> = ({ name, ...props }) => {
