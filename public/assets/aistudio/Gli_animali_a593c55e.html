@@ -103,7 +103,7 @@ const ANIMALI=[
 {n:"panda",g:"m",e:"🐼",dove:"terra",cibo:"erba"},
 {n:"pipistrello",g:"m",e:"🦇",dove:"cielo",cibo:"insetti"},
 {n:"grillo",g:"m",e:"🦗",dove:"terra",cibo:"insetti"},
-{n:"orca",g:"f",e:"🐋",dove:"mare",cibo:"pesce"},
+{n:"pinguino",g:"m",e:"🐧",dove:"mare",cibo:"pesce"},
 {n:"tonno",g:"m",e:"🐟",dove:"mare",cibo:"pesce"}
 ];
 const DOVE={
@@ -392,8 +392,7 @@ function Gioco({tipo,risposte,onEsci,onMenu,onProssimoGioco,profilo}){
     ),
     q.emoji&&h("div",{className:"emoji-grande","aria-hidden":true},q.emoji),
     h("div",{className:"opzioni"},opzioni),
-    esito&&h("p",{className:"esito "+(esito.ok?"ok":"ko"),role:"status","aria-live":"polite"},esito.msg),
-    esito&&(esito.ok||esito.rivelata)&&h("button",{className:"play",onClick:()=>{Voce.stop();avanzaDopo();}},i+1<deck.length?"AVANTI ➔":"FINE")
+    esito&&h("p",{className:"esito "+(esito.ok?"ok":"ko"),role:"status","aria-live":"polite"},esito.msg)
   );
 }
 

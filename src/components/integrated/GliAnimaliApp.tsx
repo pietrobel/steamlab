@@ -73,7 +73,7 @@ const ANIMALI_DATA: AnimalItem[] = [
   { n: 'panda', g: 'm', e: '🐼', dove: 'terra', cibo: 'erba' },
   { n: 'pipistrello', g: 'm', e: '🦇', dove: 'cielo', cibo: 'insetti' },
   { n: 'grillo', g: 'm', e: '🦗', dove: 'terra', cibo: 'insetti' },
-  { n: 'orca', g: 'f', e: '🐋', dove: 'mare', cibo: 'pesce' },
+  { n: 'pinguino', g: 'm', e: '🐧', dove: 'mare', cibo: 'pesce' },
   { n: 'tonno', g: 'm', e: '🐟', dove: 'mare', cibo: 'pesce' },
 ];
 
@@ -274,7 +274,7 @@ export const GliAnimaliApp: React.FC<GliAnimaliAppProps> = ({ onBackToHome }) =>
               </button>
 
               <a
-                href="/gli-animali.html?v=3"
+                href="/gli-animali.html?v=5"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white border border-slate-700 font-semibold transition-all flex items-center gap-1.5 text-xs active:scale-95 whitespace-nowrap"
@@ -295,7 +295,7 @@ export const GliAnimaliApp: React.FC<GliAnimaliAppProps> = ({ onBackToHome }) =>
           >
             <iframe
               key={iframeKey}
-              src={`/gli-animali.html?v=3&k=${iframeKey}`}
+              src={`/gli-animali.html?v=5&k=${iframeKey}`}
               title="Gli Animali - Applicazione Didattica Interattiva"
               className="w-full h-full border-0"
               sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
