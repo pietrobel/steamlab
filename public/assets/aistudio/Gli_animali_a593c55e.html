@@ -20,7 +20,7 @@ button:disabled{cursor:default}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;margin:18px 0}
 .tile{height:clamp(120px,22vw,150px);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:18px;color:var(--ink)}
 .tile .e{font-size:clamp(56px,10vw,80px)}
-.opz .e{font-size:clamp(72px,14vw,112px);line-height:1.1}
+.opz .e{font-size:clamp(64px,12vw,104px);line-height:1.1}
 .bar{height:16px;border-radius:8px;background:var(--card);overflow:hidden;margin:8px auto;max-width:420px}
 .bar div{height:100%;background:var(--p4);transition:width .4s}
 .card{background:var(--card);border-radius:24px;padding:20px;margin:16px auto;font-size:20px;line-height:1.5;max-width:640px}
@@ -28,7 +28,7 @@ button:disabled{cursor:default}
 .ascolta{background:var(--p4);color:var(--ink);margin:8px 0}
 .nota{font-size:16px;opacity:.7}
 .play{background:var(--p3);color:var(--ink);font-size:24px;padding:18px 36px}
-.opzioni{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:16px auto;max-width:700px}
+.opzioni{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px auto;max-width:920px}
 .opz{background:var(--card);color:var(--ink);font-size:20px;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
 .opz.grande{font-size:28px;min-height:120px}
 .esito{font-size:22px;font-weight:700;margin:12px auto;max-width:640px;min-height:40px}
@@ -41,7 +41,7 @@ button:disabled{cursor:default}
   h1{font-size:clamp(26px,3.2vw,40px);margin:4px 0 8px}
   .tile{height:clamp(115px,15vh,155px);font-size:18px;font-weight:800;border-radius:24px;transition:transform .2s}
   .tile:hover{transform:scale(1.03)}
-  .opzioni{max-width:1100px;gap:16px;margin:12px auto;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+  .opzioni{max-width:1100px;gap:16px;margin:12px auto;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
   .opz{font-size:22px;min-height:135px;border-radius:22px;font-weight:700}
   .opz.grande{font-size:30px;min-height:135px}
   .emoji-grande{font-size:clamp(95px,14vh,130px);margin:4px 0}
@@ -253,12 +253,13 @@ function Benvenuto({profilo,onSalva}){
 }
 
 // Costruisce la banca per un gioco: due domande per animale, con alternative diverse
-function costruisci(tipo){
+function costruisci(tipo,risposte){
+  const nRisp=Math.max(2,Math.min(10,Number(risposte)||10));
   const tutte=[];
   ANIMALI.forEach(a=>{
     for(let r=0;r<2;r++){
       if(tipo==="riconosci"){
-        const altri=casuali(ANIMALI.filter(x=>x.n!==a.n),5);
+        const altri=casuali(ANIMALI.filter(x=>x.n!==a.n),nRisp-1);
         tutte.push({titolo:"Trova "+nomeArt(a)+"!",voce:"Trova "+nomeArt(a)+".",emoji:null,
           opz:mescola([a,...altri]).map(x=>({val:x.n,e:x.e})),
           cor:a.n,grp:a.dove,sug:"Guarda con calma le figure e prova ancora."});
@@ -269,7 +270,8 @@ function costruisci(tipo){
           cor:a.dove,grp:a.dove,sug:"Pensa: vola, nuota o cammina?"});
       }
       if(tipo==="cibo"){
-        const altri=casuali(Object.keys(CIBI).filter(c=>c!==a.cibo),5);
+        const nCibi=Math.min(nRisp,6);
+        const altri=casuali(Object.keys(CIBI).filter(c=>c!==a.cibo),nCibi-1);
         tutte.push({titolo:"Che cosa mangia "+nomeArt(a)+"?",voce:"Che cosa mangia "+nomeArt(a)+"?",emoji:a.e,
           opz:mescola([a.cibo,...altri]).map(c=>({val:c,e:CIBI[c].e,label:CIBI[c].l})),
           cor:a.cibo,grp:a.dove,sug:"Pensa: mangia erba, carne o frutta?"});
@@ -288,8 +290,8 @@ function costruisci(tipo){
   return pesca(tutte,15);
 }
 
-function Gioco({tipo,onEsci,onMenu,onProssimoGioco,profilo}){
-  const [deck,setDeck]=useState(()=>costruisci(tipo));
+function Gioco({tipo,risposte,onEsci,onMenu,onProssimoGioco,profilo}){
+  const [deck,setDeck]=useState(()=>costruisci(tipo,risposte));
   const [i,setI]=useState(0);
   const [esito,setEsito]=useState(null);
   const [giuste,setGiuste]=useState(0);
@@ -329,7 +331,7 @@ function Gioco({tipo,onEsci,onMenu,onProssimoGioco,profilo}){
       setEsito({ok:false,msg}); Voce.parla(msg);
     }
   }
-  function ricomincia(){ fattoRef.current=-1; setDeck(costruisci(tipo)); setI(0); setEsito(null); setGiuste(0); setSbagliate([]); }
+  function ricomincia(){ fattoRef.current=-1; setDeck(costruisci(tipo,risposte)); setI(0); setEsito(null); setGiuste(0); setSbagliate([]); }
 
   const gCurrent=GIOCHI.find(x=>x.id===tipo)||{nome:"il gioco"};
   const idxCurrent=GIOCHI.findIndex(x=>x.id===tipo);
@@ -419,9 +421,18 @@ function App(){
   const [visti,setVisti]=useState(()=>{
     try{return JSON.parse(localStorage.getItem("animali-visti")||"[]");}catch(e){return [];}
   });
+  const [risposte,setRisposte]=useState(()=>{
+    try{
+      const salvato=parseInt(localStorage.getItem("animali-risposte"),10);
+      return (salvato>=2 && salvato<=10)?salvato:10;
+    }catch(e){return 10;}
+  });
   useEffect(()=>{
     try{localStorage.setItem("animali-visti",JSON.stringify(visti));}catch(e){}
   },[visti]);
+  useEffect(()=>{
+    try{localStorage.setItem("animali-risposte",String(risposte));}catch(e){}
+  },[risposte]);
 
   function salvaProfilo(p){
     try{localStorage.setItem("animali-profilo",JSON.stringify(p));}catch(e){}
@@ -469,7 +480,7 @@ function App(){
       return h("div",{className:"wrap"},
         nav(()=>setGioco(null)),
         h("h1",null,GIOCHI.find(x=>x.id===gioco).nome),
-        h(Gioco,{key:gioco,tipo:gioco,profilo:profilo,onEsci:()=>setGioco(null),onMenu:()=>vai("home"),onProssimoGioco:(nextId)=>setGioco(nextId)})
+        h(Gioco,{key:gioco,tipo:gioco,risposte:risposte,profilo:profilo,onEsci:()=>setGioco(null),onMenu:()=>vai("home"),onProssimoGioco:(nextId)=>setGioco(nextId)})
       );
     }
     return h("div",{className:"wrap"},
@@ -484,6 +495,13 @@ function App(){
   return h("div",{className:"wrap"},
     h("h1",null,"GLI ANIMALI",h("span",{className:"lim-badge"},"📺 LIM 16:9")),
     h("p",null,"Ciao "+profilo.nome+"! ",h("button",{className:"ghost",style:{fontSize:"14px",padding:"6px 14px",minHeight:"36px",borderRadius:"12px"},onClick:()=>setModifica(true)},"CAMBIA ALUNNO")),
+    h("div",{className:"card",style:{padding:"14px 18px",margin:"10px auto"}},
+      h("label",{htmlFor:"range-risposte",style:{display:"block",fontWeight:"700",fontSize:"19px",marginBottom:"8px"}},"Risposte per domanda: "+risposte),
+      h("input",{id:"range-risposte",type:"range",min:2,max:10,value:risposte,
+        onChange:e=>setRisposte(Number(e.target.value)),
+        style:{width:"100%",maxWidth:"340px",accentColor:"var(--p5)",cursor:"pointer"}}),
+      h("p",{className:"nota",style:{margin:"8px 0 0",fontSize:"14px"}},"Trova l'animale usa questo numero. Cosa mangia? arriva al massimo a 6 risposte. Dove vive? ha sempre 3 risposte e Vero o falso ne ha 2.")
+    ),
     h(Bimbo),
     h("div",{className:"grid"},
       h("button",{className:"tile",style:{background:"#ffe8a3"},onClick:()=>vai("animali")},
