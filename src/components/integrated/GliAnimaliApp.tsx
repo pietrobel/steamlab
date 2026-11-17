@@ -274,7 +274,7 @@ export const GliAnimaliApp: React.FC<GliAnimaliAppProps> = ({ onBackToHome }) =>
               </button>
 
               <a
-                href="/gli-animali.html"
+                href="/gli-animali.html?v=3"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white border border-slate-700 font-semibold transition-all flex items-center gap-1.5 text-xs active:scale-95 whitespace-nowrap"
@@ -289,17 +289,16 @@ export const GliAnimaliApp: React.FC<GliAnimaliAppProps> = ({ onBackToHome }) =>
             ref={frameContainerRef}
             className={`relative w-full rounded-3xl overflow-hidden border-2 border-slate-800 shadow-2xl bg-[#eef9f1] dark:bg-[#1d2a24] transition-all duration-300 ${
               isLimRatio
-                ? 'aspect-[16/9] min-h-[440px] max-h-[85vh]'
-                : 'h-[720px] sm:h-[800px]'
+                ? 'aspect-[16/9] min-h-[540px] max-h-[85vh]'
+                : 'h-[720px] sm:h-[820px]'
             }`}
           >
             <iframe
               key={iframeKey}
-              src="/gli-animali.html"
+              src={`/gli-animali.html?v=3&k=${iframeKey}`}
               title="Gli Animali - Applicazione Didattica Interattiva"
               className="w-full h-full border-0"
               sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-              loading="lazy"
             />
           </div>
         </div>

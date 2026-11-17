@@ -383,14 +383,17 @@ function Gioco({tipo,risposte,onEsci,onMenu,onProssimoGioco,profilo}){
   });
 
   return h("div",null,
-    h("p",null,"Domanda "+(i+1)+" di "+deck.length),
-    h("h2",null,q.titolo),
+    h("p",{style:{margin:"4px 0"}},"Domanda "+(i+1)+" di "+deck.length+" · "+q.opz.length+" risposte"),
+    h("h2",{style:{margin:"6px 0"}},q.titolo),
     q.testo&&h("div",{className:"card"},q.testo),
-    h("div",null,h(Ascolta,{testo:q.voce,etichetta:"ASCOLTA LA DOMANDA"})),
+    h("div",{style:{display:"flex",justifyContent:"center",alignItems:"center",gap:"12px",flexWrap:"wrap",margin:"8px 0"}},
+      h(Ascolta,{testo:q.voce,etichetta:"ASCOLTA LA DOMANDA"}),
+      h("button",{className:"play",style:{padding:"12px 24px",fontSize:"20px",minHeight:"52px"},onClick:()=>{Voce.stop();avanzaDopo();}},i+1<deck.length?"AVANTI ➔":"FINE ➔")
+    ),
     q.emoji&&h("div",{className:"emoji-grande","aria-hidden":true},q.emoji),
     h("div",{className:"opzioni"},opzioni),
     esito&&h("p",{className:"esito "+(esito.ok?"ok":"ko"),role:"status","aria-live":"polite"},esito.msg),
-    esito&&(esito.ok||esito.rivelata)&&h("button",{className:"play",onClick:()=>{Voce.stop();avanzaDopo();}},i+1<deck.length?"AVANTI":"FINE")
+    esito&&(esito.ok||esito.rivelata)&&h("button",{className:"play",onClick:()=>{Voce.stop();avanzaDopo();}},i+1<deck.length?"AVANTI ➔":"FINE")
   );
 }
 
@@ -475,6 +478,22 @@ function App(){
     );
   }
 
+  const controlloRisposte=(compatto)=>h("div",{className:"card",style:{padding:compatto?"10px 16px":"14px 18px",margin:compatto?"8px auto":"10px auto",maxWidth:"680px"}},
+    h("label",{htmlFor:compatto?"range-risposte-g":"range-risposte",style:{display:"block",fontWeight:"700",fontSize:compatto?"17px":"19px",marginBottom:"8px"}},"Risposte per domanda: "+risposte),
+    h("div",{style:{display:"flex",alignItems:"center",justifyContent:"center",gap:"12px",flexWrap:"wrap"}},
+      h("button",{type:"button",className:"ghost",disabled:risposte<=2,
+        onClick:()=>setRisposte(r=>Math.max(2,r-1)),
+        style:{minHeight:"44px",minWidth:"48px",padding:"8px 14px",fontSize:"22px",border:"2px solid var(--ink)",opacity:risposte<=2?.4:1},"aria-label":"Diminuisci risposte"},"−"),
+      h("input",{id:compatto?"range-risposte-g":"range-risposte",type:"range",min:2,max:10,value:risposte,
+        onChange:e=>setRisposte(Number(e.target.value)),
+        style:{flex:"1",minWidth:"160px",maxWidth:"300px",accentColor:"var(--p5)",cursor:"pointer",height:"28px"}}),
+      h("button",{type:"button",className:"ghost",disabled:risposte>=10,
+        onClick:()=>setRisposte(r=>Math.min(10,r+1)),
+        style:{minHeight:"44px",minWidth:"48px",padding:"8px 14px",fontSize:"22px",border:"2px solid var(--ink)",opacity:risposte>=10?.4:1},"aria-label":"Aumenta risposte"},"+")
+    ),
+    !compatto && h("p",{className:"nota",style:{margin:"8px 0 0",fontSize:"14px"}},"Trova l'animale usa questo numero. Cosa mangia? arriva al massimo a 6 risposte. Dove vive? ha sempre 3 risposte e Vero o falso ne ha 2.")
+  );
+
   if(schermo==="giochi"){
     if(gioco){
       return h("div",{className:"wrap"},
@@ -486,6 +505,7 @@ function App(){
     return h("div",{className:"wrap"},
       nav(),
       h("h1",null,"GIOCHIAMO",h("span",{className:"lim-badge"},"📺 LIM 16:9")),
+      controlloRisposte(true),
       h("div",{className:"grid"},
         GIOCHI.map(g=>h("button",{key:g.id,className:"tile",style:{background:g.colore},onClick:()=>setGioco(g.id),"aria-label":g.nome},
           h("span",{className:"e","aria-hidden":true},g.emoji), g.nome)))
@@ -495,13 +515,7 @@ function App(){
   return h("div",{className:"wrap"},
     h("h1",null,"GLI ANIMALI",h("span",{className:"lim-badge"},"📺 LIM 16:9")),
     h("p",null,"Ciao "+profilo.nome+"! ",h("button",{className:"ghost",style:{fontSize:"14px",padding:"6px 14px",minHeight:"36px",borderRadius:"12px"},onClick:()=>setModifica(true)},"CAMBIA ALUNNO")),
-    h("div",{className:"card",style:{padding:"14px 18px",margin:"10px auto"}},
-      h("label",{htmlFor:"range-risposte",style:{display:"block",fontWeight:"700",fontSize:"19px",marginBottom:"8px"}},"Risposte per domanda: "+risposte),
-      h("input",{id:"range-risposte",type:"range",min:2,max:10,value:risposte,
-        onChange:e=>setRisposte(Number(e.target.value)),
-        style:{width:"100%",maxWidth:"340px",accentColor:"var(--p5)",cursor:"pointer"}}),
-      h("p",{className:"nota",style:{margin:"8px 0 0",fontSize:"14px"}},"Trova l'animale usa questo numero. Cosa mangia? arriva al massimo a 6 risposte. Dove vive? ha sempre 3 risposte e Vero o falso ne ha 2.")
-    ),
+    controlloRisposte(false),
     h(Bimbo),
     h("div",{className:"grid"},
       h("button",{className:"tile",style:{background:"#ffe8a3"},onClick:()=>vai("animali")},
